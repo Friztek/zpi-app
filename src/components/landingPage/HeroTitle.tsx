@@ -1,121 +1,136 @@
-import { createStyles, Container, Text, Button, Group } from "@mantine/core";
-import { GithubIcon } from "@mantine/ds";
-
-const BREAKPOINT = "@media (max-width: 755px)";
+import {
+  Title,
+  Text,
+  Container,
+  Button,
+  Overlay,
+  createStyles,
+} from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
     position: "relative",
-    boxSizing: "border-box",
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
-    paddingTop: 20,
+    height: "100vh",
+    alignItems: "center",
+    backgroundImage:
+      "url(https://images.unsplash.com/photo-1573164713988-8665fc963095?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=980&q=80)",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
   },
 
   inner: {
     position: "relative",
-    paddingTop: 0,
-    paddingBottom: 0,
-
-    [BREAKPOINT]: {
-      paddingBottom: 80,
-      paddingTop: 20,
-    },
+    zIndex: 1,
+    display: "flex",
+    justifyContent: "center",
+    height: "100%",
+    flexDirection: "column",
   },
 
   title: {
+    fontWeight: 800,
+    fontSize: 40,
+    letterSpacing: -1,
+    paddingLeft: theme.spacing.md,
+    paddingRight: theme.spacing.md,
+    color: theme.white,
+    marginBottom: theme.spacing.xs,
+    textAlign: "center",
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-    fontSize: 62,
-    fontWeight: 900,
-    lineHeight: 1.1,
-    margin: 0,
-    padding: 0,
-    color: theme.colorScheme === "dark" ? theme.white : theme.black,
 
-    [BREAKPOINT]: {
-      fontSize: 42,
-      lineHeight: 1.2,
+    "@media (max-width: 520px)": {
+      fontSize: 28,
+      textAlign: "left",
     },
   },
 
-  description: {
-    marginTop: theme.spacing.xl,
-    fontSize: 24,
+  highlight: {
+    color: theme.colors[theme.primaryColor][4],
+  },
 
-    [BREAKPOINT]: {
-      fontSize: 18,
+  description: {
+    color: theme.colors.gray[0],
+    textAlign: "center",
+
+    "@media (max-width: 520px)": {
+      fontSize: theme.fontSizes.md,
+      textAlign: "left",
     },
   },
 
   controls: {
-    marginTop: theme.spacing.xl * 2,
+    marginTop: theme.spacing.xl * 1.5,
+    display: "flex",
+    justifyContent: "center",
+    paddingLeft: theme.spacing.md,
+    paddingRight: theme.spacing.md,
 
-    [BREAKPOINT]: {
-      marginTop: theme.spacing.xl,
+    "@media (max-width: 520px)": {
+      flexDirection: "column",
     },
   },
 
   control: {
-    height: 54,
-    paddingLeft: 38,
-    paddingRight: 38,
+    height: 42,
+    fontSize: theme.fontSizes.md,
 
-    [BREAKPOINT]: {
-      height: 54,
-      paddingLeft: 18,
-      paddingRight: 18,
-      flex: 1,
+    "&:not(:first-of-type)": {
+      marginLeft: theme.spacing.md,
+    },
+
+    "@media (max-width: 520px)": {
+      "&:not(:first-of-type)": {
+        marginTop: theme.spacing.md,
+        marginLeft: 0,
+      },
+    },
+  },
+
+  secondaryControl: {
+    color: theme.white,
+    backgroundColor: "rgba(255, 255, 255, .4)",
+
+    "&:hover": {
+      backgroundColor: "rgba(255, 255, 255, .45) !important",
     },
   },
 }));
 
 export function HeroTitle() {
-  const { classes } = useStyles();
+  const { classes, cx } = useStyles();
 
   return (
     <div className={classes.wrapper}>
-      <Container size={700} >
-        <h1 className={classes.title}>
-          A{" "}
-          <Text
-            component="span"
-            variant="gradient"
-            gradient={{ from: "blue", to: "cyan" }}
-            inherit
-          >
-            fully featured
-          </Text>{" "}
-          React components and hooks library
-        </h1>
+      <Overlay color="#000" opacity={0.65} zIndex={1} />
 
-        <Text className={classes.description} color="dimmed">
-          Build fully functional accessible web applications with ease – Mantine
-          includes more than 100 customizable components and hooks to cover you
-          in any situation
-        </Text>
+      <div className={classes.inner}>
+        <Title className={classes.title}>
+          Automated AI code reviews for{" "}
+          <Text component="span" inherit className={classes.highlight}>
+            any stack
+          </Text>
+        </Title>
 
-        <Group className={classes.controls}>
-          <Button
-            size="xl"
-            className={classes.control}
-            variant="gradient"
-            gradient={{ from: "blue", to: "cyan" }}
-          >
+        <Container size={640}>
+          <Text size="lg" className={classes.description}>
+            Build more reliable software with AI companion. AI is also trained
+            to detect lazy developers who do nothing and just complain on
+            Twitter.
+          </Text>
+        </Container>
+
+        <div className={classes.controls}>
+          <Button className={classes.control} variant="white" size="lg">
             Get started
           </Button>
-
           <Button
-            component="a"
-            href="https://github.com/mantinedev/mantine"
-            size="xl"
-            variant="default"
-            className={classes.control}
-            leftIcon={<GithubIcon size={20} />}
+            className={cx(classes.control, classes.secondaryControl)}
+            size="lg"
           >
-            GitHub
+            Live demo
           </Button>
-        </Group>
-      </Container>
+        </div>
+      </div>
     </div>
   );
 }
