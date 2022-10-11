@@ -1,7 +1,13 @@
 import type { NextPage } from "next";
+import { HeroTitle } from "../components/landingPage/heroTitle";
+import { TopBar } from "../components/landingPage/TopBar";
 
 const Home: NextPage = () => {
-  return <h1>Page</h1>
+  return (
+    <div>
+      <TopBar />
+      <HeroTitle />
+    </div>
+  );
 };
-
 export default Home;
