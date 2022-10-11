@@ -1,17 +1,19 @@
-import { createStyles, Container, Text, Button, Group } from '@mantine/core';
-import { GithubIcon } from '@mantine/ds';
+import { createStyles, Container, Text, Button, Group } from "@mantine/core";
+import { GithubIcon } from "@mantine/ds";
 
-const BREAKPOINT = '@media (max-width: 755px)';
+const BREAKPOINT = "@media (max-width: 755px)";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
-    position: 'relative',
-    boxSizing: 'border-box',
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
+    position: "relative",
+    boxSizing: "border-box",
+    backgroundColor:
+      theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
+    paddingTop: 20,
   },
 
   inner: {
-    position: 'relative',
+    position: "relative",
     paddingTop: 0,
     paddingBottom: 0,
 
@@ -28,7 +30,7 @@ const useStyles = createStyles((theme) => ({
     lineHeight: 1.1,
     margin: 0,
     padding: 0,
-    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+    color: theme.colorScheme === "dark" ? theme.white : theme.black,
 
     [BREAKPOINT]: {
       fontSize: 42,
@@ -72,18 +74,24 @@ export function HeroTitle() {
 
   return (
     <div className={classes.wrapper}>
-      <Container size={700} sx={{paddingTop: 0}} >
+      <Container size={700} >
         <h1 className={classes.title}>
-          A{' '}
-          <Text component="span" variant="gradient" gradient={{ from: 'blue', to: 'cyan' }} inherit>
+          A{" "}
+          <Text
+            component="span"
+            variant="gradient"
+            gradient={{ from: "blue", to: "cyan" }}
+            inherit
+          >
             fully featured
-          </Text>{' '}
+          </Text>{" "}
           React components and hooks library
         </h1>
 
         <Text className={classes.description} color="dimmed">
-          Build fully functional accessible web applications with ease – Mantine includes more than
-          100 customizable components and hooks to cover you in any situation
+          Build fully functional accessible web applications with ease – Mantine
+          includes more than 100 customizable components and hooks to cover you
+          in any situation
         </Text>
 
         <Group className={classes.controls}>
@@ -91,7 +99,7 @@ export function HeroTitle() {
             size="xl"
             className={classes.control}
             variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan' }}
+            gradient={{ from: "blue", to: "cyan" }}
           >
             Get started
           </Button>
