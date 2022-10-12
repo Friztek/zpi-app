@@ -4,16 +4,13 @@ import { FC, JSXElementConstructor, ReactElement, ReactNode } from "react";
 export const LoggedUserLayout: FC<{
   children: ReactNode;
   sidebar: ReactElement<any, string | JSXElementConstructor<any>>;
-}> = ({ children, sidebar }) => {
+  topbar: ReactElement<any, string | JSXElementConstructor<any>>;
+}> = ({ children, sidebar, topbar }) => {
   return (
     <AppShell
       padding="md"
       navbar={sidebar}
-      header={
-        <Header height={60} p="xs">
-          {/* Header content */}
-        </Header>
-      }
+      header={topbar}
       styles={(theme) => ({
         main: {
           backgroundColor:

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createStyles, Navbar, Group, Code } from "@mantine/core";
+import { createStyles, Navbar } from "@mantine/core";
 import {
   IconBellRinging,
   IconFingerprint,
@@ -8,10 +8,7 @@ import {
   Icon2fa,
   IconDatabaseImport,
   IconReceipt2,
-  IconSwitchHorizontal,
-  IconLogout,
 } from "@tabler/icons";
-import { MantineLogo } from "@mantine/ds";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -125,10 +122,6 @@ export function Sidebar() {
   return (
     <Navbar width={{ sm: 300 }} p="md">
       <Navbar.Section grow>
-        <Group className={classes.header} position="apart">
-          <MantineLogo size={28} />
-          <Code sx={{ fontWeight: 700 }}>v3.1.2</Code>
-        </Group>
         {links}
       </Navbar.Section>
     </Navbar>

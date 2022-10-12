@@ -1,5 +1,6 @@
 import React from "react";
 import { Sidebar } from "../components/common/Sidebar";
+import { Topbar } from "../components/landingPage/Topbar";
 import { LoggedUserLayout } from "../components/layout/LoggedUserLayout";
 import { AssetList } from "../components/wallet/AssetList";
 
@@ -38,8 +39,8 @@ const data = [
 
 const Home = () => {
   return (
-    <LoggedUserLayout sidebar={<Sidebar />}>
-      <AssetList data={data} />;
+    <LoggedUserLayout sidebar={<Sidebar />} topbar={<Topbar />}>
+      <AssetList data={data} />
     </LoggedUserLayout>
   );
 };

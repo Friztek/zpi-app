@@ -131,7 +131,7 @@ const mockdata = [
   },
 ];
 
-export function TopBar() {
+export function Topbar() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);

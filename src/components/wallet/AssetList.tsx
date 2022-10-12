@@ -50,5 +50,7 @@ export function AssetList({ data }: DndListProps) {
     </div>
   ));
 
-  return <div>{items}</div>;
+  return (
+    <div>{items}</div>
+  );
 }
