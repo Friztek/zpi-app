@@ -1,6 +1,6 @@
 import React from "react";
 import { Sidebar } from "../components/common/Sidebar";
-import { Topbar } from "../components/landingPage/Topbar";
+import { Topbar } from "../components/common/Topbar";
 import { LoggedUserLayout } from "../components/layout/LoggedUserLayout";
 import { AssetList } from "../components/wallet/AssetList";
 
