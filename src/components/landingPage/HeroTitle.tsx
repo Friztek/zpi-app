@@ -105,29 +105,21 @@ export function HeroTitle() {
 
       <div className={classes.inner}>
         <Title className={classes.title}>
-          Automated AI code reviews for{" "}
+          Asset tracker for {" "}
           <Text component="span" inherit className={classes.highlight}>
-            any stack
+            all your assets
           </Text>
         </Title>
 
         <Container size={640}>
           <Text size="lg" className={classes.description}>
-            Build more reliable software with AI companion. AI is also trained
-            to detect lazy developers who do nothing and just complain on
-            Twitter.
+           Get to know the total value of all your assets in prefered currency. All calculated by current exchange rates.
           </Text>
         </Container>
 
         <div className={classes.controls}>
           <Button className={classes.control} variant="white" size="lg">
             Get started
-          </Button>
-          <Button
-            className={cx(classes.control, classes.secondaryControl)}
-            size="lg"
-          >
-            Live demo
           </Button>
         </div>
       </div>
