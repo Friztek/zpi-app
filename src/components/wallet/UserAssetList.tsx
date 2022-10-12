@@ -35,7 +35,7 @@ interface DndListProps {
   }[];
 }
 
-export function AssetList({ data }: DndListProps) {
+export function UserAssetList({ data }: DndListProps) {
   const { classes } = useStyles();
 
   const items = data.map((item) => (

@@ -1,8 +1,10 @@
+import { IconWallet } from "@tabler/icons";
 import React from "react";
 import { Sidebar } from "../components/common/Sidebar";
 import { Topbar } from "../components/landingPage/Topbar";
 import { LoggedUserLayout } from "../components/layout/LoggedUserLayout";
-import { AssetList } from "../components/wallet/AssetList";
+import { UserAssetList } from "../components/wallet/UserAssetList";
+import { WalletValue } from "../components/wallet/WalletValue";
 
 const data = [
   {
@@ -37,10 +39,25 @@ const data = [
   },
 ];
 
+const values = [
+  {
+    title: "Total value",
+    value: "$13,456",
+    diff: 34,
+  },
+];
+
 const Home = () => {
   return (
     <LoggedUserLayout sidebar={<Sidebar />} topbar={<Topbar />}>
-      <AssetList data={data} />
+      <div style={{display: "flex", justifyContent: "center", gap: "1rem"}}>
+        <div style={{flex: 1}}>
+          <UserAssetList data={data} />
+        </div>
+        <div style={{flex: 1}}>
+          <WalletValue data={values} />
+        </div>
+      </div>
     </LoggedUserLayout>
   );
 };

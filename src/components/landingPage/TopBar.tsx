@@ -28,6 +28,7 @@ import {
   IconCoin,
   IconChevronDown,
 } from "@tabler/icons";
+import { ColorSchemeToggler } from "../common/ColorSchemeToggler";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -235,6 +236,8 @@ export function Topbar() {
             <Button variant="default">Log in</Button>
             <Button>Sign up</Button>
           </Group>
+
+          <ColorSchemeToggler></ColorSchemeToggler>
 
           <Burger
             opened={drawerOpened}
