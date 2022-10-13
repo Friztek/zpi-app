@@ -1,16 +1,16 @@
 import { AppShell, Navbar, Header } from "@mantine/core";
 import { FC, JSXElementConstructor, ReactElement, ReactNode } from "react";
+import { Sidebar } from "../common/Sidebar";
+import { Topbar } from "../common/Topbar";
 
 export const LoggedUserLayout: FC<{
   children: ReactNode;
-  sidebar: ReactElement<any, string | JSXElementConstructor<any>>;
-  topbar: ReactElement<any, string | JSXElementConstructor<any>>;
-}> = ({ children, sidebar, topbar }) => {
+}> = ({ children }) => {
   return (
     <AppShell
       padding="md"
-      navbar={sidebar}
-      header={topbar}
+      navbar={<Sidebar />}
+      header={<Topbar />}
       styles={(theme) => ({
         main: {
           backgroundColor:

@@ -49,12 +49,12 @@ const values = [
 
 const Home = () => {
   return (
-    <LoggedUserLayout sidebar={<Sidebar />} topbar={<Topbar />}>
-      <div style={{display: "flex", justifyContent: "center", gap: "1rem"}}>
-        <div style={{flex: 1}}>
+    <LoggedUserLayout>
+      <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
+        <div style={{ flex: 1 }}>
           <UserAssetList data={data} />
         </div>
-        <div style={{flex: 1}}>
+        <div style={{ flex: 1 }}>
           <WalletValue data={values} />
         </div>
       </div>
