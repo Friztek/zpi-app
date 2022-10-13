@@ -1,38 +1,15 @@
 import { useState } from "react";
 import { createStyles, Navbar } from "@mantine/core";
 import {
-  IconBellRinging,
-  IconFingerprint,
-  IconKey,
-  IconSettings,
-  Icon2fa,
-  IconDatabaseImport,
-  IconReceipt2,
+  IconChartLine,
+  IconHome,
+  IconNotification,
+  IconWallet,
 } from "@tabler/icons";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
   return {
-    header: {
-      paddingBottom: theme.spacing.md,
-      marginBottom: theme.spacing.md * 1.5,
-      borderBottom: `1px solid ${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[4]
-          : theme.colors.gray[2]
-      }`,
-    },
-
-    footer: {
-      paddingTop: theme.spacing.md,
-      marginTop: theme.spacing.md,
-      borderTop: `1px solid ${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[4]
-          : theme.colors.gray[2]
-      }`,
-    },
-
     link: {
       ...theme.fn.focusStyles(),
       display: "flex",
@@ -89,13 +66,10 @@ const useStyles = createStyles((theme, _params, getRef) => {
 });
 
 const data = [
-  { link: "", label: "Notifications", icon: IconBellRinging },
-  { link: "", label: "Billing", icon: IconReceipt2 },
-  { link: "", label: "Security", icon: IconFingerprint },
-  { link: "", label: "SSH Keys", icon: IconKey },
-  { link: "", label: "Databases", icon: IconDatabaseImport },
-  { link: "", label: "Authentication", icon: Icon2fa },
-  { link: "", label: "Other Settings", icon: IconSettings },
+  { link: "", label: "Dashboard", icon: IconHome },
+  { link: "", label: "Notifications", icon: IconNotification },
+  { link: "", label: "Wallet", icon: IconWallet },
+  { link: "", label: "Statistics", icon: IconChartLine },
 ];
 
 export function Sidebar() {
@@ -121,9 +95,7 @@ export function Sidebar() {
 
   return (
     <Navbar width={{ sm: 300 }} p="md">
-      <Navbar.Section grow>
-        {links}
-      </Navbar.Section>
+      <Navbar.Section grow>{links}</Navbar.Section>
     </Navbar>
   );
 }

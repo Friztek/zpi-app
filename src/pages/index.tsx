@@ -1,3 +1,4 @@
+import { AppShell } from "@mantine/core";
 import type { NextPage } from "next";
 import { Features } from "../components/landingPage/Features";
 import { Footer } from "../components/landingPage/Footer";
@@ -6,8 +7,7 @@ import { Topbar } from "../components/landingPage/Topbar";
 
 const Home: NextPage = () => {
   return (
-    <div>
-      <Topbar />
+    <AppShell navbar={<Topbar />} padding={0}>
       <HeroTitle />
       <Features />
       <Footer
@@ -16,7 +16,7 @@ const Home: NextPage = () => {
           { label: "Github", link: "" },
         ]}
       />
-    </div>
+    </AppShell>
   );
 };
 export default Home;
