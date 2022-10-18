@@ -28,6 +28,8 @@ import {
   IconCoin,
   IconChevronDown,
 } from "@tabler/icons";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -137,6 +139,8 @@ export function Topbar() {
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const { classes, theme } = useStyles();
 
+  const router = useRouter();
+
   const links = mockdata.map((item) => (
     <UnstyledButton className={classes.subLink} key={item.title}>
       <Group noWrap align="flex-start">
@@ -168,8 +172,15 @@ export function Topbar() {
           ></Group>
 
           <Group className={classes.hiddenMobile}>
-            <Button variant="default">Log in</Button>
-            <Button>Sign up</Button>
+            <Button
+              variant="default"
+              onClick={() => {
+                console.log(1);
+                router.push("/api/auth/login");
+              }}
+            >
+              Log in
+            </Button>
           </Group>
 
           <Burger
@@ -220,8 +231,15 @@ export function Topbar() {
           />
 
           <Group position="center" grow pb="xl" px="md">
-            <Button variant="default">Log in</Button>
-            <Button>Sign up</Button>
+            <Button
+              variant="default"
+              onClick={() => {
+                console.log(1);
+                router.push("/api/auth/login");
+              }}
+            >
+              Log in
+            </Button>
           </Group>
         </ScrollArea>
       </Drawer>
