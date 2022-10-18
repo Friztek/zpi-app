@@ -6,13 +6,15 @@ import {
   MantineProvider,
 } from "@mantine/core";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import { UserProvider } from "@auth0/nextjs-auth0";
 
 export default function App(props: AppProps) {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
   const { Component, pageProps } = props;
-
+  
   return (
     <>
       <Head>
@@ -22,21 +24,23 @@ export default function App(props: AppProps) {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
-      <ColorSchemeProvider
-        colorScheme={colorScheme}
-        toggleColorScheme={toggleColorScheme}
-      >
-        <MantineProvider
-          withGlobalStyles
-          withNormalizeCSS
-          theme={{
-            /** Put your mantine theme override here */
-            colorScheme: colorScheme,
-          }}
+      <UserProvider>
+        <ColorSchemeProvider
+          colorScheme={colorScheme}
+          toggleColorScheme={toggleColorScheme}
         >
-          <Component {...pageProps} />
-        </MantineProvider>
-      </ColorSchemeProvider>
+          <MantineProvider
+            withGlobalStyles
+            withNormalizeCSS
+            theme={{
+              /** Put your mantine theme override here */
+              colorScheme: colorScheme,
+            }}
+          >
+            <Component {...pageProps} />
+          </MantineProvider>
+        </ColorSchemeProvider>
+      </UserProvider>
     </>
   );
 }
