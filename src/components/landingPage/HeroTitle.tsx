@@ -13,7 +13,7 @@ const useStyles = createStyles((theme) => ({
     height: "100vh",
     alignItems: "center",
     backgroundImage:
-      "url(https://images.unsplash.com/photo-1573164713988-8665fc963095?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=980&q=80)",
+      "url(https://img.freepik.com/free-photo/stack-money-coin-with-trading-graph_1150-17752.jpg?w=1480&t=st=1666111471~exp=1666112071~hmac=101a7dbe71d760d9860ea6376c75976d0f0b3f5fe9eb86e2af301c9c0ee82163)",
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
@@ -59,7 +59,6 @@ const useStyles = createStyles((theme) => ({
   },
 
   controls: {
-    marginTop: theme.spacing.xl * 1.5,
     display: "flex",
     justifyContent: "center",
     paddingLeft: theme.spacing.md,
@@ -97,7 +96,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function HeroTitle() {
-  const { classes, cx } = useStyles();
+  const { classes } = useStyles();
 
   return (
     <div className={classes.wrapper}>
@@ -105,15 +104,16 @@ export function HeroTitle() {
 
       <div className={classes.inner}>
         <Title className={classes.title}>
-          Asset tracker for {" "}
+          Asset tracker that{" "}
           <Text component="span" inherit className={classes.highlight}>
-            all your assets
+            your need
           </Text>
         </Title>
 
         <Container size={640}>
           <Text size="lg" className={classes.description}>
-           Get to know the total value of all your assets in prefered currency. All calculated by current exchange rates.
+            Get to know the total value of all your assets in prefered currency.
+            All calculated by current exchange rates.
           </Text>
         </Container>
 
