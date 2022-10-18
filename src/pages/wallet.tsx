@@ -1,8 +1,5 @@
-import { IconWallet } from "@tabler/icons";
 import React from "react";
-import { Sidebar } from "../components/common/Sidebar";
-import { Topbar } from "../components/common/Topbar";
-import { LoggedUserLayout } from "../components/layout/LoggedUserLayout";
+import { Layout } from "../components/layout/Layout";
 import { UserAssetList } from "../components/wallet/UserAssetList";
 import { WalletValue } from "../components/wallet/WalletValue";
 
@@ -34,7 +31,7 @@ const values = [
 
 const Home = () => {
   return (
-    <LoggedUserLayout>
+    <Layout>
       <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
         <div style={{ flex: 1 }}>
           <UserAssetList data={data} />
@@ -43,7 +40,7 @@ const Home = () => {
           <WalletValue data={values} />
         </div>
       </div>
-    </LoggedUserLayout>
+    </Layout>
   );
 };
 
