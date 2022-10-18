@@ -1,3 +1,4 @@
+import { useUser } from "@auth0/nextjs-auth0";
 import {
   createStyles,
   Header,
@@ -9,9 +10,9 @@ import {
 } from "@mantine/core";
 import { MantineLogo } from "@mantine/ds";
 import { useDisclosure } from "@mantine/hooks";
+import { useRouter } from "next/router";
 import { ColorSchemeToggler } from "./ColorSchemeToggler";
 import { TopbarUserButton } from "./TopbarUserButton";
-import { UserButton } from "./UserButton";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -86,6 +87,13 @@ export function Topbar() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const { classes, theme } = useStyles();
+  const { user } = useUser();
+  const router = useRouter();
+
+  if (user === undefined) {
+    router.push("");
+    return null;
+  }
 
   return (
     <Box pb={0} sx={{ position: "fixed", top: 0, zIndex: 2, width: "100%" }}>
@@ -95,13 +103,12 @@ export function Topbar() {
           <Group>
             <TopbarUserButton
               user={{
-                image:
-                  "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80",
-                name: "Martyna G",
+                image: user.picture ?? "",
+                name: user.name ?? "",
               }}
             />
             <ColorSchemeToggler />
-          </Group>  
+          </Group>
         </Group>
       </Header>
     </Box>
