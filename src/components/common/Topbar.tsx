@@ -16,6 +16,7 @@ import { TopbarUserButton } from "./TopbarUserButton";
 import { useEffect, useState } from "react";
 import { ColorSchemeToggler } from "./ColorSchemeToggler";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -71,7 +72,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const isUserSignedIn = true;
+const isUserSignedIn = false;
 
 interface HeaderSimpleProps {
   links: { link: string; label: string }[];
@@ -130,7 +131,9 @@ export function Topbar({ links }: HeaderSimpleProps) {
         <Group
           className={cx({ [classes.hiddenMobile]: isMobileView === false })}
         >
-          <Button variant="default">Log in</Button>
+          <Link href="/api/auth/login">
+            <Button variant="default">Log in</Button>
+          </Link>
           <Button>Sign up</Button>
         </Group>
       );
