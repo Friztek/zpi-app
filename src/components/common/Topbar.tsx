@@ -12,10 +12,10 @@ import {
 } from "@mantine/core";
 import { MantineLogo } from "@mantine/ds";
 import { useDisclosure } from "@mantine/hooks";
-import { useRouter } from "next/router";
 import { TopbarUserButton } from "./TopbarUserButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ColorSchemeToggler } from "./ColorSchemeToggler";
+import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -85,10 +85,11 @@ export function Topbar({ links }: HeaderSimpleProps) {
   const [active, setActive] = useState(links[0].link);
   const { classes, theme, cx } = useStyles();
 
-  if (user === undefined) {
-    router.push("");
-    return null;
-  }
+  useEffect(() => {
+    if (user === undefined) {
+      router.push("");
+    }
+  }, []);
 
   const items = links.map((link) => (
     <a
@@ -118,8 +119,8 @@ export function Topbar({ links }: HeaderSimpleProps) {
         >
           <TopbarUserButton
             user={{
-              image: user.picture ?? "",
-              name: user.name ?? "",
+              image: user?.picture ?? "",
+              name: user?.name ?? "",
             }}
           />
         </Group>
