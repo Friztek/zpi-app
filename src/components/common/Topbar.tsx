@@ -72,8 +72,6 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const isUserSignedIn = false;
-
 interface HeaderSimpleProps {
   links: { link: string; label: string }[];
 }
@@ -113,7 +111,7 @@ export function Topbar({ links }: HeaderSimpleProps) {
   }: {
     isMobileView: boolean;
   }) => {
-    if (isUserSignedIn) {
+    if (user) {
       return (
         <Group
           className={cx({ [classes.hiddenMobile]: isMobileView === false })}
@@ -134,7 +132,6 @@ export function Topbar({ links }: HeaderSimpleProps) {
           <Link href="/api/auth/login">
             <Button variant="default">Log in</Button>
           </Link>
-          <Button>Sign up</Button>
         </Group>
       );
     }

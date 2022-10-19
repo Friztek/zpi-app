@@ -7,6 +7,7 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import { IconChevronDown, IconLogout, IconUser } from "@tabler/icons";
+import Link from "next/link";
 import { FC, useState } from "react";
 
 const useStyles = createStyles((theme) => ({
@@ -70,12 +71,16 @@ export const TopbarUserButton: FC<HeaderTabsProps> = ({ user }) => {
         </UnstyledButton>
       </Menu.Target>
       <Menu.Dropdown>
-        <Menu.Item color="blue.6" icon={<IconUser size={14} stroke={1.5} />}>
-          Profile
-        </Menu.Item>
-        <Menu.Item color="red.8" icon={<IconLogout size={14} stroke={1.5} />}>
-          Logout
-        </Menu.Item>
+        <Link href="/profile">
+          <Menu.Item color="blue.6" icon={<IconUser size={14} stroke={1.5} />}>
+            Profile
+          </Menu.Item>
+        </Link>
+        <Link href="/api/auth/logout">
+          <Menu.Item color="red.8" icon={<IconLogout size={14} stroke={1.5} />}>
+            Logout
+          </Menu.Item>
+        </Link>
       </Menu.Dropdown>
     </Menu>
   );
