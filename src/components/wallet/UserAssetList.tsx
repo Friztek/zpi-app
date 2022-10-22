@@ -66,7 +66,12 @@ export function UserAssetList({ data }: UserAssetsListProps) {
 
   const items = data.map((item) => (
     <div className={classes.item} key={item.name}>
-      <div style={{ display: "flex" }} className={classes.columnStackMobile}>
+      <div
+        style={{
+          display: "flex",
+        }}
+        className={classes.columnStackMobile}
+      >
         <Text
           variant="gradient"
           gradient={{ from: "indigo", to: "cyan", deg: 45 }}

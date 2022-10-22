@@ -72,11 +72,11 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface HeaderSimpleProps {
+interface MenuLinks {
   links: { link: string; label: string }[];
 }
 
-export function Topbar({ links }: HeaderSimpleProps) {
+export function Topbar({ links }: MenuLinks) {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const { user } = useUser();
@@ -100,6 +100,7 @@ export function Topbar({ links }: HeaderSimpleProps) {
       onClick={(event) => {
         event.preventDefault();
         setActive(link.link);
+        router.push(link.link);
       }}
     >
       {link.label}

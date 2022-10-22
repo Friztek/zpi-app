@@ -5,7 +5,6 @@ import {
   Text,
   ThemeIcon,
   SimpleGrid,
-  Title,
 } from "@mantine/core";
 import { IconArrowUpRight, IconArrowDownRight } from "@tabler/icons";
 

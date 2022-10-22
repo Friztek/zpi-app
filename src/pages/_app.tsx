@@ -6,7 +6,6 @@ import {
   MantineProvider,
 } from "@mantine/core";
 import { useState } from "react";
-import { useRouter } from "next/router";
 import { UserProvider } from "@auth0/nextjs-auth0";
 
 export default function App(props: AppProps) {
@@ -14,7 +13,7 @@ export default function App(props: AppProps) {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
   const { Component, pageProps } = props;
-  
+
   return (
     <>
       <Head>

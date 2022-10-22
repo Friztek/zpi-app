@@ -11,10 +11,10 @@ const Home: NextPage = () => {
   const router = useRouter();
 
   if (user !== undefined) {
-    router.push("/wallet");
+    router.push("/dashboard");
     return null;
   }
-  
+
   return (
     <Layout>
       <HeroTitle />
