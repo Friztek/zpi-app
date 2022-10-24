@@ -14,17 +14,12 @@ const Home: NextPage = () => {
     router.push("/wallet");
     return null;
   }
-  
+
   return (
     <Layout>
       <HeroTitle />
       <Features />
-      <Footer
-        links={[
-          { label: "Test", link: "" },
-          { label: "Github", link: "" },
-        ]}
-      />
+      <Footer links={[]} />
     </Layout>
   );
 };
