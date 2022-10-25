@@ -9,17 +9,12 @@ import {
 } from "@mantine/core";
 import {
   TablerIcon,
-  IconHome2,
-  IconGauge,
-  IconDeviceDesktopAnalytics,
   IconFingerprint,
-  IconCalendarStats,
   IconUser,
-  IconSettings,
   IconTools,
-  IconSwitchHorizontal,
 } from "@tabler/icons";
 import { MantineLogo } from "@mantine/ds";
+import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -77,20 +72,26 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
 }
 
 const mockdata = [
-  { icon: IconUser, label: "User details" },
-  { icon: IconTools, label: "Preferences" },
-  { icon: IconFingerprint, label: "Security" },
+  { icon: IconUser, label: "User details", link: "/profile/details" },
+  // { icon: IconTools, label: "Preferences", link: "/profile/preferences" },
+  { icon: IconFingerprint, label: "Security", link: "/profile/security" },
 ];
 
 export function Sidebar() {
   const [active, setActive] = useState(2);
+  const router = useRouter();
+
+  const changeTab = (index: number) => {
+    setActive(index);
+    router.push(mockdata[index].link);
+  };
 
   const links = mockdata.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => setActive(index)}
+      onClick={() => changeTab(index)}
     />
   ));
 

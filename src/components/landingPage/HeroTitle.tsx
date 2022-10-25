@@ -5,7 +5,6 @@ import {
   Button,
   Overlay,
   createStyles,
-  Space,
 } from "@mantine/core";
 import Link from "next/link";
 
