@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   Avatar,
   createStyles,
@@ -43,6 +44,8 @@ export const TopbarUserButton: FC<HeaderTabsProps> = ({ user }) => {
   const { classes, cx } = useStyles();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
 
+  const { logout } = useAuth0();
+
   return (
     <Menu
       width={200}
@@ -76,11 +79,15 @@ export const TopbarUserButton: FC<HeaderTabsProps> = ({ user }) => {
             Profile
           </Menu.Item>
         </Link>
-        <Link href="/api/auth/logout">
-          <Menu.Item color="red.8" icon={<IconLogout size={14} stroke={1.5} />}>
-            Logout
-          </Menu.Item>
-        </Link>
+        <Menu.Item
+          color="red.8"
+          onClick={() => {
+            logout();
+          }}
+          icon={<IconLogout size={14} stroke={1.5} />}
+        >
+          Logout
+        </Menu.Item>
       </Menu.Dropdown>
     </Menu>
   );

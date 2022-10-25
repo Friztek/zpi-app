@@ -7,14 +7,15 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { UserProvider } from "@auth0/nextjs-auth0";
+
+import { Auth0Provider } from "@auth0/auth0-react";
 
 export default function App(props: AppProps) {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
   const { Component, pageProps } = props;
-  
+
   return (
     <>
       <Head>
@@ -24,7 +25,11 @@ export default function App(props: AppProps) {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
-      <UserProvider>
+      <Auth0Provider
+        domain="how-money.eu.auth0.com"
+        clientId="qEgsNhsWSbKXXWNjNuaS2JrV1RRBHvFX"
+        redirectUri={"http://localhost:3000"}
+      >
         <ColorSchemeProvider
           colorScheme={colorScheme}
           toggleColorScheme={toggleColorScheme}
@@ -40,7 +45,7 @@ export default function App(props: AppProps) {
             <Component {...pageProps} />
           </MantineProvider>
         </ColorSchemeProvider>
-      </UserProvider>
+      </Auth0Provider>
     </>
   );
 }

@@ -1,4 +1,3 @@
-import { useUser } from "@auth0/nextjs-auth0";
 import {
   createStyles,
   Header,
@@ -17,6 +16,7 @@ import { useEffect, useState } from "react";
 import { ColorSchemeToggler } from "./ColorSchemeToggler";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -77,18 +77,12 @@ interface HeaderSimpleProps {
 }
 
 export function Topbar({ links }: HeaderSimpleProps) {
+  const { loginWithRedirect } = useAuth0();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
-  const { user } = useUser();
-  const router = useRouter();
+  const { user } = useAuth0();
   const [active, setActive] = useState(links[0].link);
   const { classes, theme, cx } = useStyles();
-
-  useEffect(() => {
-    if (user === undefined) {
-      router.push("");
-    }
-  }, []);
 
   const items = links.map((link) => (
     <a
@@ -129,9 +123,9 @@ export function Topbar({ links }: HeaderSimpleProps) {
         <Group
           className={cx({ [classes.hiddenMobile]: isMobileView === false })}
         >
-          <Link href="/api/auth/login">
-            <Button variant="default">Log in</Button>
-          </Link>
+          <Button variant="default" onClick={loginWithRedirect}>
+            Log in
+          </Button>
         </Group>
       );
     }
