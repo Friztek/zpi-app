@@ -12,10 +12,9 @@ import {
 import { MantineLogo } from "@mantine/ds";
 import { useDisclosure } from "@mantine/hooks";
 import { TopbarUserButton } from "./TopbarUserButton";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ColorSchemeToggler } from "./ColorSchemeToggler";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const useStyles = createStyles((theme) => ({
@@ -81,7 +80,10 @@ export function Topbar({ links }: HeaderSimpleProps) {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const { user } = useAuth0();
-  const [active, setActive] = useState(links[0].link);
+  const router = useRouter();
+  const [active, setActive] = useState(
+    links.filter((link) => router.asPath === link.link)[0]
+  );
   const { classes, theme, cx } = useStyles();
 
   const items = links.map((link) => (
@@ -89,11 +91,12 @@ export function Topbar({ links }: HeaderSimpleProps) {
       key={link.label}
       href={link.link}
       className={cx(classes.link, {
-        [classes.linkActive]: active === link.link,
+        [classes.linkActive]: active === link,
       })}
       onClick={(event) => {
         event.preventDefault();
-        setActive(link.link);
+        router.push(link.link);
+        setActive(link);
       }}
     >
       {link.label}
