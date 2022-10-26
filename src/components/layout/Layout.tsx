@@ -1,18 +1,20 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { AppShell } from "@mantine/core";
-import { FC, ReactNode } from "react";
+import { useRouter } from "next/router";
+import { FC, ReactNode, useEffect } from "react";
 import { Topbar } from "../common/Topbar";
 
 const links = [
   {
-    link: "/dashboard",
+    href: "/dashboard",
     label: "Dashboard",
   },
   {
-    link: "/wallet",
+    href: "/wallet",
     label: "Wallet",
   },
   {
-    link: "/alerts",
+    href: "/alerts",
     label: "Alerts",
   },
 ];
@@ -20,10 +22,12 @@ const links = [
 export const Layout: FC<{
   children: ReactNode;
 }> = ({ children }) => {
+  const { isAuthenticated } = useAuth0();
+  const router = useRouter();
   return (
     <AppShell
       padding={0}
-      navbar={<Topbar links={links} />}
+      navbar={<Topbar isUserLoggedIn={isAuthenticated} links={links} />}
       styles={(theme) => ({
         main: {
           backgroundColor:
@@ -33,7 +37,7 @@ export const Layout: FC<{
         },
       })}
     >
-      {children}
+      <div>{children}</div>
     </AppShell>
   );
 };

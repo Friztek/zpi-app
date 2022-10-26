@@ -1,19 +1,12 @@
 import { useState } from "react";
 import {
   Navbar,
-  Center,
   Tooltip,
   UnstyledButton,
   createStyles,
   Stack,
 } from "@mantine/core";
-import {
-  TablerIcon,
-  IconFingerprint,
-  IconUser,
-  IconTools,
-} from "@tabler/icons";
-import { MantineLogo } from "@mantine/ds";
+import { TablerIcon, IconFingerprint, IconUser } from "@tabler/icons";
 import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme) => ({
@@ -56,8 +49,20 @@ interface NavbarLinkProps {
   onClick?(): void;
 }
 
-function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+interface Link {
+  icon: TablerIcon;
+  label: string;
+  href: string;
+}
+
+const NavbarLink = ({
+  icon: Icon,
+  label,
+  active,
+  onClick,
+}: NavbarLinkProps) => {
   const { classes, cx } = useStyles();
+
   return (
     <Tooltip label={label} position="right" transitionDuration={0}>
       <UnstyledButton
@@ -69,39 +74,41 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
       </UnstyledButton>
     </Tooltip>
   );
-}
+};
 
-const mockdata = [
-  { icon: IconUser, label: "User details", link: "/profile/details" },
-  // { icon: IconTools, label: "Preferences", link: "/profile/preferences" },
-  { icon: IconFingerprint, label: "Security", link: "/profile/security" },
+const links = [
+  { icon: IconUser, label: "User details", href: "/profile/details" },
+  { icon: IconFingerprint, label: "Security", href: "/profile/security" },
 ];
 
-export function Sidebar() {
-  const [active, setActive] = useState(2);
+export const Sidebar = () => {
   const router = useRouter();
 
-  const changeTab = (index: number) => {
-    setActive(index);
-    router.push(mockdata[index].link);
-  };
+  const [active, setActive] = useState(
+    links.filter((link) => router.asPath === link.href)[0]
+  );
 
-  const links = mockdata.map((link, index) => (
+  const items = links.map((link) => (
     <NavbarLink
       {...link}
       key={link.label}
-      active={index === active}
-      onClick={() => changeTab(index)}
+      active={link === active}
+      onClick={() => changeTab(link)}
     />
   ));
+
+  const changeTab = (link: Link) => {
+    setActive(link);
+    router.push(link.href);
+  };
 
   return (
     <Navbar height={"calc(100% - 60px);"} width={{ base: 70 }} p="md">
       <Navbar.Section grow mt={10}>
         <Stack justify="center" spacing={0}>
-          {links}
+          {items}
         </Stack>
       </Navbar.Section>
     </Navbar>
   );
-}
+};

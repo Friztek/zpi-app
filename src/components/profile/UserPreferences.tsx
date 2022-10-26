@@ -19,7 +19,7 @@ const useStyles = createStyles((theme) => ({
   },
   container: {
     [theme.fn.largerThan("md")]: {
-      maxWidth: "70%",
+      maxWidth: "80%",
     },
   },
 }));
@@ -36,17 +36,17 @@ export function UserPreferences() {
   const [alertsOnEmail, setAlertsOnEmail] = useState(false);
   const [weeklyReports, setWeeklyReports] = useState(false);
 
-  const [isDisabled, setisDisabled] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(true);
 
   const changeIsDisabled = () => {
     console.log("changed");
-    setisDisabled(!isDisabled);
+    setIsDisabled(!isDisabled);
   };
 
   const saveForm = () => {
     console.log("Preferences saved: alertsOnEmail", alertsOnEmail);
     console.log("Preferences saved: weeklyReports", weeklyReports);
-    setisDisabled(!isDisabled);
+    setIsDisabled(!isDisabled);
   };
 
   return (

@@ -7,9 +7,13 @@ import {
   Text,
   ActionIcon,
   createStyles,
+  Popover,
+  Tooltip,
 } from "@mantine/core";
-import { IconPencil, IconUser } from "@tabler/icons";
+import { IconInfoCircle, IconPencil, IconUser } from "@tabler/icons";
 import { useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useDisclosure } from "@mantine/hooks";
 
 const useStyles = createStyles((theme) => ({
   input: {
@@ -19,25 +23,33 @@ const useStyles = createStyles((theme) => ({
   },
   container: {
     [theme.fn.largerThan("md")]: {
-      maxWidth: "70%",
+      maxWidth: "80%",
     },
   },
 }));
 
 export function UserData() {
   const { classes } = useStyles();
+
+  const { user } = useAuth0();
+
   const form = useForm({
     initialValues: {
-      name: "Name",
-      email: "email@email.com",
+      name: user?.name,
+      email: user?.email,
     },
   });
 
-  const [isDisabled, setisDisabled] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(true);
 
   const changeIsDisabled = () => {
     console.log("changed");
-    setisDisabled(!isDisabled);
+    setIsDisabled(!isDisabled);
+  };
+
+  const saveForm = () => {
+    setIsDisabled(!isDisabled);
+    console.log("form saved");
   };
 
   return (
@@ -80,9 +92,10 @@ export function UserData() {
           className={classes.input}
           {...form.getInputProps("email")}
         />
+
         {!isDisabled && (
           <Group position="center" mt="xl">
-            <Button variant="outline" onClick={() => form.setValues()}>
+            <Button variant="outline" onClick={() => saveForm()}>
               Save
             </Button>
             <Button variant="outline" onClick={() => form.reset()}>

@@ -71,31 +71,32 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface HeaderSimpleProps {
-  links: { link: string; label: string }[];
+interface TopbarProps {
+  links: { href: string; label: string }[];
+  isUserLoggedIn: boolean;
 }
 
-export function Topbar({ links }: HeaderSimpleProps) {
+export function Topbar({ links, isUserLoggedIn }: TopbarProps) {
   const { loginWithRedirect } = useAuth0();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const { user } = useAuth0();
   const router = useRouter();
   const [active, setActive] = useState(
-    links.filter((link) => router.asPath === link.link)[0]
+    links.filter((link) => router.asPath === link.href)[0]
   );
   const { classes, theme, cx } = useStyles();
 
   const items = links.map((link) => (
     <a
       key={link.label}
-      href={link.link}
+      href={link.href}
       className={cx(classes.link, {
         [classes.linkActive]: active === link,
       })}
       onClick={(event) => {
         event.preventDefault();
-        router.push(link.link);
+        router.push(link.href);
         setActive(link);
       }}
     >
@@ -145,15 +146,17 @@ export function Topbar({ links }: HeaderSimpleProps) {
           />
           <MantineLogo size={30} />
 
-          <Group
-            sx={{ height: "100%" }}
-            spacing={0}
-            className={classes.hiddenMobile}
-          >
-            <Group sx={{ height: "100%" }} spacing={40}>
-              {items}
+          {isUserLoggedIn && (
+            <Group
+              sx={{ height: "100%" }}
+              spacing={0}
+              className={classes.hiddenMobile}
+            >
+              <Group sx={{ height: "100%" }} spacing={40}>
+                {items}
+              </Group>
             </Group>
-          </Group>
+          )}
 
           <Group>
             <UserOptions isMobileView={true} />
@@ -178,7 +181,7 @@ export function Topbar({ links }: HeaderSimpleProps) {
             my="sm"
             color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
           />
-          <Group spacing={5}>{items}</Group>
+          {isUserLoggedIn && <Group spacing={5}>{items}</Group>}
           <Divider
             my="xl"
             color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
