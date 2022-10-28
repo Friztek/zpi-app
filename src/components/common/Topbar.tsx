@@ -72,17 +72,17 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface HeaderSimpleProps {
+interface MenuLinks {
   links: { link: string; label: string }[];
 }
 
-export function Topbar({ links }: HeaderSimpleProps) {
-  const { loginWithRedirect } = useAuth0();
+export function Topbar({ links }: MenuLinks) {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
-  const { user } = useAuth0();
+  const { user, loginWithRedirect } = useAuth0();
   const [active, setActive] = useState(links[0].link);
   const { classes, theme, cx } = useStyles();
+  const router = useRouter();
 
   const items = links.map((link) => (
     <a
@@ -94,6 +94,7 @@ export function Topbar({ links }: HeaderSimpleProps) {
       onClick={(event) => {
         event.preventDefault();
         setActive(link.link);
+        router.push(link.link);
       }}
     >
       {link.label}
