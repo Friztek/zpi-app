@@ -79,7 +79,7 @@ interface MenuLinks {
 export function Topbar({ links }: MenuLinks) {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
-  const { user } = useAuth0();
+  const { user, loginWithRedirect } = useAuth0();
   const [active, setActive] = useState(links[0].link);
   const { classes, theme, cx } = useStyles();
   const router = useRouter();
