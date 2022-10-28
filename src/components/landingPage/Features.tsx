@@ -8,26 +8,26 @@ import {
   SimpleGrid,
   Container,
 } from "@mantine/core";
-import { IconGauge, IconUser, IconCookie } from "@tabler/icons";
+import { IconAlarm, IconBed, IconChartBar } from "@tabler/icons";
 
 const mockdata = [
   {
-    title: "Extreme performance",
+    title: "Extreme convenient",
     description:
-      "This dust is actually a powerful poison that will even make a pro wrestler sick, Regice cloaks itself with frigid air of -328 degrees Fahrenheit",
-    icon: IconGauge,
+      "This application offers you the functionalities that you need to track your money. It saves your time searching current exchange rates and updating the valuesof each asset.",
+    icon: IconBed,
   },
   {
-    title: "Privacy focused",
+    title: "Reports functionality",
     description:
-      "People say it can run at the same speed as lightning striking, Its icy body is so cold, it will not melt even if it is immersed in magma",
-    icon: IconUser,
+      "You can get weekly reports on your email to see how your wallet value changed. You can also see charts of your total wallet value changed in time and check the history of changes of your asset values.",
+    icon: IconChartBar,
   },
   {
-    title: "No third parties",
+    title: "Alerts functionality",
     description:
-      "They’re popular, but they’re rare. Trainers who show them off recklessly may be targeted by thieves",
-    icon: IconCookie,
+      "You can set the alert for asset values and get them on your email or in mobile application.",
+    icon: IconAlarm,
   },
 ];
 
@@ -97,12 +97,12 @@ export function Features() {
     <Container size="lg" py="xl" pt={60}>
       <Group position="center">
         <Badge variant="filled" size="lg">
-          Best company ever
+          Best asset tracker ever
         </Badge>
       </Group>
 
       <Title order={2} className={classes.title} align="center" mt="sm">
-        Integrate effortlessly with any technology stack
+        Track your money effortlessly with us
       </Title>
 
       <Text
@@ -111,8 +111,8 @@ export function Features() {
         align="center"
         mt="md"
       >
-        Every once in a while, you’ll see a Golbat that’s missing some fangs.
-        This happens when hunger drives it to try biting a Steel-type Pokémon.
+        Your assets value are updated automatically based on current exchange
+        rates. You can see how it changed on generated chart.
       </Text>
 
       <SimpleGrid
