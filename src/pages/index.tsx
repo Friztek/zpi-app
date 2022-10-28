@@ -7,8 +7,6 @@ import { HeroTitle } from "../components/landingPage/HeroTitle";
 import { Layout } from "../components/layout/Layout";
 
 const Home: NextPage = () => {
-  const router = useRouter();
- 
   return (
     <Layout>
       <HeroTitle />

@@ -1,6 +1,6 @@
 import { AppShell } from "@mantine/core";
 import { FC, ReactNode } from "react";
-import { Topbar } from "../common/Topbar";
+import Topbar from "../common/Topbar";
 
 const links = [
   {

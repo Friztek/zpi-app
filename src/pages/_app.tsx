@@ -6,8 +6,6 @@ import {
   MantineProvider,
 } from "@mantine/core";
 import { useState } from "react";
-import { useRouter } from "next/router";
-
 import { Auth0Provider } from "@auth0/auth0-react";
 
 export default function App(props: AppProps) {
@@ -25,10 +23,13 @@ export default function App(props: AppProps) {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
+      {/* TODO add env */}
       <Auth0Provider
         domain="how-money.eu.auth0.com"
         clientId="qEgsNhsWSbKXXWNjNuaS2JrV1RRBHvFX"
         redirectUri={"http://localhost:3000"}
+        audience="https://how-money.com"
+        cacheLocation="localstorage"
       >
         <ColorSchemeProvider
           colorScheme={colorScheme}
@@ -38,7 +39,6 @@ export default function App(props: AppProps) {
             withGlobalStyles
             withNormalizeCSS
             theme={{
-              /** Put your mantine theme override here */
               colorScheme: colorScheme,
             }}
           >
