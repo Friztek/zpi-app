@@ -1,21 +1,32 @@
-import { Space, Title } from "@mantine/core";
+import { createStyles, Group, Space, Title } from "@mantine/core";
 import React from "react";
 import { Layout } from "../components/layout/Layout";
 import { SecurityData } from "../components/profile/SecurityData";
-import { Sidebar } from "../components/profile/Sidebar";
 import { UserData } from "../components/profile/UserData";
 import { UserPreferences } from "../components/profile/UserPreferences";
 
+const useStyles = createStyles((theme) => ({
+  content: {
+    margin: "auto",
+    padding: 5,
+    [theme.fn.largerThan("md")]: {
+      maxWidth: "75%",
+    },
+  },
+}));
+
 const Home = () => {
+  const { classes } = useStyles();
   return (
     <Layout>
-      {/* <Sidebar /> */}
-      <Space h="xl" />
-      <UserData />
-      <Space h="xl" />
-      <UserPreferences />
-      <Space h="xl" />
-      <SecurityData />
+      <div className={classes.content}>
+        <Space h="xl" />
+        <UserData />
+        <Space h="xl" />
+        <UserPreferences />
+        <Space h="xl" />
+        <SecurityData />
+      </div>
     </Layout>
   );
 };

@@ -7,24 +7,28 @@ import {
   Text,
   ActionIcon,
   createStyles,
-  Popover,
-  Tooltip,
+  Space,
 } from "@mantine/core";
-import { IconInfoCircle, IconPencil, IconUser } from "@tabler/icons";
+import { IconPencil, IconUser } from "@tabler/icons";
 import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useDisclosure } from "@mantine/hooks";
 
-const useStyles = createStyles((theme) => ({
-  input: {
-    "&:disabled": {
-      backgroundColor: theme.colorScheme === "dark" ? "white" : "black",
-    },
+const useStyles = createStyles(() => ({
+  textDiv: {
+    display: "flex",
+    alignItems: "center",
+    border: "1px solid #e8ecf0",
+    borderRadius: 4,
+    padding: "1px 12px",
+    height: 36,
+    fontSize: 14,
   },
-  container: {
-    [theme.fn.largerThan("md")]: {
-      maxWidth: "80%",
-    },
+
+  label: {
+    fontSize: 14,
+    fontWeight: 500,
+    color: "#212529",
+    marginBottom: 1,
   },
 }));
 
@@ -53,57 +57,67 @@ export function UserData() {
   };
 
   return (
-    <div style={{ margin: "auto", padding: 5 }} className={classes.container}>
-      <Paper withBorder p="md" shadow="md" radius="md">
-        <Group
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <Group>
-            <IconUser stroke={1.5} size={20} />
-            <Text size="xl">User details</Text>
-          </Group>
-
-          <ActionIcon
-            onClick={() => {
-              changeIsDisabled();
-            }}
-            size="sm"
-          >
-            <IconPencil />
-          </ActionIcon>
+    <Paper withBorder p="md" shadow="md" radius="md">
+      <Group
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <Group>
+          <IconUser stroke={1.5} size={20} />
+          <Text size="xl">User details</Text>
         </Group>
 
+        <ActionIcon
+          onClick={() => {
+            changeIsDisabled();
+          }}
+          size="sm"
+        >
+          <IconPencil />
+        </ActionIcon>
+      </Group>
+
+      {isDisabled ? (
+        <div style={{ marginTop: 2 }}>
+          <Text className={classes.label}>Name</Text>
+          <Text className={classes.textDiv}>{form.values.name}</Text>
+        </div>
+      ) : (
         <TextInput
           disabled={isDisabled}
           label="Name"
           placeholder="Name"
-          className={classes.input}
           {...form.getInputProps("name")}
         />
+      )}
+      <Space h="md" />
+      {isDisabled ? (
+        <div style={{ marginTop: 2 }}>
+          <Text className={classes.label}>Email</Text>
+          <Text className={classes.textDiv}>{form.values.email}</Text>
+        </div>
+      ) : (
         <TextInput
           disabled={isDisabled}
-          mt="md"
           label="Email"
           placeholder="Email"
-          className={classes.input}
           {...form.getInputProps("email")}
         />
+      )}
 
-        {!isDisabled && (
-          <Group position="center" mt="xl">
-            <Button variant="outline" onClick={() => saveForm()}>
-              Save
-            </Button>
-            <Button variant="outline" onClick={() => form.reset()}>
-              Reset to initial
-            </Button>
-          </Group>
-        )}
-      </Paper>
-    </div>
+      {!isDisabled && (
+        <Group position="center" mt="xl">
+          <Button variant="outline" onClick={() => saveForm()}>
+            Save
+          </Button>
+          <Button variant="outline" onClick={() => form.reset()}>
+            Reset to initial
+          </Button>
+        </Group>
+      )}
+    </Paper>
   );
 }
