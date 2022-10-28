@@ -1,4 +1,6 @@
-import React from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import { Layout } from "../components/layout/Layout";
 import { AddAsset } from "../components/wallet/AddAsset";
 import { UserAssetList } from "../components/wallet/UserAssetList";
@@ -71,6 +73,26 @@ const useStyles = createStyles((theme) => ({
 
 const Home = () => {
   const { classes, theme, cx } = useStyles();
+  const { isAuthenticated } = useAuth0();
+  const router = useRouter();
+  const [checked, seChecked] = useState(false);
+
+  useEffect(() => {
+    console.log("auth", isAuthenticated);
+    if (!isAuthenticated) {
+      router.push("/");
+    }
+    if (isAuthenticated) {
+      seChecked(true);
+    }
+  }, []);
+
+  if (!checked) {
+    return null;
+  }
+
+  console.log(checked);
+
   return (
     <Layout>
       <div
