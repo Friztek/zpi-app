@@ -1,5 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { createStyles, Group } from "@mantine/core";
+import { useRouter } from "next/router";
 import React, { FC, useState } from "react";
 
 const useStyles = createStyles((theme) => ({
@@ -48,8 +49,11 @@ export const TopbarLinks: FC<{
   links: { link: string; label: string }[];
 }> = ({ links }) => {
   const { classes, cx } = useStyles();
-  const [active, setActive] = useState(links[0].link);
   const { isAuthenticated } = useAuth0();
+  const router = useRouter();
+  const [active, setActive] = useState(
+    links.filter((link) => router.asPath === link.link)[0]
+  );
 
   if (!isAuthenticated) return null;
   return (
@@ -59,11 +63,10 @@ export const TopbarLinks: FC<{
           key={link.label}
           href={link.link}
           className={cx(classes.link, {
-            [classes.linkActive]: active === link.link,
+            [classes.linkActive]: active === link,
           })}
-          onClick={(event) => {
-            event.preventDefault();
-            setActive(link.link);
+          onClick={() => {
+            setActive(link);
           }}
         >
           {link.label}

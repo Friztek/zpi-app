@@ -1,4 +1,5 @@
-import { createStyles, Group, Space, Title } from "@mantine/core";
+import { withAuthenticationRequired } from "@auth0/auth0-react";
+import { createStyles, Space } from "@mantine/core";
 import React from "react";
 import { Layout } from "../components/layout/Layout";
 import { SecurityData } from "../components/profile/SecurityData";
@@ -15,7 +16,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const Home = () => {
+const Profile = () => {
   const { classes } = useStyles();
   return (
     <Layout>
@@ -31,4 +32,6 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default withAuthenticationRequired(Profile, {
+  onRedirecting: () => <p>Redirecting to the login page...</p>,
+});
