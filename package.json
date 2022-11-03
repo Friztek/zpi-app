@@ -19,6 +19,7 @@
     "@mantine/next": "^5.5.2",
     "@mantine/prism": "^5.5.5",
     "@tabler/icons": "^1.102.0",
+    "apexcharts": "^3.36.0",
     "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
