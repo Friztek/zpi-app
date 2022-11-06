@@ -7,10 +7,20 @@ import {
   NativeSelect,
   Space,
   TextInput,
+  Text,
   createStyles,
+  Stack,
+  Select,
+  ActionIcon,
+  Flex,
+  Paper,
 } from "@mantine/core";
 import { IconMoneybag, IconPlus, IconTrash } from "@tabler/icons";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
+import { AssetDto, PatchUserAssetsDto, TransactionType } from "../../client-typescript";
+import { toNumber, uniqueId } from "lodash";
+import { useMutation, useQueryClient } from "react-query";
+import { useAPICommunication } from "../../contexts/APICommunicationContext";
 
 const useStyles = createStyles((theme) => ({
   icon: {
@@ -18,186 +28,132 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const assetTypes = [
-  { value: "eur", label: "🇪🇺 EUR" },
-  { value: "usd", label: "🇺🇸 USD" },
-  { value: "cad", label: "🇨🇦 CAD" },
-  { value: "gbp", label: "🇬🇧 GBP" },
-  { value: "aud", label: "🇦🇺 AUD" },
-];
-
-export type UserAsset = {
-  id: number;
-  amount: undefined;
-  assetType: string;
+export type AddAssetProps = {
+  assets: AssetDto[];
 };
 
-export function AddAsset() {
-  const { classes, theme } = useStyles();
-  const [formFields, setFormFields] = useState([
-    {
-      id: 0,
-      amount: undefined,
-      assetType: assetTypes[0].value,
-    },
-  ]);
+export type AddTransactionModel = {
+  id: number;
+  value?: number;
+  assetType?: string;
+};
 
-  const handleChange = (
-    id: number,
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    console.log("element", event.target.value);
-    const index = formFields.findIndex((element) => element.id === id);
-    const newFormFields = [...formFields];
-    const name = event.target.name == "" ? "assetType" : event.target.name;
-    newFormFields[index][name] = event.target.value;
-    setFormFields(newFormFields);
-  };
+export function AddAsset({ assets }: AddAssetProps) {
+  const { classes, theme } = useStyles();
+
+  const queryClient = useQueryClient();
+
+  const [formFields, setFormFields] = useState<AddTransactionModel[]>([]);
+  const context = useAPICommunication();
+
+  const mutation = useMutation(
+    (patchUserAssetsDto: PatchUserAssetsDto[]) => {
+      return context.userAssetsAPI.patchUserAssets({ patchUserAssetsDto });
+    },
+    {
+      onSuccess: () => {
+        setFormFields(() => []);
+        queryClient.invalidateQueries("userAsset");
+      },
+    }
+  );
 
   const addNewInput = () => {
-    const nextId = formFields[formFields.length - 1].id + 1;
-    const newFormField = {
-      id: nextId,
-      amount: undefined,
-      assetType: assetTypes[0].value,
-    };
-    setFormFields([...formFields, newFormField]);
-    console.log("New input added");
+    setFormFields((values) => [...values, { assetType: undefined, id: toNumber(uniqueId()), value: undefined }]);
   };
 
   const removeInput = (id: number) => {
-    const newFormFields = [
-      ...formFields.filter((element) => element.id !== id),
-    ];
-    setFormFields(newFormFields);
-    console.log("Input removed");
-    console.log("ff", formFields);
-    console.log("nff", newFormFields);
+    setFormFields((values) => values.filter((val) => val.id !== id));
   };
 
-  const updateUserAssets = () => {
-    console.log("Update assets", formFields);
+  const updateAssetValue = (id: number, patch: Omit<AddTransactionModel, "id">) => {
+    setFormFields((values) =>
+      values.map((val) => {
+        if (val.id === id) {
+          Object.assign(val, patch);
+        }
+        return val;
+      })
+    );
   };
 
   return (
-    <Card
-      withBorder
-      radius="md"
-      style={{
-        padding: "1rem 1rem 1rem 1rem",
-      }}
-    >
-      <Group position="apart">
-        <Avatar
-          variant="gradient"
-          gradient={{ from: "indigo", to: "cyan", deg: 45 }}
-          radius="xl"
-        >
+    <Paper withBorder radius="md" p={"md"}>
+      <Group>
+        <Avatar variant="gradient" gradient={{ from: "indigo", to: "cyan", deg: 45 }} radius="xl">
           <IconMoneybag color="white" stroke="1.8" size={20} />
         </Avatar>
-        <Badge
-          style={{
-            marginRight: "2rem",
-          }}
-        >
-          New asset
-        </Badge>
+        <Text fz="lg">Add new transaction</Text>
       </Group>
 
       <Space h="md" />
-
-      {formFields.map((input, index) => {
-        return (
-          <Group
-            key={input.id}
-            style={{
-              display: "flex",
-              marginBottom: 5,
-              gap: "0px",
-              alignItems: "stretch",
-            }}
-          >
-            <TextInput
-              style={{
-                flex: 10,
-                borderTopLeftRadius: 4,
-                borderBottomLeftRadius: 4,
-              }}
-              type="number"
-              placeholder="1000"
-              name="amount"
-              value={input.amount}
-              label={index == 0 ? "Add new asset" : ""}
-              onChange={(element) => handleChange(input.id, element)}
-              rightSection={
-                <NativeSelect
-                  data={assetTypes}
-                  value={input.assetType}
-                  onChange={(element) => handleChange(input.id, element)}
-                  radius={index != 0 ? 0 : "sm"}
-                  styles={{
-                    input: {
-                      fontWeight: 500,
-                      borderTopLeftRadius: 0,
-                      borderBottomLeftRadius: 0,
-                    },
-                  }}
-                />
-              }
-              rightSectionWidth={92}
-            />
-            <div style={{ flex: 1 }}>
-              {index !== 0 && (
-                <Avatar
-                  color="gray"
-                  style={{
-                    height: "100%",
-                    borderTopRightRadius: 4,
-                    borderBottomRightRadius: 4,
-                    border: "1px solid #ced4da",
-                    borderLeft: "none",
-                  }}
-                  radius={0}
-                  size="md"
-                >
-                  <IconTrash
-                    className={classes.icon}
-                    stroke="1.2"
-                    onClick={() => removeInput(input.id)}
-                    size={19}
+      <Stack spacing={"sm"}>
+        {formFields.map((input) => {
+          return (
+            <Flex align={"center"} gap={0} key={input.id}>
+              <TextInput
+                radius={0}
+                style={{
+                  flex: 1,
+                }}
+                type="number"
+                placeholder="1000"
+                name="amount"
+                value={input.value}
+                onChange={(event) => {
+                  updateAssetValue(input.id, {
+                    value: toNumber(event.target.value),
+                  });
+                }}
+                rightSection={
+                  <Select
+                    radius={0}
+                    data={assets.map((asset) => ({
+                      value: asset.name,
+                      label: `${asset.friendlyName}`,
+                    }))}
+                    value={input.assetType}
+                    onChange={(value) => {
+                      if (value === null) return;
+                      updateAssetValue(input.id, {
+                        assetType: value,
+                      });
+                    }}
+                    styles={{
+                      input: {
+                        fontWeight: 500,
+                      },
+                    }}
                   />
-                </Avatar>
-              )}
-            </div>
-          </Group>
-        );
-      })}
-      <Group style={{ flexDirection: "column-reverse", margin: "0.5rem" }}>
-        <Avatar
-          color="gray"
-          style={{ border: "1px solid #ced4da" }}
-          radius={4}
-          size="md"
+                }
+                rightSectionWidth={150}
+              />
+              <Button variant="default" radius={0} style={{ borderLeft: 0 }} onClick={() => removeInput(input.id)}>
+                <IconTrash className={classes.icon} stroke="1.2" size={19} />
+              </Button>
+            </Flex>
+          );
+        })}
+      </Stack>
+      <Flex align={"center"} justify="space-between" mt="lg">
+        <ActionIcon variant="default" size={"lg"}>
+          <IconPlus className={classes.icon} onClick={addNewInput} />
+        </ActionIcon>
+        <Button
+          variant="filled"
+          onClick={() => {
+            mutation.mutate(
+              formFields.map((a) => ({
+                assetName: a.assetType!,
+                type: TransactionType.Add,
+                value: a.value!,
+              }))
+            );
+          }}
         >
-          <IconPlus
-            className={classes.icon}
-            stroke="1.2"
-            onClick={addNewInput}
-            size={20}
-          />
-        </Avatar>
-      </Group>
-      <Group
-        style={{
-          flexDirection: "column-reverse",
-          marginTop: "1rem",
-          border: "none",
-        }}
-      >
-        <Button variant="outline" onClick={updateUserAssets}>
-          Update assets
+          Apply transaction
         </Button>
-      </Group>
-    </Card>
+      </Flex>
+    </Paper>
   );
 }
