@@ -131,7 +131,7 @@ export class UserAssetsApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.patchUserAssetsDto.map(PatchUserAssetsDtoToJSON),
+            body: requestParameters?.patchUserAssetsDto?.map(PatchUserAssetsDtoToJSON),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UserAssetDtoFromJSON));
