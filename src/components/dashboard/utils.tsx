@@ -27,3 +27,14 @@ export const gradient = {
       },
     ],
 };
+
+export interface AssetChartBoxProps {
+  name: string,
+  data: number[],
+  gradient: string,
+}
+
+
+export interface WalletData {
+  data: number[][];
+}

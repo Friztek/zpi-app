@@ -11,7 +11,6 @@ interface ChartData {
 }
 
 export const AreaChart = ({ data }: ChartData) => {
-
   // TODO: get colorScheme from localStorage
   const colorScheme = "dark";
   
@@ -67,7 +66,6 @@ export const AreaChart = ({ data }: ChartData) => {
         //     }
         //   }]
       },
-     
       dataLabels: {
         enabled: false,
       },
@@ -80,6 +78,7 @@ export const AreaChart = ({ data }: ChartData) => {
         min: firstDay.getTime(),
         max: lastDay.getTime(),
         tickAmount: 6,
+        colors: ['#F44336', '#E91E63', '#9C27B0']
       },
       tooltip: {
         theme: colorScheme,

@@ -256,6 +256,13 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
+"@mantine/carousel@^5.7.1":
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/@mantine/carousel/-/carousel-5.7.1.tgz#e95204acc28a5ed55fe83e10d7bb2fb7f97ab4e7"
+  integrity sha512-wWQ03IjutYId2RpdVP9TMRak+M+vO4KM4cn0pCwG7MoBBPUusMjEKMAXMrIhYMHTxE6q5KP1WeXWlbxse8/twQ==
+  dependencies:
+    "@mantine/utils" "5.7.1"
+
 "@mantine/core@^5.5.2":
   version "5.6.2"
   resolved "https://registry.yarnpkg.com/@mantine/core/-/core-5.6.2.tgz#3e1b76fd96cbd4ba214de26a85195840d7278574"
@@ -323,6 +330,11 @@
   version "5.6.2"
   resolved "https://registry.yarnpkg.com/@mantine/utils/-/utils-5.6.2.tgz#72ffa0e6c8a0c69554aa4c43b6f52663f87d785f"
   integrity sha512-oWBVtewwIiqqKMCw8JahrHsDb1h68Eq878RWhnH+wOC1FOz1oV0ZXz0+5/gMUFZGss0duWEZXTVXafkBnD2HZA==
+
+"@mantine/utils@5.7.1":
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/@mantine/utils/-/utils-5.7.1.tgz#d6890be0650cdd499afd2d954713901672d15711"
+  integrity sha512-YHn6BDI2kkmLY6Zdv8MnFaolKbD+sJyCBG1GY0yO6aHiz8/vTxiaTJv7mhro7Pc1XzclDzVJvd9kAd6lzumAyg==
 
 "@next/env@12.3.1":
   version "12.3.1"
@@ -1006,6 +1018,18 @@ duplexer2@^0.1.2:
   integrity sha512-asLFVfWWtJ90ZyOUHMqk7/S2w2guQKxUI2itj3d92ADHhxUSbCMGi1f1cBcJ7xM1To+pE/Khbwo1yuNbMEPKeA==
   dependencies:
     readable-stream "^2.0.2"
+
+embla-carousel-react@^7.0.4:
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/embla-carousel-react/-/embla-carousel-react-7.0.4.tgz#e5fe99db334e33f08f753fec65507c3aabb86f63"
+  integrity sha512-pSnxrvsLMt3TwVS8uqYMZGfJvRLy+3rcg3JOImVDgvNEtEbbzXoL8tR34Dph6Jh38e/Z9IZW7jVX0igu/haLyQ==
+  dependencies:
+    embla-carousel "7.0.4"
+
+embla-carousel@7.0.4:
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/embla-carousel/-/embla-carousel-7.0.4.tgz#2ca87d51da3a45d1ba6d0caee576a05340d42242"
+  integrity sha512-2/EO9Zh6yT1EiTNkCUhbYfAqe6PVODSYFZQxTeuLGFYYNTKTkHvalfuFVIdEDmtxbbGepuYtLqCmk6yzJfJeyw==
 
 emoji-regex@^9.2.2:
   version "9.2.2"

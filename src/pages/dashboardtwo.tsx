@@ -3,14 +3,7 @@ import { Layout } from "../components/layout/Layout";
 import { BrushChart } from "../components/dashboard/BrushChart";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { AssetsCarousel } from "../components/dashboard/AssetsCarousel";
-import {
-  Container,
-  createStyles,
-  Grid,
-  SimpleGrid,
-  Skeleton,
-  Space,
-} from "@mantine/core";
+import { createStyles } from "@mantine/core";
 import { WalletValue } from "../components/wallet/WalletValue";
 import { WalletStats } from "../components/dashboard/WalletStats";
 import { HistoryTable } from "../components/dashboard/HistoryTable";
@@ -36,9 +29,6 @@ const walletData = [
 ];
 
 const useStyles = createStyles((theme) => ({
-  content: {
-    padding: 10,
-  },
   flex: {
     [theme.fn.smallerThan("md")]: {
       flexDirection: "column",
@@ -67,6 +57,13 @@ const useStyles = createStyles((theme) => ({
         marginBottom: "0rem",
       },
     },
+  },
+
+  historyTable: {
+    // marginLeft: 20,
+    // [theme.fn.smallerThan("md")]: {
+    //   marginLeft: 0
+    // }
   },
 }));
 
@@ -213,46 +210,56 @@ const historyData = {
   ],
 };
 
-const PRIMARY_COL_HEIGHT = 800;
-
 const Dashboard = () => {
-  const { classes, theme } = useStyles();
-  const SECONDARY_COL_HEIGHT = PRIMARY_COL_HEIGHT / 2 - theme.spacing.md / 2;
+  const { classes } = useStyles();
 
   return (
     <Layout>
-      <div className={classes.content}>
-        <Grid>
-          <Grid.Col md={9}>
-            <BrushChart data={walletData} />
-          </Grid.Col>
-          <Grid.Col md={3}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+        className={classes.flex}
+      >
+        <div
+          style={{ flex: 3, marginTop: "2rem" }}
+          className={classes.flexRowTablet}
+        >
+          <div className={classes.removeMarginTablet}>
             <WalletStats
               total={walletStatsData.total}
               diff={walletStatsData.diff}
               data={walletStatsData.data}
             />
-          </Grid.Col>
-        </Grid>
-
-        <Space h="md" />
-        
-        <div style={{ paddingBottom: "1rem" }}>
-          <AssetsCarousel />
+          </div>
         </div>
+        <div style={{ flex: 7 }}>
+          <BrushChart data={walletData} />
+        </div>
+      </div>
 
-        <Space h="md" />
-        
-        <Grid>
-          <Grid.Col md={4}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+        className={classes.flex}
+      >
+        <div
+          style={{ flex: 3 }}
+          className={classes.flexRowTablet}
+        >
+          <div className={classes.removeMarginTablet}>
             <AddAsset />
-          </Grid.Col>
-          <Grid.Col md={8}>
-            <HistoryTable data={historyData.data} />
-          </Grid.Col>
-        </Grid>
-
-       
+          </div>
+        </div>
+        <div style={{ flex: 7 }} className={classes.historyTable}>
+          <HistoryTable data={historyData.data} />
+        </div>
+      </div>
+      <div style={{ paddingBottom: "1rem" }}>
+        <AssetsCarousel />
       </div>
     </Layout>
   );
