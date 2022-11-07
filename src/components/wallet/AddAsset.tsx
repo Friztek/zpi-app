@@ -14,6 +14,7 @@ import {
   ActionIcon,
   Flex,
   Paper,
+  Box,
 } from "@mantine/core";
 import { IconMoneybag, IconPlus, IconTrash } from "@tabler/icons";
 import { useState } from "react";
@@ -38,12 +39,17 @@ export type AddTransactionModel = {
   assetType?: string;
 };
 
+const initialValues: AddTransactionModel = {
+  id: toNumber(uniqueId()),
+  assetType: undefined,
+  value: undefined,
+};
 export function AddAsset({ assets }: AddAssetProps) {
   const { classes, theme } = useStyles();
 
   const queryClient = useQueryClient();
 
-  const [formFields, setFormFields] = useState<AddTransactionModel[]>([]);
+  const [formFields, setFormFields] = useState<AddTransactionModel[]>([initialValues]);
   const context = useAPICommunication();
 
   const mutation = useMutation(
@@ -52,7 +58,7 @@ export function AddAsset({ assets }: AddAssetProps) {
     },
     {
       onSuccess: () => {
-        setFormFields(() => []);
+        setFormFields(() => [initialValues]);
         queryClient.invalidateQueries("userAsset");
       },
     }
@@ -88,7 +94,7 @@ export function AddAsset({ assets }: AddAssetProps) {
 
       <Space h="md" />
       <Stack spacing={"sm"}>
-        {formFields.map((input) => {
+        {formFields.map((input, index) => {
           return (
             <Flex align={"center"} gap={0} key={input.id}>
               <TextInput
@@ -128,9 +134,13 @@ export function AddAsset({ assets }: AddAssetProps) {
                 }
                 rightSectionWidth={150}
               />
-              <Button variant="default" radius={0} style={{ borderLeft: 0 }} onClick={() => removeInput(input.id)}>
-                <IconTrash className={classes.icon} stroke="1.2" size={19} />
-              </Button>
+              {index !== 0 ? (
+                <Button variant="default" radius={0} style={{ borderLeft: 0 }} onClick={() => removeInput(input.id)}>
+                  <IconTrash className={classes.icon} stroke="1.2" size={19} />
+                </Button>
+              ) : (
+                <Box w={56}></Box>
+              )}
             </Flex>
           );
         })}
