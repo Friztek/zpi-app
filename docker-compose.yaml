@@ -1,0 +1,6 @@
+version: "3.7"
+services:
+  frontend:
+    image: enszyk/how-money-app:0.0.1
+    ports:
+      - "8080:3000"
