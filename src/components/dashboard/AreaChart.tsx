@@ -1,7 +1,7 @@
 import React from "react";
 import { chartGradient } from "./utils";
 import dynamic from "next/dynamic";
-import { useColorScheme } from "@mantine/hooks";
+import { useMantineTheme } from "@mantine/core";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -12,7 +12,7 @@ interface ChartData {
 }
 
 export const AreaChart = ({ data }: ChartData) => {
-  const colorScheme = useColorScheme();
+  const theme = useMantineTheme();
   
   const date = new Date();
   const currentYear = date.getFullYear();
@@ -30,7 +30,7 @@ export const AreaChart = ({ data }: ChartData) => {
       chart: {
         id: "area-datetime",
         type: "area" as const,
-        theme: colorScheme,
+        theme: theme.colorScheme,
         colors: ["#3eadcf"],
         height: 350,
         zoom: {
@@ -68,7 +68,7 @@ export const AreaChart = ({ data }: ChartData) => {
         colors: ['#F44336', '#E91E63', '#9C27B0']
       },
       tooltip: {
-        theme: colorScheme,
+        theme: theme.colorScheme,
         x: {
           format: "dd MMM yyyy",
         },
