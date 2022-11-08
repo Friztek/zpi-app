@@ -1,7 +1,8 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import { chartGradient } from "./utils";
-import { useColorScheme, useViewportSize } from "@mantine/hooks";
+import { useViewportSize } from "@mantine/hooks";
+import { useMantineTheme, MantineTheme } from '@mantine/core';
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -12,8 +13,7 @@ export interface BrushChartProps {
 }
 
 export const BrushChart = ({ data }: BrushChartProps) => {
-  const colorScheme = useColorScheme();
-  console.log(colorScheme);
+  const theme = useMantineTheme();
 
   const { height } = useViewportSize();
 
@@ -22,14 +22,14 @@ export const BrushChart = ({ data }: BrushChartProps) => {
   };
 
   const foreColor = () => {
-    if (colorScheme === "dark") {
+    if (theme.colorScheme === "dark") {
       return "#FFFFFF";
     }
     return "#000000";
   };
 
   const borderColor = () => {
-    if (colorScheme === "dark") {
+    if (theme.colorScheme === "dark") {
       return "#222324";
     }
     return "#e8ebed";
@@ -75,7 +75,7 @@ export const BrushChart = ({ data }: BrushChartProps) => {
         borderColor: borderColor(),
       },
       tooltip: {
-        theme: colorScheme,
+        theme: theme.colorScheme,
         y: {
           title: {
             formatter: () => { return "value"; }
