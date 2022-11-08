@@ -1,21 +1,11 @@
 import React from "react";
 import dynamic from "next/dynamic";
-import {  } from "@mantine/core";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
 export const LineChart = ({ data }: {data: number[]}) => {
-  // TODO: get colorScheme from localStorage
-  const colorScheme = "dark";
-
-  const date = new Date();
-  const currentYear = date.getFullYear();
-  const currentMonth = date.getMonth();
-  const firstDay = new Date(currentYear, currentMonth, 1);
-  const lastDay = new Date(currentYear, currentMonth + 1, 0);
-
   const state = {
     series: [
       {
@@ -76,11 +66,7 @@ export const LineChart = ({ data }: {data: number[]}) => {
             options={state.options}
             series={state.series}
             type="line"
-            // width={340}
             height={150}
-            // sx={(theme) => ({
-            //   [theme.fn.largerThan('md')]: { height: 70 },
-            // })}
           />
         </div>
       )}

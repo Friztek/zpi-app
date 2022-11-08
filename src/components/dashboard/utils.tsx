@@ -1,5 +1,4 @@
-
-export const gradient = {
+export const chartGradient = {
     type: "horizontal",
     shadeIntensity: 1,
     opacityFrom: 0.7,
@@ -27,14 +26,3 @@ export const gradient = {
       },
     ],
 };
-
-export interface AssetChartBoxProps {
-  name: string,
-  data: number[],
-  gradient: string,
-}
-
-
-export interface WalletData {
-  data: number[][];
-}

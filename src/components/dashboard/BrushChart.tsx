@@ -1,18 +1,21 @@
 import React from "react";
 import dynamic from "next/dynamic";
-import { gradient, WalletData } from "./utils";
-import { useViewportSize } from "@mantine/hooks";
+import { chartGradient } from "./utils";
+import { useColorScheme, useViewportSize } from "@mantine/hooks";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
+export interface BrushChartProps {
+  data: number[][];
+}
 
-export const BrushChart = ({ data }: WalletData) => {
-  // TODO: get colorScheme from localStorage and reload chart after changing scheme
-  const colorScheme = "dark";
+export const BrushChart = ({ data }: BrushChartProps) => {
+  const colorScheme = useColorScheme();
+  console.log(colorScheme);
 
-  const { height, width } = useViewportSize();
+  const { height } = useViewportSize();
 
   const chartHeight = () => {
    return Math.max(350, height / 2.8 )
@@ -112,7 +115,7 @@ export const BrushChart = ({ data }: WalletData) => {
       colors: ["#008FFB"],
       fill: {
         type: "gradient",
-        gradient: gradient,
+        gradient: chartGradient,
       },
       xaxis: {
         type: "datetime" as const,

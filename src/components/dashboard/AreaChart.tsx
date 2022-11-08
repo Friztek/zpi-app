@@ -1,6 +1,7 @@
 import React from "react";
-import { gradient } from "./utils";
+import { chartGradient } from "./utils";
 import dynamic from "next/dynamic";
+import { useColorScheme } from "@mantine/hooks";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -11,8 +12,7 @@ interface ChartData {
 }
 
 export const AreaChart = ({ data }: ChartData) => {
-  // TODO: get colorScheme from localStorage
-  const colorScheme = "dark";
+  const colorScheme = useColorScheme();
   
   const date = new Date();
   const currentYear = date.getFullYear();
@@ -52,19 +52,6 @@ export const AreaChart = ({ data }: ChartData) => {
             },
           },
         ],
-        //   xaxis: [{
-        //     x: new Date('14 Nov 2012').getTime(),
-        //     borderColor: '#999',
-        //     yAxisIndex: 0,
-        //     label: {
-        //       show: true,
-        //       text: 'Today',
-        //       style: {
-        //         color: "#fff",
-        //         background: '#775DD0'
-        //       }
-        //     }
-        //   }]
       },
       dataLabels: {
         enabled: false,
@@ -88,7 +75,7 @@ export const AreaChart = ({ data }: ChartData) => {
       },
       fill: {
         type: "gradient",
-        gradient: gradient,
+        gradient: chartGradient,
       },
     },
     selection: "one_year",

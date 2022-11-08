@@ -24,11 +24,12 @@ const useStyles = createStyles((theme) => ({
   },
 
   card: {
-    backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+    backgroundColor:
+      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
     padding: "1rem 3rem !important",
     [theme.fn.smallerThan("md")]: {
-      padding: 0
-    }
+      padding: 0,
+    },
   },
 
   scrolled: {
@@ -37,15 +38,16 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface HistoryTableProps {
-  data: { name: string; value: number; date: string }[];
+  data: { symbol: string; name: string; value: number; date: string }[];
 }
 
-export const HistoryTable = ({ data }:  HistoryTableProps) => {
+export const HistoryTable = ({ data }: HistoryTableProps) => {
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
 
   const rows = data.map((row) => (
     <tr key={row.name}>
+      <td>{row.symbol}</td>
       <td>{row.name}</td>
       <td>{row.value}</td>
       <td>{row.date}</td>
@@ -63,9 +65,10 @@ export const HistoryTable = ({ data }:  HistoryTableProps) => {
             className={cx(classes.header, { [classes.scrolled]: scrolled })}
           >
             <tr>
-              <th style={{ width: "20%" }}>Asset Name</th>
-              <th style={{ width: "50%" }}>Value</th>
-              <th style={{ width: "30%" }}>Date</th>
+              <th style={{ width: "20%" }}>Asset Symbol</th>
+              <th style={{ width: "25%" }}>Name</th>
+              <th style={{ width: "30%" }}>Value</th>
+              <th style={{ width: "25%" }}>Date</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>
@@ -73,4 +76,4 @@ export const HistoryTable = ({ data }:  HistoryTableProps) => {
       </ScrollArea>
     </Card>
   );
-}
+};

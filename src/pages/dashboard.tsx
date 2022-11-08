@@ -4,14 +4,10 @@ import { BrushChart } from "../components/dashboard/BrushChart";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { AssetsCarousel } from "../components/dashboard/AssetsCarousel";
 import {
-  Container,
   createStyles,
   Grid,
-  SimpleGrid,
-  Skeleton,
   Space,
 } from "@mantine/core";
-import { WalletValue } from "../components/wallet/WalletValue";
 import { WalletStats } from "../components/dashboard/WalletStats";
 import { HistoryTable } from "../components/dashboard/HistoryTable";
 import { AddAsset } from "../components/wallet/AddAsset";
@@ -70,14 +66,6 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const values = [
-  {
-    title: "Total value",
-    value: "$13,456",
-    diff: 34,
-  },
-];
-
 const walletStatsData = {
   total: "345,765",
   diff: 18,
@@ -106,118 +94,64 @@ const walletStatsData = {
 const historyData = {
   data: [
     {
-      name: "EUR",
+      symbol: "EUR",
+      name: "euro",
       value: 10,
       date: "20/04/2021",
     },
     {
-      name: "EUR",
+      symbol: "PLN",
+      name: "polish zloty",
       value: 10,
       date: "20/04/2021",
     },
     {
-      name: "EUR",
+      symbol: "USD",
+      name: "american dollar",
       value: 10,
       date: "20/04/2021",
     },
     {
-      name: "EUR",
+      symbol: "EUR",
+      name: "euro",
       value: 10,
       date: "20/04/2021",
     },
     {
-      name: "EUR",
+      symbol: "PLN",
+      name: "polish zloty",
       value: 10,
       date: "20/04/2021",
     },
     {
-      name: "EUR",
+      symbol: "USD",
+      name: "american dollar",
       value: 10,
       date: "20/04/2021",
     },
     {
-      name: "EUR",
+      symbol: "EUR",
+      name: "euro",
       value: 10,
       date: "20/04/2021",
     },
     {
-      name: "EUR",
+      symbol: "PLN",
+      name: "polish zloty",
       value: 10,
       date: "20/04/2021",
     },
     {
-      name: "EUR",
-      value: 10,
-      date: "20/04/2021",
-    },
-    {
-      name: "EUR",
-      value: 10,
-      date: "20/04/2021",
-    },
-    {
-      name: "EUR",
-      value: 10,
-      date: "20/04/2021",
-    },
-    {
-      name: "EUR",
-      value: 10,
-      date: "20/04/2021",
-    },
-    {
-      name: "EUR",
-      value: 10,
-      date: "20/04/2021",
-    },
-    {
-      name: "EUR",
-      value: 10,
-      date: "20/04/2021",
-    },
-    {
-      name: "EUR",
-      value: 10,
-      date: "20/04/2021",
-    },
-    {
-      name: "EUR",
-      value: 10,
-      date: "20/04/2021",
-    },
-    {
-      name: "EUR",
-      value: 10,
-      date: "20/04/2021",
-    },
-    {
-      name: "EUR",
-      value: 10,
-      date: "20/04/2021",
-    },
-    {
-      name: "EUR",
-      value: 10,
-      date: "20/04/2021",
-    },
-    {
-      name: "EUR",
-      value: 10,
-      date: "20/04/2021",
-    },
-    {
-      name: "EUR",
+      symbol: "USD",
+      name: "american dollar",
       value: 10,
       date: "20/04/2021",
     },
   ],
 };
 
-const PRIMARY_COL_HEIGHT = 800;
-
 const Dashboard = () => {
-  const { classes, theme } = useStyles();
-  const SECONDARY_COL_HEIGHT = PRIMARY_COL_HEIGHT / 2 - theme.spacing.md / 2;
+  const { classes } = useStyles();
 
   return (
     <Layout>
@@ -245,7 +179,7 @@ const Dashboard = () => {
         
         <Grid>
           <Grid.Col md={4}>
-            <AddAsset />
+            {/* <AddAsset /> */}
           </Grid.Col>
           <Grid.Col md={8}>
             <HistoryTable data={historyData.data} />
