@@ -6,13 +6,19 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { APICommunicationContextProvider } from "../contexts/APICommunicationContext";
 import { ModalsProvider } from "@mantine/modals";
+import { useLocalStorage } from "@mantine/hooks";
 
 const queryClient = new QueryClient();
 
 export default function App(props: AppProps) {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+    key: 'color-scheme',
+    defaultValue: 'light',
+  });
+
+  const toggleColorScheme = () =>
+    setColorScheme((current: string) => (current === 'dark' ? 'light' : 'dark'));
+
   const { Component, pageProps } = props;
 
   return (
