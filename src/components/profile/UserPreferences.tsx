@@ -1,4 +1,4 @@
-import { Button, Group, Paper, Text, ActionIcon, createStyles, Switch, Loader } from "@mantine/core";
+import { Button, Group, Paper, Text, ActionIcon, createStyles, Switch, Loader, Center } from "@mantine/core";
 import { IconEdit, IconEditOff, IconTools } from "@tabler/icons";
 import { useState } from "react";
 import { CurrencySwitch } from "./CurrencySwitch";
@@ -56,7 +56,7 @@ export function UserPreferences() {
   };
 
   return (
-    <Paper withBorder p="md" shadow="md" radius="md">
+    <Paper withBorder p="md" shadow="md" radius="md" style={{minHeight:200}}>
       <Group
         style={{
           display: "flex",
@@ -79,7 +79,9 @@ export function UserPreferences() {
         </ActionIcon>
       </Group>
       {userPreferences === undefined ? (
-        <Loader />
+        <Center> 
+          <Loader size="xl" variant="dots" />
+        </Center>
       ) : (
         <div>
           <CurrencySwitch
