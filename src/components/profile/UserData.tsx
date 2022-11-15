@@ -68,7 +68,6 @@ export function UserData() {
           }}
           size="sm"
         >
-          {isDisabled ? <IconEdit /> : <IconEditOff />}
         </ActionIcon>
       </Group>
 
