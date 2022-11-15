@@ -1,19 +1,15 @@
 import { useForm } from "@mantine/form";
-import {
-  Button,
-  Group,
-  Paper,
-  Text,
-  ActionIcon,
-  createStyles,
-  Switch,
-} from "@mantine/core";
-import { IconPencil, IconTools } from "@tabler/icons";
+import { Button, Group, Paper, Text, ActionIcon, createStyles, Switch } from "@mantine/core";
+import { IconEdit, IconEditOff, IconTools } from "@tabler/icons";
 import { useState } from "react";
+import { CurrencySwitch } from "./CurrencySwitch";
 
 const useStyles = createStyles((theme) => ({
   switch: {
     marginTop: 10,
+  },
+  label: {
+    color: `${theme.colorScheme === "dark" ? theme.white : theme.colors.dark[6]} !important`,
   },
 }));
 
@@ -62,21 +58,22 @@ export function UserPreferences() {
           }}
           size="sm"
         >
-          <IconPencil />
+          {isDisabled ? <IconEdit /> : <IconEditOff />}
         </ActionIcon>
       </Group>
-
+      <CurrencySwitch disabled={isDisabled} />
       <Switch
         disabled={isDisabled}
-        className={classes.switch}
+        classNames={classes}
         label="Do you want to recieve alerts on email?"
         checked={alertsOnEmail}
         onChange={(event) => setAlertsOnEmail(event.currentTarget.checked)}
+        styles={{ label: { color: " !important" } }}
       />
       <Switch
         disabled={isDisabled}
-        className={classes.switch}
-        label="Do you want to recieve weekly repotrs on email?"
+        classNames={classes}
+        label="Do you want to recieve weekly reports on email?"
         checked={weeklyReports}
         onChange={(event) => setWeeklyReports(event.currentTarget.checked)}
       />

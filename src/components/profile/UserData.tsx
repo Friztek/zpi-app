@@ -1,23 +1,15 @@
 import { useForm } from "@mantine/form";
-import {
-  TextInput,
-  Button,
-  Group,
-  Paper,
-  Text,
-  ActionIcon,
-  createStyles,
-  Space,
-} from "@mantine/core";
-import { IconPencil, IconUser } from "@tabler/icons";
+import { TextInput, Button, Group, Paper, Text, ActionIcon, createStyles, Space } from "@mantine/core";
+import { IconEdit, IconEditOff, IconUser } from "@tabler/icons";
 import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { ThemeContext } from "@emotion/react";
 
-const useStyles = createStyles(() => ({
+const useStyles = createStyles((theme) => ({
   textDiv: {
     display: "flex",
     alignItems: "center",
-    border: "1px solid #e8ecf0",
+    border: `1px solid ${theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[1]}`,
     borderRadius: 4,
     padding: "1px 12px",
     height: 36,
@@ -27,7 +19,7 @@ const useStyles = createStyles(() => ({
   label: {
     fontSize: 14,
     fontWeight: 500,
-    color: "#212529",
+    color: theme.white[0],
     marginBottom: 1,
   },
 }));
@@ -76,7 +68,7 @@ export function UserData() {
           }}
           size="sm"
         >
-          <IconPencil />
+          {isDisabled ? <IconEdit /> : <IconEditOff />}
         </ActionIcon>
       </Group>
 
@@ -86,12 +78,7 @@ export function UserData() {
           <Text className={classes.textDiv}>{form.values.name}</Text>
         </div>
       ) : (
-        <TextInput
-          disabled={isDisabled}
-          label="Name"
-          placeholder="Name"
-          {...form.getInputProps("name")}
-        />
+        <TextInput disabled={isDisabled} label="Name" placeholder="Name" {...form.getInputProps("name")} />
       )}
       <Space h="md" />
       {isDisabled ? (
@@ -100,12 +87,7 @@ export function UserData() {
           <Text className={classes.textDiv}>{form.values.email}</Text>
         </div>
       ) : (
-        <TextInput
-          disabled={isDisabled}
-          label="Email"
-          placeholder="Email"
-          {...form.getInputProps("email")}
-        />
+        <TextInput disabled={isDisabled} label="Email" placeholder="Email" {...form.getInputProps("email")} />
       )}
 
       {!isDisabled && (

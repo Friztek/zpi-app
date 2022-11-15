@@ -13,12 +13,13 @@ const APICommunicationContext = createContext<APICommunication | null>(null);
 export const APICommunicationContextProvider: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const basePath = "http://localhost:5000";
+  const basePath = "https://ce2d-89-151-44-59.eu.ngrok.io";
   const { getAccessTokenSilently } = useAuth0();
 
   const configuration = new Configuration({
     basePath,
     accessToken: async () => await getAccessTokenSilently(),
+    headers: {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET POST PUT PATCH DELETE"}
   });
 
   const value: APICommunication = {

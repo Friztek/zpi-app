@@ -12,7 +12,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   paper: {
-    backgroundColor: "#ffeeed",
+    backgroundColor: theme.colorScheme === "dark" ? "#350a084f" : "#ffeeed",
     border: "none",
     display: "flex",
     alignContent: "center",
