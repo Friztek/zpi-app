@@ -1,8 +1,10 @@
-import { useForm } from "@mantine/form";
-import { Button, Group, Paper, Text, ActionIcon, createStyles, Switch } from "@mantine/core";
+import { Button, Group, Paper, Text, ActionIcon, createStyles, Switch, Loader } from "@mantine/core";
 import { IconEdit, IconEditOff, IconTools } from "@tabler/icons";
 import { useState } from "react";
 import { CurrencySwitch } from "./CurrencySwitch";
+import { useAPICommunication } from "../../contexts/APICommunicationContext";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { UpdateUserPreferencesRequest, UserPreferencesDto } from "../../client-typescript";
 
 const useStyles = createStyles((theme) => ({
   switch: {
@@ -15,26 +17,41 @@ const useStyles = createStyles((theme) => ({
 
 export function UserPreferences() {
   const { classes } = useStyles();
-  const form = useForm({
-    initialValues: {
-      name: "Name",
-      email: "email@email.com",
-    },
+
+  const context = useAPICommunication();
+
+  const [userPreferences, setUserPreferences] = useState<UserPreferencesDto>();
+
+  const userPreferencesQuery = useQuery("userPreferences", async () => {
+    const data = await context.userPreferenceAPI.getUserPreferences();
+    setUserPreferences(data);
+    return data;
   });
 
-  const [alertsOnEmail, setAlertsOnEmail] = useState(false);
-  const [weeklyReports, setWeeklyReports] = useState(false);
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(
+    (patchUserPreferencesDto: UpdateUserPreferencesRequest) => {
+      return context.userPreferenceAPI.updateUserPreferences(patchUserPreferencesDto);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("userPreferences");
+      },
+    }
+  );
 
   const [isDisabled, setIsDisabled] = useState(true);
 
   const changeIsDisabled = () => {
-    console.log("changed");
+    if(isDisabled === false) {
+      setUserPreferences(userPreferencesQuery.data);
+    }
     setIsDisabled(!isDisabled);
   };
 
   const saveForm = () => {
-    console.log("Preferences saved: alertsOnEmail", alertsOnEmail);
-    console.log("Preferences saved: weeklyReports", weeklyReports);
+    mutation.mutate({updateUserPreferencesDto: userPreferences});
     setIsDisabled(!isDisabled);
   };
 
@@ -61,29 +78,42 @@ export function UserPreferences() {
           {isDisabled ? <IconEdit /> : <IconEditOff />}
         </ActionIcon>
       </Group>
-      <CurrencySwitch disabled={isDisabled} />
-      <Switch
-        disabled={isDisabled}
-        classNames={classes}
-        label="Do you want to recieve alerts on email?"
-        checked={alertsOnEmail}
-        onChange={(event) => setAlertsOnEmail(event.currentTarget.checked)}
-        styles={{ label: { color: " !important" } }}
-      />
-      <Switch
-        disabled={isDisabled}
-        classNames={classes}
-        label="Do you want to recieve weekly reports on email?"
-        checked={weeklyReports}
-        onChange={(event) => setWeeklyReports(event.currentTarget.checked)}
-      />
+      {userPreferences === undefined ? (
+        <Loader />
+      ) : (
+        <div>
+          <CurrencySwitch
+            value={userPreferences.preferenceCurrency}
+            onChange={(value: string) => setUserPreferences((prev) => ({ ...prev!, preferenceCurrency: value }))}
+            disabled={isDisabled}
+          />
+          <Switch
+            disabled={isDisabled}
+            classNames={classes}
+            label="Do you want to recieve alerts on email?"
+            checked={userPreferences.alertsOnEmail}
+            onChange={(event) => setUserPreferences((prev) => ({ ...prev!, alertsOnEmail: event.target.checked }))}
+            styles={{ label: { color: " !important" } }}
+          />
+          <Switch
+            disabled={isDisabled}
+            classNames={classes}
+            label="Do you want to recieve weekly reports on email?"
+            checked={userPreferences.weeklyReports}
+            onChange={(event) => {
+              console.log("event", event);
+              setUserPreferences((prev) => ({ ...prev!, weeklyReports: event.target.checked }))}
+            }
+              />
 
-      {!isDisabled && (
-        <Group position="center" mt="xl">
-          <Button variant="outline" onClick={() => saveForm()}>
-            Save
-          </Button>
-        </Group>
+          {!isDisabled && (
+            <Group position="center" mt="xl">
+              <Button variant="outline" onClick={() => saveForm()}>
+                Save
+              </Button>
+            </Group>
+          )}
+        </div>
       )}
     </Paper>
   );
