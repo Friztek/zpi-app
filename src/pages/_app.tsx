@@ -1,7 +1,6 @@
 import { AppProps } from "next/app";
 import Head from "next/head";
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
-import { useState } from "react";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { APICommunicationContextProvider } from "../contexts/APICommunicationContext";
