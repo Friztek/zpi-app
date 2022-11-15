@@ -22,14 +22,13 @@ const useStyles = createStyles((theme) => ({
 
 export interface CurrencySwitchProps {
   disabled: boolean;
+  value: string;
+  onChange: (value: string) => void;
 }
 
-export const CurrencySwitch = ({ disabled }: CurrencySwitchProps) => {
+export const CurrencySwitch = ({ disabled, value, onChange}: CurrencySwitchProps) => {
   const { classes } = useStyles();
 
-  const changePreferedCurrency = (value: string) => {
-    console.log("Prefered currency cahnged to value:", value);
-  };
   return (
     <Flex align="center" justify="flex-start" direction="row" mt="sm">
       <Text size={14} weight={400}>
@@ -40,9 +39,10 @@ export const CurrencySwitch = ({ disabled }: CurrencySwitchProps) => {
         title="Preferred currency"
         radius="md"
         size="sm"
-        data={["EUR", "PLN", "USD"]}
+        data={[{ label: "EUR", value: "eur"}, {label: "PLN", value: "pln"}, {label: "USD", value: "usd"}]}
         disabled={disabled}
-        onChange={(value: string) => changePreferedCurrency(value)}
+        value={value}
+        onChange={onChange}
         classNames={classes}
       />
     </Flex>
