@@ -1,3 +1,4 @@
+.openapi-generator-ignore
 apis/AlertApi.ts
 apis/AssetValuesApi.ts
 apis/AssetsApi.ts

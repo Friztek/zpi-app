@@ -3,14 +3,11 @@ import { Layout } from "../components/layout/Layout";
 import { BrushChart } from "../components/dashboard/BrushChart";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { AssetsCarousel } from "../components/dashboard/AssetsCarousel";
-import {
-  createStyles,
-  Grid,
-  Space,
-} from "@mantine/core";
+import { Center, createStyles, Grid, Loader, Paper, Space } from "@mantine/core";
 import { WalletStats } from "../components/dashboard/WalletStats";
 import { HistoryTable } from "../components/dashboard/HistoryTable";
-import { AddAsset } from "../components/wallet/AddAsset";
+import { useAPICommunication } from "../contexts/APICommunicationContext";
+import { useQuery } from "react-query";
 
 const walletData = [
   [1666224000000, 31.34],
@@ -65,31 +62,6 @@ const useStyles = createStyles((theme) => ({
     },
   },
 }));
-
-const walletStatsData = {
-  total: "345,765",
-  diff: 18,
-  data: [
-    {
-      label: "Currency",
-      count: "204,001",
-      part: 59,
-      color: "#136a8a",
-    },
-    {
-      label: "Crypto Currency",
-      count: "121,017",
-      part: 35,
-      color: "#267871",
-    },
-    {
-      label: "Metals",
-      count: "31,118",
-      part: 6,
-      color: "#00bf8f",
-    },
-  ],
-};
 
 const historyData = {
   data: [
@@ -153,6 +125,20 @@ const historyData = {
 const Dashboard = () => {
   const { classes } = useStyles();
 
+  const context = useAPICommunication();
+
+  const userPreferenceQuery = useQuery("userPreferenceDashboard", async () => {
+    return await context.userPreferenceAPI.getUserPreferences();
+  });
+
+  if (userPreferenceQuery.data === undefined) {
+    return (
+      <Center h={120}>
+        <Loader size="xl" variant="dots" />
+      </Center>
+    );
+  }
+
   return (
     <Layout>
       <div className={classes.content}>
@@ -161,32 +147,20 @@ const Dashboard = () => {
             <BrushChart data={walletData} />
           </Grid.Col>
           <Grid.Col md={3}>
-            <WalletStats
-              total={walletStatsData.total}
-              diff={walletStatsData.diff}
-              data={walletStatsData.data}
-            />
+            <WalletStats userPreferenceCurrency={userPreferenceQuery.data.preferenceCurrency.toUpperCase()} />
           </Grid.Col>
         </Grid>
-
         <Space h="md" />
-        
         <div style={{ paddingBottom: "1rem" }}>
           <AssetsCarousel />
         </div>
-
         <Space h="md" />
-        
         <Grid>
-          <Grid.Col md={4}>
-            {/* <AddAsset /> */}
-          </Grid.Col>
+          <Grid.Col md={4}>{/* <AddAsset /> */}</Grid.Col>
           <Grid.Col md={8}>
             <HistoryTable data={historyData.data} />
           </Grid.Col>
         </Grid>
-
-       
       </div>
     </Layout>
   );
