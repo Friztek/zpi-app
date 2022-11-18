@@ -1,85 +1,96 @@
-import {
-  createStyles,
-  Group,
-  Paper,
-  Text,
-  ThemeIcon,
-  SimpleGrid,
-} from "@mantine/core";
+import { createStyles, Group, Paper, Text, ThemeIcon, SimpleGrid, Loader, Skeleton, Center } from "@mantine/core";
 import { IconArrowUpRight, IconArrowDownRight } from "@tabler/icons";
+import { useQuery } from "react-query";
+import { useAPICommunication } from "../../contexts/APICommunicationContext";
 
 const useStyles = createStyles((theme) => ({
   root: {
     padding: 0,
   },
-
   label: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
   },
 }));
 
-interface StatsGridIconsProps {
-  data: { title: string; value: string; diff: number }[];
+interface WalletValueProps {
+  userPreferenceCurrency: string;
 }
 
-export function WalletValue({ data }: StatsGridIconsProps) {
+export function WalletValue({ userPreferenceCurrency }: WalletValueProps) {
   const { classes } = useStyles();
-  const stats = data.map((stat) => {
-    const DiffIcon = stat.diff > 0 ? IconArrowUpRight : IconArrowDownRight;
 
-    return (
-      <Paper withBorder p="md" radius="md" key={stat.title}>
-        <Group position="apart">
-          <div>
-            <Text
-              color="dimmed"
-              transform="uppercase"
-              weight={700}
-              size="xs"
-              className={classes.label}
-            >
-              {stat.title}
-            </Text>
-            <Text
-              variant="gradient"
-              gradient={{ from: "indigo", to: "cyan", deg: 45 }}
-              size="xl"
-              weight={700}
-              sx={{ fontSize: 30 }}
-            >
-              {stat.value}
-            </Text>
-          </div>
-          <ThemeIcon
-            color="gray"
-            variant="light"
-            sx={(theme) => ({
-              color: stat.diff > 0 ? theme.colors.teal[6] : theme.colors.red[6],
-            })}
-            size={38}
-            radius="md"
-          >
-            <DiffIcon size={28} stroke={1.5} />
-          </ThemeIcon>
-        </Group>
-        <Text color="dimmed" size="sm" mt="md">
-          <Text
-            component="span"
-            color={stat.diff > 0 ? "teal" : "red"}
-            weight={700}
-          >
-            {stat.diff}%
-          </Text>{" "}
-          {stat.diff > 0 ? "increase" : "decrease"} compared to last month
-        </Text>
-      </Paper>
-    );
+  const context = useAPICommunication();
+
+  const lastDayOfPrevMonth = () => {
+    var lastDayOfPrevMonth = new Date();
+    lastDayOfPrevMonth.setDate(1);
+    lastDayOfPrevMonth.setHours(-1);
+    return lastDayOfPrevMonth.toISOString().split("T", 1)[0];
+  };
+
+  const walletTotalValueQuery = useQuery("walletTotalValue", async () => {
+    return await context.walletApi.apiWalletTotalGet();
   });
+
+  const walletLastMonthTotalValueQuery = useQuery("walletLastMonthTotalValue", async () => {
+    const data = await context.walletApi.apiWalletGet({ from: lastDayOfPrevMonth(), to: lastDayOfPrevMonth() });
+    return data[0].value;
+  });
+
+  if (walletTotalValueQuery.data === undefined || walletLastMonthTotalValueQuery.data === undefined) {
+    return <Paper style={{height: 140}} withBorder radius="md" ><Center style={{height: 130}}><Loader size="xl" variant="dots" /></Center></Paper>;
+  }
+
+  const { totalValue } = walletTotalValueQuery.data;
+
+  const diff =
+    Math.round(((totalValue - walletLastMonthTotalValueQuery.data) / walletLastMonthTotalValueQuery.data) * 10000) /
+    100;
 
   return (
     <div className={classes.root}>
       <SimpleGrid cols={1} breakpoints={[{ maxWidth: "sm", cols: 1 }]}>
-        {stats}
+        <Paper style={{height: 140}} withBorder p="md" radius="md">
+          <div>
+            <Group position="apart">
+              <div>
+                <Text color="dimmed" transform="uppercase" weight={700} size="xs" className={classes.label}>
+                  Total value
+                </Text>
+                <Text
+                  variant="gradient"
+                  gradient={{ from: "indigo", to: "cyan", deg: 45 }}
+                  size="xl"
+                  weight={700}
+                  sx={{ fontSize: 30 }}
+                >
+                  {totalValue + " " + userPreferenceCurrency.toUpperCase()}
+                </Text>
+              </div>
+              <ThemeIcon
+                color="gray"
+                variant="light"
+                sx={(theme) => ({
+                  color: diff > 0 ? theme.colors.teal[6] : theme.colors.red[6],
+                })}
+                size={38}
+                radius="md"
+              >
+                {diff > 0 ? (
+                  <IconArrowUpRight size={28} stroke={1.5}></IconArrowUpRight>
+                ) : (
+                  <IconArrowDownRight size={28} stroke={1.5}></IconArrowDownRight>
+                )}
+              </ThemeIcon>
+            </Group>
+            <Text color="dimmed" size="sm" mt="md">
+              <Text component="span" color={diff > 0 ? "teal" : "red"} weight={700}>
+                {diff}%
+              </Text>{" "}
+              {diff > 0 ? "increase" : "decrease"} compared to last month
+            </Text>
+          </div>
+        </Paper>
       </SimpleGrid>
     </div>
   );

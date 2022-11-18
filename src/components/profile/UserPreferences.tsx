@@ -79,7 +79,7 @@ export function UserPreferences() {
         </ActionIcon>
       </Group>
       {userPreferences === undefined ? (
-        <Center> 
+        <Center h={120}> 
           <Loader size="xl" variant="dots" />
         </Center>
       ) : (

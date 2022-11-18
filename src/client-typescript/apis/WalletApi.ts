@@ -16,16 +16,11 @@
 import * as runtime from '../runtime';
 import type {
   FullWalletDto,
-  ProblemDetails,
   WalletDto,
 } from '../models';
 import {
     FullWalletDtoFromJSON,
-    FullWalletDtoToJSON,
-    ProblemDetailsFromJSON,
-    ProblemDetailsToJSON,
     WalletDtoFromJSON,
-    WalletDtoToJSON,
 } from '../models';
 
 export interface ApiWalletGetRequest {

@@ -1,7 +1,7 @@
-import { ActionIcon, createStyles, Flex, Group, Menu, Space, Text } from "@mantine/core";
-import { IconDotsVertical, IconMinus, IconPlus, IconTrash } from "@tabler/icons";
+import { Card, Center, createStyles, Flex, Group, Loader, Space, Text } from "@mantine/core";
 import { camelCase } from "lodash";
-import { UserAssetDto } from "../../client-typescript";
+import { useQuery } from "react-query";
+import { useAPICommunication } from "../../contexts/APICommunicationContext";
 import { numberToMoneyString } from "../../utils/utils-format";
 import { UserAssetActionMenu } from "./UserAssetActionMenu";
 
@@ -35,14 +35,27 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export type UserAssetsListProps = {
-  data: UserAssetDto[];
   userPreferenceCurrencySymbol: string;
 };
 
-export function UserAssetList({ data, userPreferenceCurrencySymbol }: UserAssetsListProps) {
+export function UserAssetList({ userPreferenceCurrencySymbol }: UserAssetsListProps) {
   const { classes } = useStyles();
 
-  const items = data.map((item) => (
+  const context = useAPICommunication();
+
+  const userAssetQuery = useQuery("userAsset", async () => {
+    return await context.userAssetsAPI.getAllUserAssets();
+  });
+
+  if (userAssetQuery.isLoading) {
+    return (
+      <Center h={120}>
+        <Loader size="xl" variant="dots" />
+      </Center>
+    );
+  }
+
+  const items = userAssetQuery.data!.map((item) => (
     <div className={classes.item} key={item.asset.name}>
       <Flex className={classes.columnStackMobile}>
         <Text
@@ -79,7 +92,7 @@ export function UserAssetList({ data, userPreferenceCurrencySymbol }: UserAssets
             {numberToMoneyString(item.originValue)}
           </Text>
           <Text style={{ flex: 1 }} size={16} color="dimmed">
-            {`${numberToMoneyString(item.userCurrencyValue)} ${userPreferenceCurrencySymbol}`}
+            {`${numberToMoneyString(item.userCurrencyValue)} ${userPreferenceCurrencySymbol.toUpperCase()}`}
           </Text>
         </div>
         <Space w="xs" />
@@ -87,6 +100,10 @@ export function UserAssetList({ data, userPreferenceCurrencySymbol }: UserAssets
       </Group>
     </div>
   ));
+
+  if (userAssetQuery.data!.length === 0) {
+    return <Card><Center>You do not have any assets. Add new transaction and create your first asset.</Center></Card>;
+  }
 
   return <div>{items}</div>;
 }
