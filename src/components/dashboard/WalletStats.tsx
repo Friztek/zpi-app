@@ -2,6 +2,7 @@ import { createStyles, Progress, Box, Text, Group, Paper, SimpleGrid, Loader, Th
 import { IconArrowDownRight, IconArrowUpRight, IconDeviceAnalytics } from "@tabler/icons";
 import { useQuery } from "react-query";
 import { useAPICommunication } from "../../contexts/APICommunicationContext";
+import { numberToMoneyString } from "../../utils/utils-format";
 
 const useStyles = createStyles((theme) => ({
   progressLabel: {
@@ -71,19 +72,19 @@ export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
   const data = [
     {
       label: "Currency",
-      count: (Math.round(currencyTotalValue * 100) / 100).toString(),
+      count: (Math.round(currencyTotalValue * 100) / 100),
       part: Math.round((currencyTotalValue / totalValue) * 10000) / 100,
       color: "#136a8a",
     },
     {
       label: "Crypto Currency",
-      count: (Math.round(cryptoTotalValue * 100) / 100).toString(),
+      count: (Math.round(cryptoTotalValue * 100) / 100),
       part: Math.round((cryptoTotalValue / totalValue) * 10000) / 100,
       color: "#267871",
     },
     {
       label: "Metals",
-      count: (Math.round(metalTotalValue * 100) / 100).toString(),
+      count: (Math.round(metalTotalValue * 100) / 100),
       part: Math.round((metalTotalValue / totalValue) * 10000) / 100,
       color: "#00bf8f",
     },
@@ -106,7 +107,7 @@ export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
       </Text>
       <Group position="apart" align="flex-end" spacing={0}>
         <Text weight={700}>
-          {stat.count} {userPreferenceCurrency}
+          {numberToMoneyString(stat.count)} {userPreferenceCurrency}
         </Text>
         <Text color={stat.color} weight={700} size="sm" className={classes.statCount}>
           {stat.part}%
@@ -121,10 +122,10 @@ export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
       <Group position="apart">
         <Group align="flex-end" spacing="xs">
           <Text size="xl" weight={700}>
-            {roundedTotalValue} {userPreferenceCurrency}
+            { numberToMoneyString(roundedTotalValue) } {userPreferenceCurrency}
           </Text>
           <Text color="teal" className={classes.diff} size="sm" weight={700}>
-            <span>{diff}%</span>
+            <span>{ numberToMoneyString(diff) }%</span>
             <ThemeIcon
               color="gray"
               variant="light"

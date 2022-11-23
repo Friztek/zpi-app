@@ -72,7 +72,7 @@ const Wallet = () => {
             <WalletValue userPreferenceCurrency={userPreferenceQuery.data.preferenceCurrency} />
           </div>
           <div style={{ flex: 3, justifySelf: "end" }}>
-            <AddAsset assets={[]} />
+            <AddAsset />
           </div>
         </div>
         <div style={{ flex: 3 }}>
