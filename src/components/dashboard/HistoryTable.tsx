@@ -40,40 +40,37 @@ const useStyles = createStyles((theme) => ({
   datePickerInput: {
     input: {
       width: 350,
-    }
+    },
   },
 
   stackOnMobile: {
     [theme.fn.smallerThan("sm")]: {
       flexDirection: "column",
-    }
+    },
   },
 }));
 
 type HistoryTableProps = {
   assets: AssetDto[];
-}
-
+};
 
 export const HistoryTable = ({ assets }: HistoryTableProps) => {
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
 
   const dateToday = new Date();
-  const dateMonthAgo = sub(dateToday, {months: 1})
-
+  const dateMonthAgo = sub(dateToday, { months: 1 });
 
   const [dateRange, setDateRange] = useState<DateRangePickerValue>([dateMonthAgo, dateToday]);
 
   const context = useAPICommunication();
   const queryClient = useQueryClient();
 
-  const transactionsData = useQuery("transactionsDataHistory", async () => {
+  const transactionsData = useQuery(["transactionsDataHistory", dateRange], async () => {
     const fromDate = dateToOffsetDate(dateRange[0] === null ? undefined : dateRange[0]);
     const toDate = dateToOffsetDate(dateRange[1] === null ? undefined : dateRange[1]);
 
-    console.log("dateRange",dateRange)
-    const data = await context.transactionApi.apiTransactionsGet({from: fromDate, to: toDate});
+    const data = await context.transactionApi.apiTransactionsGet({ from: fromDate, to: toDate });
     const transactions = data.map((element) => {
       const assetData = assets.find((e) => e.name === element.assetIdentifier);
       return {
@@ -84,14 +81,7 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
       };
     });
     return transactions;
-  }, );
-
-
-  useEffect(() => {
-    if (dateRange[0] === null || dateRange[1] === null) return;
-
-    queryClient.invalidateQueries("transactionsDataHistory");
-  }, [dateRange[0], dateRange[1], queryClient])
+  });
 
   if (transactionsData.data === undefined) {
     return (
@@ -103,7 +93,6 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
 
   const transactions = transactionsData.data;
 
-  console.log("transactions NeW", transactions);
   const rows = transactions.map((row, index) => (
     <tr key={index}>
       <td>{row.assetIdentifier}</td>
@@ -119,7 +108,17 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
         <Text size="lg" weight={700}>
           Transactions history
         </Text>
-        <DateRangePicker className={classes.datePickerInput} aria-label="Pick date range" placeholder="Pick dates range"  icon={<IconCalendar size={16} />} value={dateRange} onChange={(value: DateRangePickerValue) => setDateRange(() => value)} />
+        <DateRangePicker
+          className={classes.datePickerInput}
+          aria-label="Pick date range"
+          placeholder="Pick dates range"
+          icon={<IconCalendar size={16} />}
+          defaultValue={dateRange}
+          onChange={(value: DateRangePickerValue) => {
+            if (value[0] === null || value[1] === null) return;
+            setDateRange(() => value);
+          }}
+        />
       </Flex>
       <Space h="sm"></Space>
       <ScrollArea sx={{ height: 500 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
