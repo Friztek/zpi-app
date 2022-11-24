@@ -8,6 +8,7 @@ import { WalletStats } from "../components/dashboard/WalletStats";
 import { HistoryTable } from "../components/dashboard/HistoryTable";
 import { useAPICommunication } from "../contexts/APICommunicationContext";
 import { useQuery } from "react-query";
+import { orderBy } from "lodash";
 
 const useStyles = createStyles((theme) => ({
   content: {
@@ -53,8 +54,7 @@ const Dashboard = () => {
 
   const walletHistoryData = useQuery("walletHistory", async () => {
     const data = await context.walletApi.apiWalletGet();
-    data.sort((data1, data2) => data1.dateStamp.getTime() - data2.dateStamp.getTime());
-    return data;
+    return orderBy(data, (wallet) => wallet.dateStamp);
   });
 
   const assetsData = useQuery("assets", async () => {
@@ -88,13 +88,13 @@ const Dashboard = () => {
         </Grid>
         <Space h="md" />
         <div style={{ paddingBottom: "1rem" }}>
-          <AssetsCarousel assets={assetsData.data}/>
+          <AssetsCarousel assets={assetsData.data} />
         </div>
         <Space h="md" />
         <Grid>
           <Grid.Col md={4}>{/* <AddAsset /> */}</Grid.Col>
           <Grid.Col md={8}>
-            <HistoryTable assets={assetsData.data}/>
+            <HistoryTable assets={assetsData.data} />
           </Grid.Col>
         </Grid>
       </div>
