@@ -11,7 +11,6 @@ type AssetsCarouselSlideProps = {
 };
 
 export const AssetsCarouselSlide = ({ assetName, gradient }: AssetsCarouselSlideProps) => {
-    console.log(assetName);
   const dateToday = new Date();
   const dateMonthAgo = sub(dateToday, { months: 1 });
 
@@ -21,13 +20,16 @@ export const AssetsCarouselSlide = ({ assetName, gradient }: AssetsCarouselSlide
     const from = dateToOffsetDate(dateMonthAgo);
     const data = await context.assetValuesApi.searchAssetValuesHistory({ assetName: assetName, from: from });
     const values = data.map((assetValueDto) => assetValueDto.value);
-    console.log("values", values, assetName);
     return values;
   });
 
   return (
     <Carousel.Slide>
-      <AssetChartBox name={assetName.toUpperCase()} data={assetValues.data === undefined ? [] : assetValues.data} gradient={gradient} />
+      <AssetChartBox
+        name={assetName.toUpperCase()}
+        data={assetValues.data === undefined ? [] : assetValues.data}
+        gradient={gradient}
+      />
     </Carousel.Slide>
   );
 };
