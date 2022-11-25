@@ -1,12 +1,14 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { createContext, FC, ReactNode, useContext } from "react";
-import { AssetsApi, Configuration, UserAssetsApi, WalletApi, UserPreferencesApi } from "../client-typescript";
+import { AssetsApi, Configuration, UserAssetsApi, WalletApi, UserPreferencesApi, TransactionApi, AssetValuesApi } from "../client-typescript";
 
 export type APICommunication = {
   assetsAPI: AssetsApi;
   userAssetsAPI: UserAssetsApi;
   userPreferenceAPI: UserPreferencesApi;
   walletApi: WalletApi;
+  transactionApi: TransactionApi;
+  assetValuesApi: AssetValuesApi;
 };
 
 const APICommunicationContext = createContext<APICommunication | null>(null);
@@ -28,6 +30,8 @@ export const APICommunicationContextProvider: FC<{
     userAssetsAPI: new UserAssetsApi(configuration),
     userPreferenceAPI: new UserPreferencesApi(configuration),
     walletApi: new WalletApi(configuration),
+    transactionApi: new TransactionApi(configuration),
+    assetValuesApi: new AssetValuesApi(configuration),
   };
 
   return <APICommunicationContext.Provider value={value}>{children}</APICommunicationContext.Provider>;

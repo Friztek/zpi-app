@@ -7,16 +7,17 @@ import { APICommunicationContextProvider } from "../contexts/APICommunicationCon
 import { ModalsProvider } from "@mantine/modals";
 import { useLocalStorage } from "@mantine/hooks";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { refetchOnWindowFocus: false, refetchOnMount: false } },
+});
 
 export default function App(props: AppProps) {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
-    key: 'color-scheme',
-    defaultValue: 'light',
+    key: "color-scheme",
+    defaultValue: "light",
   });
 
-  const toggleColorScheme = () =>
-    setColorScheme((current: string) => (current === 'dark' ? 'light' : 'dark'));
+  const toggleColorScheme = () => setColorScheme((current: string) => (current === "dark" ? "light" : "dark"));
 
   const { Component, pageProps } = props;
 

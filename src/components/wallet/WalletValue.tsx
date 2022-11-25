@@ -2,6 +2,7 @@ import { createStyles, Group, Paper, Text, ThemeIcon, SimpleGrid, Loader, Skelet
 import { IconArrowUpRight, IconArrowDownRight } from "@tabler/icons";
 import { useQuery } from "react-query";
 import { useAPICommunication } from "../../contexts/APICommunicationContext";
+import { numberToMoneyString } from "../../utils/utils-format";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -64,7 +65,7 @@ export function WalletValue({ userPreferenceCurrency }: WalletValueProps) {
                   weight={700}
                   sx={{ fontSize: 30 }}
                 >
-                  {totalValue + " " + userPreferenceCurrency.toUpperCase()}
+                  {numberToMoneyString(Math.round(totalValue * 100) / 100) + " " + userPreferenceCurrency.toUpperCase()}
                 </Text>
               </div>
               <ThemeIcon
@@ -85,7 +86,7 @@ export function WalletValue({ userPreferenceCurrency }: WalletValueProps) {
             </Group>
             <Text color="dimmed" size="sm" mt="md">
               <Text component="span" color={diff > 0 ? "teal" : "red"} weight={700}>
-                {diff}%
+                { numberToMoneyString(diff) }%
               </Text>{" "}
               {diff > 0 ? "increase" : "decrease"} compared to last month
             </Text>
