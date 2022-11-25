@@ -16,7 +16,7 @@ export const AssetsCarouselSlide = ({ assetName, gradient }: AssetsCarouselSlide
 
   const context = useAPICommunication();
 
-  const assetValues = useQuery("assetValues", async () => {
+  const assetValues = useQuery(["assetValues", assetName], async () => {
     const from = dateToOffsetDate(dateMonthAgo);
     const data = await context.assetValuesApi.searchAssetValuesHistory({ assetName: assetName, from: from });
     const values = data.map((assetValueDto) => assetValueDto.value);
