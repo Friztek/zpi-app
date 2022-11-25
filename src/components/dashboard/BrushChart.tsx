@@ -2,7 +2,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { chartGradient } from "./utils";
 import { useViewportSize } from "@mantine/hooks";
-import { useMantineTheme, MantineTheme } from '@mantine/core';
+import { useMantineTheme } from '@mantine/core';
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -77,13 +77,21 @@ export const BrushChart = ({ data }: BrushChartProps) => {
       tooltip: {
         theme: theme.colorScheme,
         y: {
+          formatter: undefined,
           title: {
-            formatter: () => { return "value"; }
+            formatter: () => { return "value:"; }
           },
         },
       },
       xaxis: {
         type: "datetime" as const,
+      },
+      yaxis: {
+        labels: {
+          formatter: function(value: number) {
+            return value.toFixed(2);
+          }
+        }
       },
     },
     seriesLine: [
@@ -125,6 +133,11 @@ export const BrushChart = ({ data }: BrushChartProps) => {
       },
       yaxis: {
         tickAmount: 2,
+        labels: {
+          formatter: function(value: number) {
+            return value.toFixed(2);
+          }
+        }
       },
     },
   };

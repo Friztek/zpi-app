@@ -19,7 +19,7 @@ import { exists, mapValues } from '../runtime';
  * @interface WalletDto
  */
 export interface WalletDto {
-    /**
+     /**
      * 
      * @type {number}
      * @memberof WalletDto
@@ -30,7 +30,7 @@ export interface WalletDto {
      * @type {Date}
      * @memberof WalletDto
      */
-    timeStamp: Date;
+    dateStamp: Date;
 }
 
 /**
@@ -55,7 +55,7 @@ export function WalletDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     return {
         
         'value': json['value'],
-        'timeStamp': (new Date(json['timeStamp'])),
+        'dateStamp': (new Date(json['dateStamp'])),
     };
 }
 
@@ -69,7 +69,7 @@ export function WalletDtoToJSON(value?: WalletDto | null): any {
     return {
         
         'value': value.value,
-        'timeStamp': (value.timeStamp.toISOString()),
+        'timeStamp': (value.dateStamp.toISOString()),
     };
 }
 

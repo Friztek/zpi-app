@@ -3,7 +3,6 @@ import {
   Button,
   Group,
   Space,
-  TextInput,
   Text,
   createStyles,
   Stack,
@@ -13,6 +12,7 @@ import {
   Paper,
   Box,
   Loader,
+  NumberInput,
 } from "@mantine/core";
 import { IconMoneybag, IconPlus, IconTrash } from "@tabler/icons";
 import { useState } from "react";
@@ -27,6 +27,12 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+const precisionMaping = [
+  { assetType: "metal", precision: 6 },
+  { assetType: "cryptoCurrency", precision: 8 },
+  { assetType: "currency", precision: 2 },
+];
+
 export type AddAssetProps = {
   assets: AssetDto[];
 };
@@ -37,17 +43,29 @@ export type AddTransactionModel = {
   assetType?: string;
 };
 
+export type PrecisionModel = {
+  id: number;
+  precision: number;
+};
+
 const initialValues: AddTransactionModel = {
   id: toNumber(uniqueId()),
   assetType: undefined,
   value: undefined,
 };
-export function AddAsset({ assets }: AddAssetProps) {
-  const { classes, theme } = useStyles();
+
+const initialPrecisionValues: PrecisionModel= {
+  id: toNumber(uniqueId()),
+  precision: 2,
+};
+
+export function AddAsset() {
+  const { classes } = useStyles();
 
   const queryClient = useQueryClient();
 
   const [formFields, setFormFields] = useState<AddTransactionModel[]>([initialValues]);
+  const [precision, setPrecision] = useState<PrecisionModel[]>([initialPrecisionValues]);
   const context = useAPICommunication();
 
   const assetQuery = useQuery("asset", async () => {
@@ -85,6 +103,25 @@ export function AddAsset({ assets }: AddAssetProps) {
     );
   };
 
+  const setPrecisionValue =  (id: number, assetType: string) => {
+    const foundPrecision = precisionMaping.find((val) => { val.assetType === assetType });
+    setPrecision((values) =>
+      values.map((val) => {
+        if (val.id === id) {
+          val.precision = foundPrecision ? foundPrecision.precision : 2;
+        }
+        return val;
+      })
+    );
+  };
+
+  const getPrecisionValue =  (id: number) => {
+    const foundPrecision = precision.find((val) => { val.id === id });
+    console.log("get precision", foundPrecision ? foundPrecision.precision : 2);
+    return foundPrecision ? foundPrecision.precision : 2;
+  };
+
+
   return (
     <Paper withBorder radius="md" p={"md"}>
       <Group>
@@ -103,18 +140,19 @@ export function AddAsset({ assets }: AddAssetProps) {
             {formFields.map((input, index) => {
               return (
                 <Flex align={"center"} gap={0} key={input.id}>
-                  <TextInput
+                  <NumberInput
                     radius={0}
                     style={{
                       flex: 1,
                     }}
                     type="number"
                     placeholder="1000"
+                    precision={getPrecisionValue(input.id)}
                     name="amount"
                     value={input.value}
-                    onChange={(event) => {
+                    onChange={(value) => {
                       updateAssetValue(input.id, {
-                        value: toNumber(event.target.value),
+                        value,
                       });
                     }}
                     rightSection={
@@ -130,6 +168,7 @@ export function AddAsset({ assets }: AddAssetProps) {
                           updateAssetValue(input.id, {
                             assetType: value,
                           });
+                          setPrecisionValue(input.id, input.assetType!);
                         }}
                         styles={{
                           input: {
