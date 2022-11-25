@@ -17,7 +17,11 @@ export const AssetsCarousel = ({ assets }: AssetsCarouselProps) => {
   ];
 
   const slides = assets.map((asset, index) => (
-   <AssetsCarouselSlide key={asset.name} assetName={asset.name} gradient={gradients[index % gradients.length]}></AssetsCarouselSlide>
+    <AssetsCarouselSlide
+      key={asset.name}
+      assetName={asset.name}
+      gradient={gradients[index % gradients.length]}
+    ></AssetsCarouselSlide>
   ));
 
   return (
