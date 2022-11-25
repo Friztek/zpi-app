@@ -3,11 +3,12 @@ import { Layout } from "../components/layout/Layout";
 import { BrushChart } from "../components/dashboard/BrushChart";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { AssetsCarousel } from "../components/dashboard/AssetsCarousel";
-import { Center, createStyles, Flex, Grid, Loader, Paper, Space, Stack } from "@mantine/core";
+import { Center, createStyles, Grid, Loader, Stack } from "@mantine/core";
 import { WalletStats } from "../components/dashboard/WalletStats";
 import { HistoryTable } from "../components/dashboard/HistoryTable";
 import { useAPICommunication } from "../contexts/APICommunicationContext";
 import { useQuery } from "react-query";
+import { PreferencesModal } from "../components/dashboard/PreferencesModal";
 import { orderBy } from "lodash";
 
 const useStyles = createStyles((theme) => ({
@@ -74,6 +75,7 @@ const Dashboard = () => {
   return (
     <Layout>
       <Grid gutter={"xs"} p={"lg"}>
+        <PreferencesModal></PreferencesModal>
         <Grid.Col md={8}>
           <Stack>
             <BrushChart data={walletData} />
@@ -82,7 +84,6 @@ const Dashboard = () => {
         </Grid.Col>
         <Grid.Col md={4}>
           <Stack>
-            {/* <Paper withBorder p="lg" radius="md" /> */}
             <WalletStats userPreferenceCurrency={userPreferenceQuery.data.preferenceCurrency.toUpperCase()} />
             <HistoryTable assets={assetsData.data} />
           </Stack>

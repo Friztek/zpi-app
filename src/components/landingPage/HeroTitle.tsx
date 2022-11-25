@@ -1,12 +1,5 @@
-import {
-  Title,
-  Text,
-  Container,
-  Button,
-  Overlay,
-  createStyles,
-} from "@mantine/core";
-import Link from "next/link";
+import { useAuth0 } from "@auth0/auth0-react";
+import { Title, Text, Container, Button, Overlay, createStyles } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -98,6 +91,7 @@ const useStyles = createStyles((theme) => ({
 
 export function HeroTitle() {
   const { classes } = useStyles();
+  const { loginWithRedirect } = useAuth0();
 
   return (
     <div className={classes.wrapper}>
@@ -112,23 +106,16 @@ export function HeroTitle() {
         </Title>
 
         <Container size={640}>
-          <Text
-            size="lg"
-            className={classes.description}
-            sx={{ marginBottom: 5 }}
-          >
-            Track your wallet total value in prefered currency. All calculated
-            by current exchange rates. Just add your assets and see how your
-            wallet value changes.
+          <Text size="lg" className={classes.description} sx={{ marginBottom: 5 }}>
+            Track your wallet total value in prefered currency. All calculated by current exchange rates. Just add your
+            assets and see how your wallet value changes.
           </Text>
         </Container>
 
         <div className={classes.controls}>
-          <Link href="/api/auth/login">
-            <Button className={classes.control} variant="white" size="lg">
-              Sign in and get started
-            </Button>
-          </Link>
+          <Button onClick={() => loginWithRedirect({redirectUri: "http://localhost:3000/dashboard"})} className={classes.control} variant="white" size="lg">
+            Sign in and get started
+          </Button>
         </div>
       </div>
     </div>
