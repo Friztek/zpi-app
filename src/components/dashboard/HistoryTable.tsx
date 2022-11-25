@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createStyles, Table, ScrollArea, Card, Center, Loader, Text, Flex, Space } from "@mantine/core";
+import { createStyles, Table, ScrollArea, Card, Center, Loader, Text, Flex, Space, Paper } from "@mantine/core";
 import { useAPICommunication } from "../../contexts/APICommunicationContext";
 import { useQuery, useQueryClient } from "react-query";
 import { DateRangePicker, DateRangePickerValue } from "@mantine/dates";
@@ -27,20 +27,10 @@ const useStyles = createStyles((theme) => ({
 
   card: {
     backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
-    padding: "1rem 3rem !important",
-    [theme.fn.smallerThan("md")]: {
-      padding: 0,
-    },
   },
 
   scrolled: {
     boxShadow: theme.shadows.sm,
-  },
-
-  datePickerInput: {
-    input: {
-      width: 350,
-    },
   },
 
   stackOnMobile: {
@@ -103,13 +93,12 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
   ));
 
   return (
-    <Card className={classes.card}>
+    <Paper withBorder p="lg" radius="md">
       <Flex direction="row" className={classes.stackOnMobile} justify="space-between" align="center">
         <Text size="lg" weight={700}>
           Transactions history
         </Text>
         <DateRangePicker
-          className={classes.datePickerInput}
           aria-label="Pick date range"
           placeholder="Pick dates range"
           icon={<IconCalendar size={16} />}
@@ -134,6 +123,6 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
           <tbody>{rows}</tbody>
         </Table>
       </ScrollArea>
-    </Card>
+    </Paper>
   );
 };
