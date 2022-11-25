@@ -3,7 +3,7 @@ import { Layout } from "../components/layout/Layout";
 import { BrushChart } from "../components/dashboard/BrushChart";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { AssetsCarousel } from "../components/dashboard/AssetsCarousel";
-import { Center, createStyles, Grid, Loader, Paper, Space } from "@mantine/core";
+import { Center, createStyles, Flex, Grid, Loader, Paper, Space, Stack } from "@mantine/core";
 import { WalletStats } from "../components/dashboard/WalletStats";
 import { HistoryTable } from "../components/dashboard/HistoryTable";
 import { useAPICommunication } from "../contexts/APICommunicationContext";
@@ -11,10 +11,6 @@ import { useQuery } from "react-query";
 import { orderBy } from "lodash";
 
 const useStyles = createStyles((theme) => ({
-  content: {
-    padding: 10,
-  },
-
   flex: {
     [theme.fn.smallerThan("md")]: {
       flexDirection: "column",
@@ -77,27 +73,21 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className={classes.content}>
-        <Grid>
-          <Grid.Col md={9}>
+      <Grid gutter={"xs"} p={"lg"}>
+        <Grid.Col md={8}>
+          <Stack>
             <BrushChart data={walletData} />
-          </Grid.Col>
-          <Grid.Col md={3}>
+            <AssetsCarousel assets={assetsData.data} />
+          </Stack>
+        </Grid.Col>
+        <Grid.Col md={4}>
+          <Stack>
+            {/* <Paper withBorder p="lg" radius="md" /> */}
             <WalletStats userPreferenceCurrency={userPreferenceQuery.data.preferenceCurrency.toUpperCase()} />
-          </Grid.Col>
-        </Grid>
-        <Space h="md" />
-        <div style={{ paddingBottom: "1rem" }}>
-          <AssetsCarousel assets={assetsData.data} />
-        </div>
-        <Space h="md" />
-        <Grid>
-          <Grid.Col md={4}>{/* <AddAsset /> */}</Grid.Col>
-          <Grid.Col md={8}>
             <HistoryTable assets={assetsData.data} />
-          </Grid.Col>
-        </Grid>
-      </div>
+          </Stack>
+        </Grid.Col>
+      </Grid>
     </Layout>
   );
 };
