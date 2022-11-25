@@ -31,7 +31,6 @@ export const AssetsCarousel = ({ assets }: AssetsCarouselProps) => {
       loop
       align="start"
       dragFree
-      mx="auto"
       slidesToScroll={1}
       breakpoints={[
         { maxWidth: "md", slideSize: "50%" },
