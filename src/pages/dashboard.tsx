@@ -8,6 +8,7 @@ import { WalletStats } from "../components/dashboard/WalletStats";
 import { HistoryTable } from "../components/dashboard/HistoryTable";
 import { useAPICommunication } from "../contexts/APICommunicationContext";
 import { useQuery } from "react-query";
+import { PreferencesModal } from "../components/dashboard/PreferencesModal";
 
 const walletData = [
   [1666224000000, 31.34],
@@ -142,6 +143,7 @@ const Dashboard = () => {
   return (
     <Layout>
       <div className={classes.content}>
+        <PreferencesModal></PreferencesModal>
         <Grid>
           <Grid.Col md={9}>
             <BrushChart data={walletData} />

@@ -70,7 +70,7 @@ export default function Topbar({ links }: HeaderSimpleProps) {
                   }}
                 />
               ) : (
-                <Button variant="default" onClick={loginWithRedirect}>
+                <Button variant="default" onClick={() => loginWithRedirect({redirectUri: "http://localhost:3000/dashboard"})}>
                   Log in
                 </Button>
               )}
