@@ -13,6 +13,8 @@ import {
   Box,
   Loader,
   NumberInput,
+  Input,
+  Center,
 } from "@mantine/core";
 import { IconMoneybag, IconPlus, IconTrash } from "@tabler/icons";
 import { useState } from "react";
@@ -54,7 +56,7 @@ const initialValues: AddTransactionModel = {
   value: undefined,
 };
 
-const initialPrecisionValues: PrecisionModel= {
+const initialPrecisionValues: PrecisionModel = {
   id: toNumber(uniqueId()),
   precision: 2,
 };
@@ -103,8 +105,10 @@ export function AddAsset() {
     );
   };
 
-  const setPrecisionValue =  (id: number, assetType: string) => {
-    const foundPrecision = precisionMaping.find((val) => { val.assetType === assetType });
+  const setPrecisionValue = (id: number, assetType: string) => {
+    const foundPrecision = precisionMaping.find((val) => {
+      val.assetType === assetType;
+    });
     setPrecision((values) =>
       values.map((val) => {
         if (val.id === id) {
@@ -115,12 +119,13 @@ export function AddAsset() {
     );
   };
 
-  const getPrecisionValue =  (id: number) => {
-    const foundPrecision = precision.find((val) => { val.id === id });
+  const getPrecisionValue = (id: number) => {
+    const foundPrecision = precision.find((val) => {
+      val.id === id;
+    });
     console.log("get precision", foundPrecision ? foundPrecision.precision : 2);
     return foundPrecision ? foundPrecision.precision : 2;
   };
-
 
   return (
     <Paper withBorder radius="md" p={"md"}>
@@ -132,62 +137,78 @@ export function AddAsset() {
       </Group>
 
       {assetQuery.isLoading ? (
-        <Loader size="xl" variant="dots" />
+        <Center h={144}>
+          <Loader size="xl" variant="dots" />
+        </Center>
       ) : (
         <div>
           <Space h="md" />
           <Stack spacing={"sm"}>
             {formFields.map((input, index) => {
               return (
-                <Flex align={"center"} gap={0} key={input.id}>
-                  <NumberInput
-                    radius={0}
+                <Flex direction="row" key={input.id} align={"stretch"}>
+                  <Flex
                     style={{
-                      flex: 1,
+                      flex: 10,
                     }}
-                    type="number"
-                    placeholder="1000"
-                    precision={getPrecisionValue(input.id)}
-                    name="amount"
-                    value={input.value}
-                    onChange={(value) => {
-                      updateAssetValue(input.id, {
-                        value,
-                      });
-                    }}
-                    rightSection={
-                      <Select
-                        radius={0}
-                        data={assetQuery.data!.map((asset) => ({
-                          value: asset.name,
-                          label: `${asset.friendlyName}`,
-                        }))}
-                        value={input.assetType}
-                        onChange={(value) => {
-                          if (value === null) return;
-                          updateAssetValue(input.id, {
-                            assetType: value,
-                          });
-                          setPrecisionValue(input.id, input.assetType!);
-                        }}
-                        styles={{
-                          input: {
-                            fontWeight: 500,
-                          },
-                        }}
-                      />
-                    }
-                    rightSectionWidth={150}
-                  />
-                  {index !== 0 ? (
-                    <Button
-                      variant="default"
+                    direction="column"
+                    align={"center"}
+                    gap={0}
+                  >
+                    <Input style={{ width: "100%" }} radius={0} placeholder="Asset origin (ex. cash, bank)"></Input>
+                    <NumberInput
                       radius={0}
-                      style={{ borderLeft: 0 }}
-                      onClick={() => removeInput(input.id)}
-                    >
-                      <IconTrash className={classes.icon} stroke="1.2" size={19} />
-                    </Button>
+                      style={{
+                        flex: 1,
+                        width: "100%",
+                      }}
+                      type="number"
+                      placeholder="1000"
+                      precision={getPrecisionValue(input.id)}
+                      name="amount"
+                      value={input.value}
+                      onChange={(value) => {
+                        updateAssetValue(input.id, {
+                          value,
+                        });
+                      }}
+                      rightSection={
+                        <Select
+                        placeholder="Asset type"
+                          radius={0}
+                          data={assetQuery.data!.map((asset) => ({
+                            value: asset.name,
+                            label: `${asset.friendlyName}`,
+                          }))}
+                          value={input.assetType}
+                          onChange={(value) => {
+                            if (value === null) return;
+                            updateAssetValue(input.id, {
+                              assetType: value,
+                            });
+                            setPrecisionValue(input.id, input.assetType!);
+                          }}
+                          styles={{
+                            input: {
+                              fontWeight: 500,
+                            },
+                          }}
+                        />
+                      }
+                      rightSectionWidth={150}
+                    />
+                  </Flex>
+                  {index !== 0 ? (
+                    <Flex direction={"column"}>
+                      <Button
+                        variant="default"
+                        radius={0}
+                        style={{ border: "none", background: "none", height: "100%" }}
+                        onClick={() => removeInput(input.id)}
+                      >
+                        <IconTrash className={classes.icon} stroke="1.2" size={19} />
+                      </Button>
+                    </Flex>
                   ) : (
                     <Box w={56}></Box>
                   )}
