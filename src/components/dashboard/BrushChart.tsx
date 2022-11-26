@@ -2,7 +2,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { chartGradient } from "./utils";
 import { useViewportSize } from "@mantine/hooks";
-import { useMantineTheme } from '@mantine/core';
+import { useMantineTheme } from "@mantine/core";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -18,7 +18,7 @@ export const BrushChart = ({ data }: BrushChartProps) => {
   const { height } = useViewportSize();
 
   const chartHeight = () => {
-   return Math.max(350, height / 2.8 )
+    return Math.max(350, height / 2.8);
   };
 
   const foreColor = () => {
@@ -79,7 +79,9 @@ export const BrushChart = ({ data }: BrushChartProps) => {
         y: {
           formatter: undefined,
           title: {
-            formatter: () => { return "value:"; }
+            formatter: () => {
+              return "value:";
+            },
           },
         },
       },
@@ -88,10 +90,10 @@ export const BrushChart = ({ data }: BrushChartProps) => {
       },
       yaxis: {
         labels: {
-          formatter: function(value: number) {
+          formatter: function (value: number) {
             return value.toFixed(2);
-          }
-        }
+          },
+        },
       },
     },
     seriesLine: [
@@ -136,8 +138,8 @@ export const BrushChart = ({ data }: BrushChartProps) => {
         labels: {
           formatter: function(value: number) {
             return value.toFixed(2);
-          }
-        }
+          },
+        },
       },
     },
   };
@@ -150,7 +152,7 @@ export const BrushChart = ({ data }: BrushChartProps) => {
           series={state.series}
           type="line"
           height={chartHeight()}
-          minHeight={300}
+          style={{ minHeight: 300 }}
         />
       </div>
       <div id="chart-line">
