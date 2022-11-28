@@ -19,7 +19,7 @@ import { exists, mapValues } from '../runtime';
  * @interface WalletDto
  */
 export interface WalletDto {
-     /**
+    /**
      * 
      * @type {number}
      * @memberof WalletDto
@@ -39,7 +39,7 @@ export interface WalletDto {
 export function instanceOfWalletDto(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "value" in value;
-    isInstance = isInstance && "timeStamp" in value;
+    isInstance = isInstance && "dateStamp" in value;
 
     return isInstance;
 }
@@ -69,7 +69,7 @@ export function WalletDtoToJSON(value?: WalletDto | null): any {
     return {
         
         'value': value.value,
-        'timeStamp': (value.dateStamp.toISOString()),
+        'dateStamp': (value.dateStamp.toISOString().substr(0,10)),
     };
 }
 

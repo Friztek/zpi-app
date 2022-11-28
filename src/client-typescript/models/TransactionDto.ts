@@ -37,6 +37,12 @@ export interface TransactionDto {
      * @memberof TransactionDto
      */
     timeStamp: Date;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionDto
+     */
+    description: string;
 }
 
 /**
@@ -47,6 +53,7 @@ export function instanceOfTransactionDto(value: object): boolean {
     isInstance = isInstance && "assetIdentifier" in value;
     isInstance = isInstance && "value" in value;
     isInstance = isInstance && "timeStamp" in value;
+    isInstance = isInstance && "description" in value;
 
     return isInstance;
 }
@@ -64,6 +71,7 @@ export function TransactionDtoFromJSONTyped(json: any, ignoreDiscriminator: bool
         'assetIdentifier': json['assetIdentifier'],
         'value': json['value'],
         'timeStamp': (new Date(json['timeStamp'])),
+        'description': json['description'],
     };
 }
 
@@ -79,6 +87,7 @@ export function TransactionDtoToJSON(value?: TransactionDto | null): any {
         'assetIdentifier': value.assetIdentifier,
         'value': value.value,
         'timeStamp': (value.timeStamp.toISOString()),
+        'description': value.description,
     };
 }
 

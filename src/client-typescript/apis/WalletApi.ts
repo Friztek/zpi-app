@@ -16,16 +16,21 @@
 import * as runtime from '../runtime';
 import type {
   FullWalletDto,
+  ProblemDetails,
   WalletDto,
 } from '../models';
 import {
     FullWalletDtoFromJSON,
+    FullWalletDtoToJSON,
+    ProblemDetailsFromJSON,
+    ProblemDetailsToJSON,
     WalletDtoFromJSON,
+    WalletDtoToJSON,
 } from '../models';
 
 export interface ApiWalletGetRequest {
-    from?: string;
-    to?: string;
+    from?: Date;
+    to?: Date;
 }
 
 /**
@@ -39,11 +44,11 @@ export class WalletApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         if (requestParameters.from !== undefined) {
-            queryParameters['from'] = requestParameters.from;
+            queryParameters['from'] = (requestParameters.from as any).toISOString().substr(0,10);
         }
 
         if (requestParameters.to !== undefined) {
-            queryParameters['to'] = requestParameters.to;
+            queryParameters['to'] = (requestParameters.to as any).toISOString().substr(0,10);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

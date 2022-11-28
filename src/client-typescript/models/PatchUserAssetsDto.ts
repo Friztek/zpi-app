@@ -44,6 +44,12 @@ export interface PatchUserAssetsDto {
      * @memberof PatchUserAssetsDto
      */
     assetName: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchUserAssetsDto
+     */
+    description: string;
 }
 
 /**
@@ -54,6 +60,7 @@ export function instanceOfPatchUserAssetsDto(value: object): boolean {
     isInstance = isInstance && "value" in value;
     isInstance = isInstance && "type" in value;
     isInstance = isInstance && "assetName" in value;
+    isInstance = isInstance && "description" in value;
 
     return isInstance;
 }
@@ -71,6 +78,7 @@ export function PatchUserAssetsDtoFromJSONTyped(json: any, ignoreDiscriminator: 
         'value': json['value'],
         'type': OperationTypeFromJSON(json['type']),
         'assetName': json['assetName'],
+        'description': json['description'],
     };
 }
 
@@ -86,6 +94,7 @@ export function PatchUserAssetsDtoToJSON(value?: PatchUserAssetsDto | null): any
         'value': value.value,
         'type': OperationTypeToJSON(value.type),
         'assetName': value.assetName,
+        'description': value.description,
     };
 }
 
