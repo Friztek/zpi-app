@@ -20,6 +20,7 @@
     "@mantine/hooks": "^5.7.1",
     "@mantine/modals": "^5.7.1",
     "@mantine/next": "^5.7.1",
+    "@mantine/notifications": "^5.8.4",
     "@mantine/prism": "^5.7.1",
     "@tabler/icons": "^1.102.0",
     "apexcharts": "^3.36.0",
