@@ -7,6 +7,7 @@ import { APICommunicationContextProvider } from "../contexts/APICommunicationCon
 import { ModalsProvider } from "@mantine/modals";
 import { useLocalStorage } from "@mantine/hooks";
 import { TransactionModal } from "../components/modals/TransactionModal";
+import { PreferencesModal } from "../components/dashboard/PreferencesModal";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, refetchOnMount: false } },
@@ -48,6 +49,7 @@ export default function App(props: AppProps) {
               <QueryClientProvider client={queryClient}>
                 <ModalsProvider modals={{ transactionModal: TransactionModal }}>
                   <Component {...pageProps} />
+                  <PreferencesModal />
                 </ModalsProvider>
               </QueryClientProvider>
             </APICommunicationContextProvider>
