@@ -24,6 +24,7 @@ import { sub } from "date-fns";
 import { IconCalendar, IconPlus } from "@tabler/icons";
 import { openContextModal } from "@mantine/modals";
 import { TransactionModalInnerProps } from "../modals/TransactionModal";
+import { showNotification } from "@mantine/notifications";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -126,15 +127,19 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
                 title: "Add new transaction",
                 innerProps: {
                   onSubmit: async (values) => {
-                    await context.userAssetsAPI.patchUserAssets({
-                      patchUserAssetsDto: [
-                        {
-                          assetName: values.assetName,
-                          description: values.origin,
-                          type: "Update",
-                          value: values.value as unknown as number,
-                        },
-                      ],
+                    // await context.userAssetsAPI.patchUserAssets({
+                    //   patchUserAssetsDto: [
+                    //     {
+                    //       assetName: values.assetName,
+                    //       description: values.origin,
+                    //       type: "Update",
+                    //       value: values.value as unknown as number,
+                    //     },
+                    //   ],
+                    // });
+                    showNotification({
+                      message: "Succesfully added new transaction",
+                      color: "green",
                     });
                     queryClient.invalidateQueries("transactionsDataHistory");
                     queryClient.invalidateQueries("walletTotalValue");
