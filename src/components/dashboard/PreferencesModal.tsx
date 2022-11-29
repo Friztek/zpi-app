@@ -1,10 +1,11 @@
-import { Button, Group, Paper, Text, createStyles, Switch, Loader, Center, Modal } from "@mantine/core";
+import { Button, Group, Paper, Text, createStyles, Switch, Loader, Center, Modal, Flex, Stack } from "@mantine/core";
 import { IconTools } from "@tabler/icons";
 import { useState } from "react";
 import { CurrencySwitch } from "../profile/CurrencySwitch";
 import { useAPICommunication } from "../../contexts/APICommunicationContext";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { UpdateUserPreferencesRequest, UserPreferencesDto } from "../../client-typescript";
+import { useToggle } from "@mantine/hooks";
 
 const useStyles = createStyles((theme) => ({
   switch: {
@@ -21,20 +22,21 @@ export const PreferencesModal = () => {
   const context = useAPICommunication();
 
   const [userPreferences, setUserPreferences] = useState<UserPreferencesDto>();
-
-  const [opened, setOpened] = useState<boolean>(true);
+  const [opened, setOpened] = useState<boolean>(false);
+  const [isLoading, toogleLoading] = useToggle([false, true]);
 
   const userPreferencesQuery = useQuery("userPreferences", async () => {
     const data = await context.userPreferenceAPI.getUserPreferences();
     setUserPreferences(data);
+    setOpened(data.isDefault);
     return data;
   });
 
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
-    (patchUserPreferencesDto: UpdateUserPreferencesRequest) => {
-      return context.userPreferenceAPI.updateUserPreferences(patchUserPreferencesDto);
+    async (patchUserPreferencesDto: UpdateUserPreferencesRequest) => {
+      return await context.userPreferenceAPI.updateUserPreferences(patchUserPreferencesDto);
     },
     {
       onSuccess: () => {
@@ -43,62 +45,54 @@ export const PreferencesModal = () => {
     }
   );
 
-  const saveForm = () => {
-    mutation.mutate({ updateUserPreferencesDto: userPreferences });
-    setOpened(true);
+  const saveForm = async (command: UserPreferencesDto) => {
+    await mutation.mutateAsync({ updateUserPreferencesDto: command });
+    setOpened(false);
+    toogleLoading();
   };
 
+  if (!userPreferences) return null;
   return (
-    <Modal centered opened={opened} onClose={() => setOpened(false)}>
-      <Paper withBorder p="md" shadow="md" radius="md" style={{ minHeight: 200 }}>
-        <Group
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
+    <Modal
+      centered
+      opened={opened}
+      onClose={() => {
+        saveForm(userPreferencesQuery.data!);
+        setOpened(false);
+      }}
+      title="Set preferences"
+    >
+      <Stack spacing={2}>
+        <CurrencySwitch
+          value={userPreferences.preferenceCurrency}
+          onChange={(value: string) => setUserPreferences((prev) => ({ ...prev!, preferenceCurrency: value }))}
+          disabled={false}
+        />
+        <Switch
+          classNames={classes}
+          label="Do you want to recieve alerts on email?"
+          checked={userPreferences.alertsOnEmail}
+          onChange={(event) => setUserPreferences((prev) => ({ ...prev!, alertsOnEmail: event.target.checked }))}
+          styles={{ label: { color: " !important" } }}
+        />
+        <Switch
+          classNames={classes}
+          label="Do you want to recieve weekly reports on email?"
+          checked={userPreferences.weeklyReports}
+          onChange={(event) => {
+            setUserPreferences((prev) => ({ ...prev!, weeklyReports: event.target.checked }));
           }}
-        >
-          <Group>
-            <IconTools stroke={1.5} size={20} />
-            <Text size="xl">Preferences</Text>
-          </Group>
-        </Group>
-        {userPreferences === undefined ? (
-          <Center h={120}>
-            <Loader size="xl" variant="dots" />
-          </Center>
-        ) : (
-          <div>
-            <CurrencySwitch
-              value={userPreferences.preferenceCurrency}
-              onChange={(value: string) => setUserPreferences((prev) => ({ ...prev!, preferenceCurrency: value }))}
-              disabled={false}
-            />
-            <Switch
-              classNames={classes}
-              label="Do you want to recieve alerts on email?"
-              checked={userPreferences.alertsOnEmail}
-              onChange={(event) => setUserPreferences((prev) => ({ ...prev!, alertsOnEmail: event.target.checked }))}
-              styles={{ label: { color: " !important" } }}
-            />
-            <Switch
-              classNames={classes}
-              label="Do you want to recieve weekly reports on email?"
-              checked={userPreferences.weeklyReports}
-              onChange={(event) => {
-                console.log("event", event);
-                setUserPreferences((prev) => ({ ...prev!, weeklyReports: event.target.checked }));
-              }}
-            />
+        />
+      </Stack>
 
-            <Group position="center" mt="xl">
-              <Button variant="outline" onClick={() => saveForm()}>
-                Save
-              </Button>
-            </Group>
-          </div>
-        )}
-      </Paper>
+      <Flex justify={"space-between"} direction="row" mt="xl">
+        <Button variant="default" onClick={() => saveForm(userPreferencesQuery.data!)}>
+          Keep defaults
+        </Button>
+        <Button variant="filled" onClick={() => saveForm(userPreferences)} loading={isLoading}>
+          Save
+        </Button>
+      </Flex>
     </Modal>
   );
-}
+};
