@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { APICommunicationContextProvider } from "../contexts/APICommunicationContext";
 import { ModalsProvider } from "@mantine/modals";
 import { useLocalStorage } from "@mantine/hooks";
+import { TransactionModal } from "../components/modals/TransactionModal";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, refetchOnMount: false } },
@@ -43,13 +44,13 @@ export default function App(props: AppProps) {
               colorScheme: colorScheme,
             }}
           >
-            <ModalsProvider>
-              <APICommunicationContextProvider>
-                <QueryClientProvider client={queryClient}>
+            <APICommunicationContextProvider>
+              <QueryClientProvider client={queryClient}>
+                <ModalsProvider modals={{ transactionModal: TransactionModal }}>
                   <Component {...pageProps} />
-                </QueryClientProvider>
-              </APICommunicationContextProvider>
-            </ModalsProvider>
+                </ModalsProvider>
+              </QueryClientProvider>
+            </APICommunicationContextProvider>
           </MantineProvider>
         </ColorSchemeProvider>
       </Auth0Provider>

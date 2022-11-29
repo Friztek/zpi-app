@@ -39,6 +39,14 @@ interface WalletStatsProps {
   userPreferenceCurrency: string;
 }
 
+function calculatePart(assetValue: number, total: number): number {
+  return Math.round((assetValue / total) * 10000) / 100;
+}
+
+function calculateCount(assetValue: number): number {
+  return Math.round(assetValue * 100) / 100;
+}
+
 export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
   const { classes } = useStyles();
   const context = useAPICommunication();
@@ -49,8 +57,7 @@ export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
 
   const walletLastMonthTotalValueQuery = useQuery("walletLastMonthTotalValue", async () => {
     const lastDayOfMonth = lastDayOfPreviousMonth();
-    const formattedLastDayOfMonth = format(lastDayOfMonth, "yyyy-MM-dd");
-    return await context.walletApi.apiWalletGet({ from: formattedLastDayOfMonth, to: formattedLastDayOfMonth });
+    return await context.walletApi.apiWalletGet({ from: lastDayOfMonth, to: lastDayOfMonth });
   });
 
   if (
@@ -73,20 +80,20 @@ export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
   const data = [
     {
       label: "Currency",
-      count: Math.round(currencyTotalValue * 100) / 100,
-      part: Math.round((currencyTotalValue / totalValue) * 10000) / 100,
+      count: calculateCount(currencyTotalValue),
+      part: calculatePart(currencyTotalValue, totalValue),
       color: "#136a8a",
     },
     {
       label: "Crypto Currency",
-      count: Math.round(cryptoTotalValue * 100) / 100,
-      part: Math.round((cryptoTotalValue / totalValue) * 10000) / 100,
+      count: calculateCount(cryptoTotalValue),
+      part: calculatePart(cryptoTotalValue, totalValue),
       color: "#267871",
     },
     {
       label: "Metals",
-      count: Math.round(metalTotalValue * 100) / 100,
-      part: Math.round((metalTotalValue / totalValue) * 10000) / 100,
+      count: calculateCount(metalTotalValue),
+      part: calculatePart(metalTotalValue, totalValue),
       color: "#00bf8f",
     },
   ];
@@ -124,44 +131,46 @@ export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
   const roundedTotalValue = Math.round(totalValue * 100) / 100;
   return (
     <Paper withBorder p="lg" radius="md">
-      {diff ? (
-        <>
-          <Group position="apart">
-            <Group align="flex-end" spacing="xs">
-              <Text size="xl" weight={700}>
-                {numberToMoneyString(roundedTotalValue)} {userPreferenceCurrency}
-              </Text>
-              <Text color="teal" className={classes.diff} size="sm" weight={700}>
-                <span>{numberToMoneyString(diff)}%</span>
-                <ThemeIcon
-                  color="gray"
-                  variant="light"
-                  sx={(theme) => ({
-                    color: diff! > 0 ? theme.colors.teal[6] : theme.colors.red[6],
-                  })}
-                  size={38}
-                  radius="md"
-                >
-                  {diff > 0 ? (
-                    <IconArrowUpRight size={25} stroke={1.5}></IconArrowUpRight>
-                  ) : (
-                    <IconArrowDownRight size={25} stroke={1.5}></IconArrowDownRight>
-                  )}
-                </ThemeIcon>
-              </Text>
-            </Group>
-            <IconDeviceAnalytics size={20} className={classes.icon} stroke={1.5} />
-          </Group>
-
-          <Text color="dimmed" size="sm">
-            Total wallet value compared to previous month
+      <Group position="apart">
+        <Group align="flex-end" spacing="xs">
+          <Text size="xl" weight={700}>
+            {numberToMoneyString(roundedTotalValue)} {userPreferenceCurrency}
           </Text>
-          <Progress sections={segments} size={34} classNames={{ label: classes.progressLabel }} mt={40} />
-        </>
+          {diff && (
+            <Text color="teal" className={classes.diff} size="sm" weight={700}>
+              <span>{numberToMoneyString(diff)}%</span>
+              <ThemeIcon
+                color="gray"
+                variant="light"
+                sx={(theme) => ({
+                  color: diff! > 0 ? theme.colors.teal[6] : theme.colors.red[6],
+                })}
+                size={38}
+                radius="md"
+              >
+                {diff > 0 ? (
+                  <IconArrowUpRight size={25} stroke={1.5}></IconArrowUpRight>
+                ) : (
+                  <IconArrowDownRight size={25} stroke={1.5}></IconArrowDownRight>
+                )}
+              </ThemeIcon>
+            </Text>
+          )}
+        </Group>
+        <IconDeviceAnalytics size={20} className={classes.icon} stroke={1.5} />
+      </Group>
+      {roundedTotalValue !== 0 ? (
+        <Text color="dimmed" size="sm">
+          Total wallet value
+          {diff && " compared to previous month"}
+        </Text>
       ) : (
-        <Text size="xl" weight={400}>
+        <Text size="md" weight={400}>
           Your wallet is empty, add some assets!
         </Text>
+      )}
+      {roundedTotalValue !== 0 && (
+        <Progress sections={segments} size={34} classNames={{ label: classes.progressLabel }} mt={"lg"} />
       )}
 
       <SimpleGrid cols={1} mt="xl" mb="md">

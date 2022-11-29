@@ -3,7 +3,7 @@ import { Layout } from "../components/layout/Layout";
 import { BrushChart } from "../components/dashboard/BrushChart";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { AssetsCarousel } from "../components/dashboard/AssetsCarousel";
-import { Center, createStyles, Grid, Loader, Stack } from "@mantine/core";
+import { Box, Center, createStyles, Grid, Loader, Stack } from "@mantine/core";
 import { WalletStats } from "../components/dashboard/WalletStats";
 import { HistoryTable } from "../components/dashboard/HistoryTable";
 import { useAPICommunication } from "../contexts/APICommunicationContext";
@@ -74,16 +74,15 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <Grid gutter={"xs"} p={"lg"}>
-        <PreferencesModal></PreferencesModal>
-        <Grid.Col md={8}>
-          <Stack>
+      <Grid gutter={"md"} pt={"lg"} pl={"md"} maw={"100%"} mah={"100%"} h={"100%"} justify="space-between">
+        <Grid.Col md={8} h={"100%"}>
+          <Stack justify={"space-between"} h={"100%"}>
             <BrushChart data={walletData} />
             <AssetsCarousel assets={assetsData.data} />
           </Stack>
         </Grid.Col>
         <Grid.Col md={4}>
-          <Stack>
+          <Stack h="100%">
             <WalletStats userPreferenceCurrency={userPreferenceQuery.data.preferenceCurrency.toUpperCase()} />
             <HistoryTable assets={assetsData.data} />
           </Stack>

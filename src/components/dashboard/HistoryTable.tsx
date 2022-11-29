@@ -1,12 +1,29 @@
 import { useEffect, useState } from "react";
-import { createStyles, Table, ScrollArea, Card, Center, Loader, Text, Flex, Space, Paper } from "@mantine/core";
+import {
+  createStyles,
+  Table,
+  ScrollArea,
+  Card,
+  Center,
+  Loader,
+  Text,
+  Flex,
+  Space,
+  Paper,
+  Group,
+  Button,
+  Stack,
+  Box,
+} from "@mantine/core";
 import { useAPICommunication } from "../../contexts/APICommunicationContext";
 import { useQuery, useQueryClient } from "react-query";
 import { DateRangePicker, DateRangePickerValue } from "@mantine/dates";
 import { dateToOffsetDate } from "../../utils/utils-format";
 import { AssetDto } from "../../client-typescript";
 import { sub } from "date-fns";
-import { IconCalendar } from "@tabler/icons";
+import { IconCalendar, IconPlus } from "@tabler/icons";
+import { openContextModal } from "@mantine/modals";
+import { TransactionModalInnerProps } from "../modals/TransactionModal";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -57,8 +74,8 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
   const queryClient = useQueryClient();
 
   const transactionsData = useQuery(["transactionsDataHistory", dateRange], async () => {
-    const fromDate = dateToOffsetDate(dateRange[0] === null ? undefined : dateRange[0]);
-    const toDate = dateToOffsetDate(dateRange[1] === null ? undefined : dateRange[1]);
+    const fromDate = dateToOffsetDate(dateRange[0] ?? undefined);
+    const toDate = dateToOffsetDate(dateRange[1] ?? undefined);
 
     const data = await context.transactionApi.apiTransactionsGet({ from: fromDate, to: toDate });
     const transactions = data.map((element) => {
@@ -93,36 +110,73 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
   ));
 
   return (
-    <Paper withBorder p="lg" radius="md">
-      <Flex direction="row" className={classes.stackOnMobile} justify="space-between" align="center">
-        <Text size="lg" weight={700}>
-          Transactions history
-        </Text>
-        <DateRangePicker
-          aria-label="Pick date range"
-          placeholder="Pick dates range"
-          icon={<IconCalendar size={16} />}
-          defaultValue={dateRange}
-          onChange={(value: DateRangePickerValue) => {
-            if (value[0] === null || value[1] === null) return;
-            setDateRange(() => value);
-          }}
-        />
-      </Flex>
-      <Space h="sm"></Space>
-      <ScrollArea sx={{ height: 500 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-        <Table sx={{ minWidth: 400 }}>
-          <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
-            <tr>
-              <th style={{ width: "20%" }}>Asset Symbol</th>
-              <th style={{ width: "25%" }}>Name</th>
-              <th style={{ width: "30%" }}>Value</th>
-              <th style={{ width: "25%" }}>Date</th>
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
-        </Table>
-      </ScrollArea>
+    <Paper withBorder radius="md" h={"100%"}>
+      <Stack spacing={"sm"}>
+        <Flex direction={"row"} className={classes.stackOnMobile} justify="space-between" px={"sm"} pt={"sm"}>
+          <Text size="lg" weight={500}>
+            Transactions history
+          </Text>
+          <Button
+            size="sm"
+            leftIcon={<IconPlus size={14} />}
+            compact
+            onClick={() =>
+              openContextModal({
+                modal: "transactionModal",
+                title: "Add new transaction",
+                innerProps: {
+                  onSubmit: async (values) => {
+                    await context.userAssetsAPI.patchUserAssets({
+                      patchUserAssetsDto: [
+                        {
+                          assetName: values.assetName,
+                          description: values.origin,
+                          type: "Update",
+                          value: values.value as unknown as number,
+                        },
+                      ],
+                    });
+                    queryClient.invalidateQueries("transactionsDataHistory");
+                    queryClient.invalidateQueries("walletTotalValue");
+                  },
+                } as TransactionModalInnerProps,
+              })
+            }
+          >
+            New transaction
+          </Button>
+        </Flex>
+        <Box px={"sm"}>
+          <DateRangePicker
+            aria-label="Pick date range"
+            placeholder="Pick dates range"
+            icon={<IconCalendar size={16} />}
+            labelFormat="DD.MM.YYYY"
+            inputFormat="DD.MM.YYYY"
+            defaultValue={dateRange}
+            required
+            clearable={false}
+            w={300}
+            onChange={(value: DateRangePickerValue) => {
+              if (value[0] === null || value[1] === null) return;
+              setDateRange(() => value);
+            }}
+          />
+        </Box>
+        <ScrollArea onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+          <Table>
+            <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
+              <tr>
+                <th style={{ width: "20%" }}>Asset Symbol</th>
+                <th style={{ width: "25%" }}>Name</th>
+                <th style={{ width: "30%" }}>Value</th>
+                <th style={{ width: "25%" }}>Date</th>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </Table>
+        </ScrollArea>
+      </Stack>
     </Paper>
   );
 };

@@ -2,7 +2,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { chartGradient } from "./utils";
 import { useViewportSize } from "@mantine/hooks";
-import { useMantineTheme } from "@mantine/core";
+import { Stack, useMantineTheme } from "@mantine/core";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -18,22 +18,11 @@ export const BrushChart = ({ data }: BrushChartProps) => {
   const { height } = useViewportSize();
 
   const chartHeight = () => {
-    return Math.max(350, height / 2.8);
+    return Math.max(350, height / 2);
   };
 
-  const foreColor = () => {
-    if (theme.colorScheme === "dark") {
-      return "#FFFFFF";
-    }
-    return "#000000";
-  };
-
-  const borderColor = () => {
-    if (theme.colorScheme === "dark") {
-      return "#222324";
-    }
-    return "#e8ebed";
-  };
+  const foreColor = theme.colorScheme === "dark" ? "#FFFFFF" : "#000000";
+  const borderColor = theme.colorScheme === "dark" ? "#222324" : "#e8ebed";
 
   const date = new Date();
   const currentYear = date.getFullYear();
@@ -48,7 +37,7 @@ export const BrushChart = ({ data }: BrushChartProps) => {
     ],
     options: {
       chart: {
-        foreColor: foreColor(),
+        foreColor,
         id: "chart2",
         type: "line" as const,
         height: 110,
@@ -72,7 +61,7 @@ export const BrushChart = ({ data }: BrushChartProps) => {
       },
       grid: {
         show: true,
-        borderColor: borderColor(),
+        borderColor,
       },
       tooltip: {
         theme: theme.colorScheme,
@@ -103,7 +92,7 @@ export const BrushChart = ({ data }: BrushChartProps) => {
     ],
     optionsLine: {
       chart: {
-        foreColor: foreColor(),
+        foreColor,
         id: "chart1",
         type: "area" as const,
         brush: {
@@ -120,7 +109,7 @@ export const BrushChart = ({ data }: BrushChartProps) => {
       },
       grid: {
         show: true,
-        borderColor: borderColor(),
+        borderColor,
       },
       colors: ["#008FFB"],
       fill: {
@@ -136,7 +125,7 @@ export const BrushChart = ({ data }: BrushChartProps) => {
       yaxis: {
         tickAmount: 2,
         labels: {
-          formatter: function(value: number) {
+          formatter: function (value: number) {
             return value.toFixed(2);
           },
         },
@@ -145,24 +134,9 @@ export const BrushChart = ({ data }: BrushChartProps) => {
   };
 
   return (
-    <div id="wrapper">
-      <div id="chart-line2">
-        <ReactApexChart
-          options={state.options}
-          series={state.series}
-          type="line"
-          height={chartHeight()}
-          style={{ minHeight: 300 }}
-        />
-      </div>
-      <div id="chart-line">
-        <ReactApexChart
-          options={state.optionsLine}
-          series={state.seriesLine}
-          type="area"
-          height={110}
-        />
-      </div>
-    </div>
+    <>
+      <ReactApexChart options={state.options} series={state.series} type="line" height={chartHeight()} />
+      <ReactApexChart options={state.optionsLine} series={state.seriesLine} type="area" height={110} />
+    </>
   );
 };
