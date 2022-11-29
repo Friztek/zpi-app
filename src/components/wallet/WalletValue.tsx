@@ -22,19 +22,16 @@ export function WalletValue({ userPreferenceCurrency }: WalletValueProps) {
 
   const context = useAPICommunication();
 
-  const lastDayOfPrevMonth = () => {
-    var lastDayOfPrevMonth = new Date();
-    lastDayOfPrevMonth.setDate(1);
-    lastDayOfPrevMonth.setHours(-1);
-    return lastDayOfPrevMonth.toISOString().split("T", 1)[0];
-  };
+  var lastDayOfPrevMonth = new Date();
+  lastDayOfPrevMonth.setDate(1);
+  lastDayOfPrevMonth.setHours(-1);
 
   const walletTotalValueQuery = useQuery("walletTotalValue", async () => {
     return await context.walletApi.apiWalletTotalGet();
   });
 
   const walletLastMonthTotalValueQuery = useQuery("walletLastMonthTotalValue", async () => {
-    const data = await context.walletApi.apiWalletGet({ from: lastDayOfPrevMonth(), to: lastDayOfPrevMonth() });
+    const data = await context.walletApi.apiWalletGet({ from: lastDayOfPrevMonth, to: lastDayOfPrevMonth });
     return data[0].value;
   });
 

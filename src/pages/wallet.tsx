@@ -14,7 +14,7 @@ const useStyles = createStyles((theme) => ({
     gap: "3rem",
     display: "flex",
     justifyContent: "center",
-    [theme.fn.smallerThan("md")]: {
+    [theme.fn.smallerThan("lg")]: {
       flexDirection: "column",
     },
     [theme.fn.largerThan("sm")]: {
