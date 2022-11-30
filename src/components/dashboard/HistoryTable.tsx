@@ -3,14 +3,11 @@ import {
   createStyles,
   Table,
   ScrollArea,
-  Card,
   Center,
   Loader,
   Text,
   Flex,
-  Space,
   Paper,
-  Group,
   Button,
   Stack,
   Box,
@@ -118,6 +115,7 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
           </Text>
           <Button
             size="sm"
+            variant="outline"
             leftIcon={<IconPlus size={14} />}
             compact
             onClick={() =>
