@@ -1,12 +1,9 @@
-import { Button, createStyles, Center, Text, Space, Paper, NumberInput, Flex } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
-import { closeAllModals, openContextModal, openModal } from '@mantine/modals';
+import { Button, createStyles } from '@mantine/core';
+import { openContextModal } from '@mantine/modals';
 import { IconPlus } from '@tabler/icons';
-import { forwardRef } from 'react';
 import { useQueryClient } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
 import { AddAlertModalInnerProps } from './AddAlertModal';
-import { SelectAsset } from './SelectAsset';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -29,15 +26,12 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export const AddAlertButton = () => {
-  const { classes, theme } = useStyles();
-
   const context = useAPICommunication();
-
   const quueryClient = useQueryClient();
 
   return (
     <Button
-      variant="filled"
+      variant="outline"
       leftIcon={<IconPlus size={14} />}
       onClick={() =>
         openContextModal({

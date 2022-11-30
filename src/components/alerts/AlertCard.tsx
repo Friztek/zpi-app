@@ -3,6 +3,7 @@ import { openConfirmModal } from '@mantine/modals';
 import { IconX } from '@tabler/icons';
 import { useQueryClient } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
+import { numberToMoneyString } from '../../utils/utils-format';
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -64,20 +65,20 @@ export const AlertCard = ({ assetShortcutFrom, assetShortcutTo, value, currentVa
         <Text className={classes.title} size="lg">
           {'1 ' + assetShortcutFrom + ' = ' + value + ' ' + assetShortcutTo}
         </Text>
-        <Button style={{ backgroundColor: 'rgb(64 123 139)' }} compact>
+        <Button style={{ backgroundColor: '#00000040' }} compact aria-label='Delete alert'>
           <IconX
-            size={18}
+            size={20}
             onClick={() => {
               openConfirmModal({
                 title: (
                   <div style={{ paddingBottom: 4 }}>
-                    Remove allert:
+                    Remove alert:
                     <Text span fw={600} px={6}>
                       {'1 ' + assetShortcutFrom + ' = ' + value + ' ' + assetShortcutTo}
                     </Text>
                   </div>
                 ),
-                centered: true,
+                centered: false,
                 labels: { confirm: 'Confirm', cancel: 'Cancel' },
                 onConfirm: async () => {
                   await context.allertsApi.deleteAlert({ id });
@@ -94,7 +95,7 @@ export const AlertCard = ({ assetShortcutFrom, assetShortcutTo, value, currentVa
       <Space h="xs"></Space>
       {currentValue && (
         <Text className={classes.currentValue} size="xs">
-          {'Current value: ' + currentValue}
+          {'Current value: ' + numberToMoneyString(currentValue, 2) + ' ' + assetShortcutTo}
         </Text>
       )}
     </Card>

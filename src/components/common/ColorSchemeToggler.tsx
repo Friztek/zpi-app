@@ -7,6 +7,7 @@ export const ColorSchemeToggler = () => {
   return (
     <Group position="center">
       <ActionIcon
+        aria-label="Change color scheme"
         onClick={() => toggleColorScheme()}
         size="lg"
         sx={(theme) => ({

@@ -1,4 +1,4 @@
-import { createStyles, Text, Card, useMantineTheme, Avatar, Space } from '@mantine/core';
+import { Text, Card, useMantineTheme, Avatar, Space } from '@mantine/core';
 import { IconBellRinging } from '@tabler/icons';
 
 interface EmptyAlertCardImageProps {

@@ -31,9 +31,9 @@ export const AlertStats = ({ data }: StatsRingProps) => {
             size={80}
             roundCaps
             thickness={8}
-            sections={[
-              { value: (stat.numberTriggered / (stat.numberPending + stat.numberTriggered)) * 100, color: theme.colors.green[6] },
-              { value: (stat.numberPending / (stat.numberTriggered + stat.numberPending)) * 100, color: theme.colors.blue[6] }
+            sections={stat.numberPending + stat.numberTriggered == 0 ? [] : [
+              { value: (stat.numberTriggered / (stat.numberPending + stat.numberTriggered)) * 100, color: theme.colors.green[8] },
+              { value: (stat.numberPending / (stat.numberTriggered + stat.numberPending)) * 100, color: theme.colors.blue[9] }
             ]}
           />
 
@@ -45,10 +45,10 @@ export const AlertStats = ({ data }: StatsRingProps) => {
               {stat.numberPending + stat.numberTriggered}
             </Text>
             <Space h="lg"></Space>
-            <Text className={classes.text} weight={400} size="sm" color={theme.colorScheme === 'dark' ? '#00dbff' : '#228be6'}>
+            <Text className={classes.text} weight={400} size="sm" color={theme.colors.blue[4]}>
               {'Pending ' + stat.numberPending}
             </Text>
-            <Text className={classes.text} weight={400} size="sm" color={theme.colorScheme === 'dark' ? '#4fe16a' : '#06801c'}>
+            <Text className={classes.text} weight={400} size="sm" color={theme.colors.green[5]}>
               {'Triggered ' + stat.numberTriggered}
             </Text>
           </div>

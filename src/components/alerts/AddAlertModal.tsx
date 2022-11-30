@@ -1,4 +1,4 @@
-import { Text, Button, Flex, TextInput, Select, Stack, Autocomplete, NumberInput, Loader, Group } from '@mantine/core';
+import { Text, Button, Flex, Select, NumberInput, Loader, Group } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useToggle } from '@mantine/hooks';
 import { ContextModalProps } from '@mantine/modals';
@@ -37,6 +37,9 @@ export const AddAlertModal = ({ context, id, innerProps }: ContextModalProps<Add
   });
 
   if (assetsData.isLoading || assetsData.data === undefined) return null;
+
+  assetsData.data.sort();
+
   return (
     <>
       <form
@@ -49,6 +52,7 @@ export const AddAlertModal = ({ context, id, innerProps }: ContextModalProps<Add
         <Flex pb={'xl'} direction="row" pt={'sm'}>
           <Select
             placeholder="Asset name"
+            searchable
             data={assetsData.data?.map((asset) => ({
               value: asset.name,
               label: asset.friendlyName
@@ -72,6 +76,7 @@ export const AddAlertModal = ({ context, id, innerProps }: ContextModalProps<Add
             miw={160}
             {...form.getInputProps('currency')}
             placeholder={'Target currency'}
+            searchable
             data={
               assetsData.data
                 ?.filter((asset) => asset.category === 'currency')

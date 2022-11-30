@@ -1,52 +1,19 @@
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 import React, { useMemo } from 'react';
 import { Layout } from '../components/layout/Layout';
-import { Button, Center, createStyles, Divider, Flex, Group, Paper, SimpleGrid, Space, Stack, Text } from '@mantine/core';
+import { Flex, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
 import { AlertCard } from '../components/alerts/AlertCard';
 import { EmptyAlertCard } from '../components/alerts/EmptyAlertCard';
 import { AlertStats } from '../components/alerts/AlertStats';
 import { useAPICommunication } from '../contexts/APICommunicationContext';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import { AddAlertButton } from '../components/alerts/AddAlertButton';
 
-const useStyles = createStyles(() => ({
-  content: {
-    padding: '0.5rem',
-    gap: '3rem'
-  }
-}));
-
-const alert = {
-  assetShortcutFrom: 'EUR',
-  assetShortcutTo: 'PLN',
-  value: 5,
-  currentValue: 4.6782,
-  gradient: 'linear-gradient(105deg, #2C3E50 10%, #4CA1AF 100%)'
-};
-
-const statsData = {
-  data: [
-    {
-      label: 'Alerts for currencies',
-      numberPending: 10,
-      numberTriggered: 2
-    },
-    {
-      label: 'Alerts for cryptocurrencies',
-      numberPending: 10,
-      numberTriggered: 2
-    },
-    {
-      label: 'Alerts for metals',
-      numberPending: 10,
-      numberTriggered: 2
-    }
-  ]
-};
 
 const Alerts = () => {
-  const { classes } = useStyles();
   const context = useAPICommunication();
+  
+  const gradientColor  = "linear-gradient(45deg, #3b5bdb96 0%, #0c8599ba 100%)";
 
   const alertsQuery = useQuery(['getAllAllerts'], async () => {
     return await context.allertsApi.getAllAllerts();
@@ -89,7 +56,7 @@ const Alerts = () => {
       .map((alert) => ({
         id: alert.alertId,
         value: alert.value,
-        gradient: 'linear-gradient(105deg, #2C3E50 10%, #4CA1AF 100%)',
+        gradient: gradientColor,
         assetShortcutFrom: alert.originAssetName?.toUpperCase(),
         assetShortcutTo: alert.currency?.toUpperCase(),
         currentValue:
@@ -108,7 +75,7 @@ const Alerts = () => {
       .map((alert) => ({
         id: alert.alertId,
         value: alert.value,
-        gradient: 'linear-gradient(105deg, #2C3E50 10%, #4CA1AF 100%)',
+        gradient: gradientColor,
         assetShortcutFrom: alert.originAssetName?.toUpperCase(),
         assetShortcutTo: alert.currency?.toUpperCase(),
         currentValue: null
@@ -148,10 +115,10 @@ const Alerts = () => {
           <Paper style={{ height: '100%' }} withBorder radius="md" p="sm">
             <Flex justify="center" align="center" direction="column" style={{ width: '100%' }}>
               <Flex justify="space-between" w={'100%'} px={'md'} align="center">
-                <Text size={'xl'}>Triggered allerts</Text>
+                <Text size={'xl'} mb={5}>Triggered alerts</Text>
               </Flex>
               <Stack w={'100%'} pt={'md'} spacing={'xs'}>
-                {triggeredAllerts.length === 0 && <EmptyAlertCard text="No allerts were triggered" />}
+                {triggeredAllerts.length === 0 && <EmptyAlertCard text="No alerts were triggered" />}
                 {triggeredAllerts.map((alert) => (
                   <AlertCard
                     key={alert.id}
