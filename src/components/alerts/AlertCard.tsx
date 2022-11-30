@@ -1,33 +1,9 @@
-import { createStyles, Text, Button, Card, Space } from '@mantine/core';
+import { Text, Button, Card, Space, Flex, useMantineTheme } from '@mantine/core';
 import { openConfirmModal } from '@mantine/modals';
 import { IconX } from '@tabler/icons';
 import { useQueryClient } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
 import { numberToMoneyString } from '../../utils/utils-format';
-
-const useStyles = createStyles((theme) => ({
-  card: {
-    height: 440,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    backgroundPosition: 'center'
-  },
-  title: {
-    fontFamily: `Greycliff CF ${theme.fontFamily}`,
-    fontWeight: 800,
-    color: theme.white,
-    lineHeight: 1.3,
-    fontSize: 27
-  },
-
-  currentValue: {
-    color: theme.white,
-    opacity: 0.7,
-    fontWeight: 700,
-    textTransform: 'uppercase'
-  }
-}));
 
 interface AlertCardImageProps {
   id: number;
@@ -35,11 +11,10 @@ interface AlertCardImageProps {
   assetShortcutTo: string;
   value: number;
   currentValue?: number;
-  gradient: string;
 }
 
-export const AlertCard = ({ assetShortcutFrom, assetShortcutTo, value, currentValue, gradient, id }: AlertCardImageProps) => {
-  const { classes } = useStyles();
+export const AlertCard = ({ assetShortcutFrom, assetShortcutTo, value, currentValue, id }: AlertCardImageProps) => {
+  const theme = useMantineTheme();
   const queryClient = useQueryClient();
 
   const context = useAPICommunication();
@@ -50,24 +25,39 @@ export const AlertCard = ({ assetShortcutFrom, assetShortcutTo, value, currentVa
       style={{
         height: 110,
         width: '100%',
-        backgroundImage: gradient,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
+        borderRadius: theme.radius.md,
+        border: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[3]}`,
+        padding: `${theme.spacing.xs}px ${theme.spacing.xs}px`,
+        [theme.fn.largerThan('sm')]: {
+          padding: `${theme.spacing.sm}px ${theme.spacing.xl}px`
+        },
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.white
       }}>
-      <div
+      <Flex
+        direction="row"
+        justify="space-between"
         style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between'
+          width: '100%'
         }}>
-        <Text className={classes.title} size="lg">
+        <Text
+          variant="gradient"
+          gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
+          size="lg"
+          style={{
+            fontFamily: `Greycliff CF ${theme.fontFamily}`,
+            fontWeight: 800,
+            lineHeight: 1.3,
+            fontSize: 27
+          }}>
           {'1 ' + assetShortcutFrom + ' = ' + value + ' ' + assetShortcutTo}
         </Text>
-        <Button style={{ backgroundColor: '#00000040' }} compact aria-label='Delete alert'>
+        <Button style={{ background: 'none' }} compact aria-label="Delete alert">
           <IconX
             size={20}
+            color={theme.colorScheme === 'dark' ? 'white' : 'grey'}
             onClick={() => {
               openConfirmModal({
                 title: (
@@ -91,10 +81,17 @@ export const AlertCard = ({ assetShortcutFrom, assetShortcutTo, value, currentVa
             }}
           />
         </Button>
-      </div>
+      </Flex>
       <Space h="xs"></Space>
       {currentValue && (
-        <Text className={classes.currentValue} size="xs">
+        <Text
+          size="xs"
+          style={{
+            color: theme.colorScheme === 'dark' ? theme.colors.gray[3] : theme.colors.dark[5],
+            opacity: 0.7,
+            fontWeight: 700,
+            textTransform: 'uppercase'
+          }}>
           {'Current value: ' + numberToMoneyString(currentValue, 2) + ' ' + assetShortcutTo}
         </Text>
       )}

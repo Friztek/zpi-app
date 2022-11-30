@@ -12,8 +12,6 @@ import { AddAlertButton } from '../components/alerts/AddAlertButton';
 
 const Alerts = () => {
   const context = useAPICommunication();
-  
-  const gradientColor  = "linear-gradient(45deg, #3b5bdb96 0%, #0c8599ba 100%)";
 
   const alertsQuery = useQuery(['getAllAllerts'], async () => {
     return await context.allertsApi.getAllAllerts();
@@ -56,7 +54,6 @@ const Alerts = () => {
       .map((alert) => ({
         id: alert.alertId,
         value: alert.value,
-        gradient: gradientColor,
         assetShortcutFrom: alert.originAssetName?.toUpperCase(),
         assetShortcutTo: alert.currency?.toUpperCase(),
         currentValue:
@@ -75,7 +72,6 @@ const Alerts = () => {
       .map((alert) => ({
         id: alert.alertId,
         value: alert.value,
-        gradient: gradientColor,
         assetShortcutFrom: alert.originAssetName?.toUpperCase(),
         assetShortcutTo: alert.currency?.toUpperCase(),
         currentValue: null
@@ -104,7 +100,6 @@ const Alerts = () => {
                     assetShortcutTo={alert.assetShortcutTo ?? ''}
                     value={alert.value!}
                     currentValue={alert.currentValue}
-                    gradient={alert.gradient}
                   />
                 ))}
               </Stack>
@@ -126,7 +121,6 @@ const Alerts = () => {
                     assetShortcutFrom={alert.assetShortcutFrom ?? ''}
                     assetShortcutTo={alert.assetShortcutTo ?? ''}
                     value={alert.value!}
-                    gradient={alert.gradient}
                   />
                 ))}
               </Stack>

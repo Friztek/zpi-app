@@ -1,5 +1,5 @@
 import { Center, createStyles, Flex, Group, Loader, Text } from "@mantine/core";
-import { IconChevronDown } from "@tabler/icons";
+import { IconChevronDown, IconChevronUp } from "@tabler/icons";
 import { camelCase } from "lodash";
 import { useState } from "react";
 import { useQuery } from "react-query";
@@ -148,7 +148,7 @@ export const UserAssetCollapsedElement = ({
               <Text size={"lg"} fw={400}>
                 {assetFriendlyName}
               </Text>
-              {groups.length > 1 ? (
+              {groups.length > 1 ? isExpanded ? ( <IconChevronUp size={20} onClick={() => setIsExpanded(!isExpanded)}></IconChevronUp>) : (
                 <IconChevronDown size={20} onClick={() => setIsExpanded(!isExpanded)}></IconChevronDown>
               ) : (
                 <Text size={"md"} fw={400} color="dimmed">
