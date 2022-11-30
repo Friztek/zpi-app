@@ -1,91 +1,106 @@
-import { ActionIcon, Menu, Text, Space, NumberInput } from "@mantine/core";
-import { openConfirmModal } from "@mantine/modals";
+import { ActionIcon, Menu, Text, Space } from "@mantine/core";
+import { openConfirmModal, openContextModal } from "@mantine/modals";
 import { IconDotsVertical, IconMinus, IconPlus, IconTrash } from "@tabler/icons";
 import { FC } from "react";
-import { AssetDto } from "../../client-typescript";
+import { useQueryClient } from "react-query";
+import { useAPICommunication } from "../../contexts/APICommunicationContext";
+import { TransactionModalInnerProps } from "../modals/TransactionModal";
 
-export const UserAssetActionMenu: FC<{ asset: AssetDto }> = ({ asset }) => {
+type UserAssetMenu = {
+  name: string;
+  friendlyName: string;
+  origin: string | undefined;
+  symbol: string | null;
+};
+
+export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => {
+  const context = useAPICommunication();
+  const queryClient = useQueryClient();
+
   const openAddModal = () =>
-    openConfirmModal({
+    openContextModal({
+      modal: "transactionModal",
       title: (
-        <>
+        <Text>
           Add value to{" "}
-          <Text span fw={600}>
-            {asset.friendlyName}
-          </Text>
-          {" asset:"}
-          <Space h={"sm"} />
-          <NumberInput
-            hideControls
-            precision={8}
-            styles={{
-              input: {
-                width: 300,
-                textAlign: "center",
-                fontWeight: 400,
-                lineHeight: 1.3,
-                fontSize: 18,
-              },
-            }}
-          />
-        </>
+          <Text span fw={700} variant="gradient" gradient={{ from: "indigo", to: "cyan", deg: 45 }}>
+            {asset.friendlyName} {asset.origin ? " - " : ""} {asset.origin ? asset.origin : ""}
+          </Text>{" "}
+          asset
+        </Text>
       ),
-      centered: true,
-      labels: { confirm: "Confirm", cancel: "Cancel" },
-      onConfirm: () => console.log("Confirmed"),
-      confirmProps: {
-        color: "green",
-      },
+      innerProps: {
+        assetName: asset.name,
+        origin: asset.origin,
+        onSubmit: async (values) => {
+          await context.userAssetsAPI.patchUserAssets({
+            patchUserAssetsDto: [
+              {
+                assetName: values.assetName,
+                description: values.origin,
+                type: "Update",
+                value: values.value as unknown as number,
+              },
+            ],
+          });
+          queryClient.invalidateQueries("userAsset");
+        },
+      } as TransactionModalInnerProps,
     });
 
   const openSubstractModal = () =>
-    openConfirmModal({
+    openContextModal({
+      modal: "transactionModal",
       title: (
-        <>
-          Subsrtact value from{" "}
-          <Text span fw={600}>
-            {asset.friendlyName}
-          </Text>
-          {" asset:"}
-          <Space h={"sm"} />
-          <NumberInput
-            hideControls
-            precision={8}
-            styles={{
-              input: {
-                width: 300,
-                textAlign: "center",
-                fontWeight: 400,
-                lineHeight: 1.3,
-                fontSize: 18,
-              },
-            }}
-          />
-        </>
+        <Text>
+          Substract value from{" "}
+          <Text span fw={700} variant="gradient" gradient={{ from: "indigo", to: "cyan", deg: 45 }}>
+            {asset.friendlyName} {asset.origin ? " - " : ""} {asset.origin ? asset.origin : ""}{" "}
+          </Text>{" "}
+          asset
+        </Text>
       ),
-      centered: true,
-      labels: { confirm: "Confirm", cancel: "Cancel" },
-      onConfirm: () => console.log("Confirmed"),
-      confirmProps: {
-        color: "blue",
-      },
+      innerProps: {
+        assetName: asset.name,
+        origin: asset.origin,
+        onSubmit: async (values) => {
+          await context.userAssetsAPI.patchUserAssets({
+            patchUserAssetsDto: [
+              {
+                assetName: values.assetName,
+                description: values.origin,
+                type: "Update",
+                value: (0 - values.value!) as unknown as number,
+              },
+            ],
+          });
+          queryClient.invalidateQueries("userAsset");
+        },
+      } as TransactionModalInnerProps,
     });
 
   const openRemoveModal = () =>
     openConfirmModal({
-      title: (
+      title: "Remove asset",
+      children: (
         <>
           Do you want to remove{" "}
-          <Text span fw={600}>
-            {asset.friendlyName}
+          <Text span fw={700}>
+            {asset.friendlyName} {asset.origin ? " - " : ""} {asset.origin ? asset.origin : ""}
           </Text>
           {" asset?"}
           <Space h={"sm"} />
         </>
       ),
-      centered: true,
+      centered: false,
       labels: { confirm: "Confirm", cancel: "Cancel" },
-      onConfirm: () => console.log("Confirmed"),
+      onConfirm: async () => {
+        await context.userAssetsAPI.deleteUserAsset({
+          assetName: asset.name,
+          description: asset.origin,
+        });
+        queryClient.invalidateQueries("userAsset");
+      },
       confirmProps: {
         color: "red",
       },

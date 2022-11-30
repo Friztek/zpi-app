@@ -1,9 +1,7 @@
-import { Card, Center, createStyles, Flex, Group, Loader, Space, Text } from "@mantine/core";
-import { camelCase } from "lodash";
+import { Card, Center, createStyles, Loader } from "@mantine/core";
 import { useQuery } from "react-query";
 import { useAPICommunication } from "../../contexts/APICommunicationContext";
-import { numberToMoneyString } from "../../utils/utils-format";
-import { UserAssetActionMenu } from "./UserAssetActionMenu";
+import { UserAssetCollapsedElement, UserAssetCollapsedElementProps } from "./UserAssetCollapsedElement";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -55,54 +53,53 @@ export function UserAssetList({ userPreferenceCurrencySymbol }: UserAssetsListPr
     );
   }
 
-  const items = userAssetQuery.data!.map((item) => (
-    <div className={classes.item} key={item.asset.name}>
-      <Flex className={classes.columnStackMobile}>
-        <Text
-          variant="gradient"
-          size={28}
-          weight={"bold"}
-          style={{
-            width: 60,
-          }}
-          gradient={{ from: "indigo", to: "cyan", deg: 45 }}
-        >
-          {item.asset.symbol}
-        </Text>
-        <div>
-          <Text size={"xl"} fw={600}>
-            {item.asset.name.toUpperCase()}
-          </Text>
-          <Text size="md" fs={"italic"}>
-            {camelCase(item.asset.category)}
-          </Text>
-        </div>
-      </Flex>
-      <Group>
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            marginRight: 10,
-            alignItems: "flex-end",
-          }}
-        >
-          <Text variant="gradient" gradient={{ from: "indigo", to: "cyan", deg: 45 }} size={24} weight={600}>
-            {numberToMoneyString(item.originValue)}
-          </Text>
-          <Text style={{ flex: 1 }} size={16} color="dimmed">
-            {`${numberToMoneyString(item.userCurrencyValue)} ${userPreferenceCurrencySymbol.toUpperCase()}`}
-          </Text>
-        </div>
-        <Space w="xs" />
-        <UserAssetActionMenu asset={item.asset} />
-      </Group>
-    </div>
+  var groupedUserAssets: UserAssetCollapsedElementProps[] = [];
+
+  userAssetQuery.data!.forEach((item) => {
+    const found = groupedUserAssets.find((e) => e.assetName === item.asset.name);
+    if (found) {
+      const newGroupObject = {
+        description: item.description,
+        originValue: item.originValue,
+        userCurrencyValue: item.userCurrencyValue,
+      };
+      found.totalOriginValue += item.originValue;
+      found.totalUserCurrencyValue += item.userCurrencyValue;
+      found.groups.push(newGroupObject);
+    } else {
+      const newObject = {
+        assetName: item.asset.name,
+        assetFriendlyName: item.asset.friendlyName,
+        symbol: item.asset.symbol,
+        category: item.asset.category,
+        totalOriginValue: item.originValue,
+        totalUserCurrencyValue: item.userCurrencyValue,
+        userPreferedCurrencySymbol: userPreferenceCurrencySymbol,
+        groups: [
+          {
+            description: item.description,
+            originValue: item.originValue,
+            userCurrencyValue: item.userCurrencyValue,
+          },
+        ],
+      };
+      groupedUserAssets.push(newObject);
+    }
+  });
+
+  const items = groupedUserAssets.map((item) => (
+    <UserAssetCollapsedElement
+      key={item.assetName}
+      {...item}
+    />
   ));
 
   if (userAssetQuery.data!.length === 0) {
-    return <Card><Center>You do not have any assets. Add new transaction and create your first asset.</Center></Card>;
+    return (
+      <Card>
+        <Center>You do not have any assets. Add new transaction and create your first asset.</Center>
+      </Card>
+    );
   }
 
   return <div>{items}</div>;
