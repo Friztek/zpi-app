@@ -1,16 +1,16 @@
-import { createStyles, Group, Paper, Text, ThemeIcon, SimpleGrid, Loader, Skeleton, Center } from "@mantine/core";
-import { IconArrowUpRight, IconArrowDownRight } from "@tabler/icons";
-import { useQuery } from "react-query";
-import { useAPICommunication } from "../../contexts/APICommunicationContext";
-import { numberToMoneyString } from "../../utils/utils-format";
+import { createStyles, Group, Paper, Text, ThemeIcon, SimpleGrid, Loader, Center } from '@mantine/core';
+import { IconArrowUpRight, IconArrowDownRight, IconMinus } from '@tabler/icons';
+import { useQuery } from 'react-query';
+import { useAPICommunication } from '../../contexts/APICommunicationContext';
+import { numberToMoneyString } from '../../utils/utils-format';
 
 const useStyles = createStyles((theme) => ({
   root: {
-    padding: 0,
+    padding: 0
   },
   label: {
-    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-  },
+    fontFamily: `Greycliff CF, ${theme.fontFamily}`
+  }
 }));
 
 interface WalletValueProps {
@@ -26,66 +26,71 @@ export function WalletValue({ userPreferenceCurrency }: WalletValueProps) {
   lastDayOfPrevMonth.setDate(1);
   lastDayOfPrevMonth.setHours(-1);
 
-  const walletTotalValueQuery = useQuery("walletTotalValue", async () => {
+  const walletTotalValueQuery = useQuery('walletTotalValue', async () => {
     return await context.walletApi.apiWalletTotalGet();
   });
 
-  const walletLastMonthTotalValueQuery = useQuery("walletLastMonthTotalValue", async () => {
+  const walletLastMonthTotalValueQuery = useQuery('walletLastMonthTotalValue', async () => {
     const data = await context.walletApi.apiWalletGet({ from: lastDayOfPrevMonth, to: lastDayOfPrevMonth });
     return data[0].value;
   });
 
   if (walletTotalValueQuery.data === undefined || walletLastMonthTotalValueQuery.data === undefined) {
-    return <Paper style={{height: 140}} withBorder radius="md" ><Center style={{height: 130}}><Loader size="xl" variant="dots" /></Center></Paper>;
+    return (
+      <Paper style={{ height: 140 }} withBorder radius="md">
+        <Center style={{ height: 130 }}>
+          <Loader size="xl" variant="dots" />
+        </Center>
+      </Paper>
+    );
   }
 
   const { totalValue } = walletTotalValueQuery.data;
 
-  const diff =
-    Math.round(((totalValue - walletLastMonthTotalValueQuery.data) / walletLastMonthTotalValueQuery.data) * 10000) /
-    100;
+  const diff = Math.round(((totalValue - walletLastMonthTotalValueQuery.data) / walletLastMonthTotalValueQuery.data) * 10000) / 100;
 
   return (
     <div className={classes.root}>
-      <SimpleGrid cols={1} breakpoints={[{ maxWidth: "sm", cols: 1 }]}>
-        <Paper style={{height: 140}} withBorder p="md" radius="md">
+      <SimpleGrid cols={1} breakpoints={[{ maxWidth: 'sm', cols: 1 }]}>
+        <Paper style={{ height: 140 }} withBorder p="md" radius="md">
           <div>
             <Group position="apart">
               <div>
                 <Text color="dimmed" transform="uppercase" weight={700} size="xs" className={classes.label}>
                   Total value
                 </Text>
-                <Text
-                  variant="gradient"
-                  gradient={{ from: "indigo", to: "cyan", deg: 45 }}
-                  size="xl"
-                  weight={700}
-                  sx={{ fontSize: 30 }}
-                >
-                  {numberToMoneyString(Math.round(totalValue * 100) / 100) + " " + userPreferenceCurrency.toUpperCase()}
+                <Text variant="gradient" gradient={{ from: 'indigo', to: 'cyan', deg: 45 }} size="xl" weight={700} sx={{ fontSize: 30 }}>
+                  {numberToMoneyString(Math.round(totalValue * 100) / 100) + ' ' + userPreferenceCurrency.toUpperCase()}
                 </Text>
               </div>
               <ThemeIcon
                 color="gray"
                 variant="light"
                 sx={(theme) => ({
-                  color: diff > 0 ? theme.colors.teal[6] : theme.colors.red[6],
+                  color: diff! > 0 ? theme.colors.teal[6] : diff === 0 ? theme.colors.white : theme.colors.red[6]
                 })}
                 size={38}
-                radius="md"
-              >
+                radius="md">
                 {diff > 0 ? (
-                  <IconArrowUpRight size={28} stroke={1.5}></IconArrowUpRight>
+                  <IconArrowUpRight size={25} stroke={1.5}></IconArrowUpRight>
+                ) : diff === 0 ? (
+                  <IconMinus size={25} stroke={1.5}></IconMinus>
                 ) : (
-                  <IconArrowDownRight size={28} stroke={1.5}></IconArrowDownRight>
+                  <IconArrowDownRight size={25} stroke={1.5}></IconArrowDownRight>
                 )}
               </ThemeIcon>
             </Group>
             <Text color="dimmed" size="sm" mt="md">
-              <Text component="span" color={diff > 0 ? "teal" : "red"} weight={700}>
-                { numberToMoneyString(diff) }%
-              </Text>{" "}
-              {diff > 0 ? "increase" : "decrease"} compared to last month
+              {diff !== 0 && (
+                <Text component="span" color={diff > 0 ? 'teal' : 'red'} weight={700}>
+                  {numberToMoneyString(diff)}%
+                </Text>
+              )}
+              {diff === 0
+                ? 'Wallet value has not changed compared to previous month'
+                : diff > 0
+                ? ' increase compared to previous month'
+                : ' decrease compared to previous month'}
             </Text>
           </div>
         </Paper>

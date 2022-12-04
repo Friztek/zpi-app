@@ -9,7 +9,6 @@ import { useAPICommunication } from '../contexts/APICommunicationContext';
 import { useQuery } from 'react-query';
 import { AddAlertButton } from '../components/alerts/AddAlertButton';
 
-
 const Alerts = () => {
   const context = useAPICommunication();
 
@@ -110,7 +109,9 @@ const Alerts = () => {
           <Paper style={{ height: '100%' }} withBorder radius="md" p="sm">
             <Flex justify="center" align="center" direction="column" style={{ width: '100%' }}>
               <Flex justify="space-between" w={'100%'} px={'md'} align="center">
-                <Text size={'xl'} mb={5}>Triggered alerts</Text>
+                <Text size={'xl'} mb={5}>
+                  Triggered alerts
+                </Text>
               </Flex>
               <Stack w={'100%'} pt={'md'} spacing={'xs'}>
                 {triggeredAllerts.length === 0 && <EmptyAlertCard text="No alerts were triggered" />}

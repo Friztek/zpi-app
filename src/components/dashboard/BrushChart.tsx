@@ -1,11 +1,11 @@
-import React from "react";
-import dynamic from "next/dynamic";
-import { chartGradient } from "./utils";
-import { useViewportSize } from "@mantine/hooks";
-import { Stack, useMantineTheme } from "@mantine/core";
+import React from 'react';
+import dynamic from 'next/dynamic';
+import { chartGradient } from './utils';
+import { useViewportSize } from '@mantine/hooks';
+import { useMantineTheme } from '@mantine/core';
 
-const ReactApexChart = dynamic(() => import("react-apexcharts"), {
-  ssr: false,
+const ReactApexChart = dynamic(() => import('react-apexcharts'), {
+  ssr: false
 });
 
 export interface BrushChartProps {
@@ -18,11 +18,11 @@ export const BrushChart = ({ data }: BrushChartProps) => {
   const { height } = useViewportSize();
 
   const chartHeight = () => {
-    return Math.max(350, height / 2);
+    return Math.max(350, height / 1.65);
   };
 
-  const foreColor = theme.colorScheme === "dark" ? "#FFFFFF" : "#000000";
-  const borderColor = theme.colorScheme === "dark" ? "#222324" : "#e8ebed";
+  const foreColor = theme.colorScheme === 'dark' ? '#FFFFFF' : '#000000';
+  const borderColor = theme.colorScheme === 'dark' ? '#222324' : '#e8ebed';
 
   const date = new Date();
   const currentYear = date.getFullYear();
@@ -32,36 +32,36 @@ export const BrushChart = ({ data }: BrushChartProps) => {
   const state = {
     series: [
       {
-        data: data,
-      },
+        data: data
+      }
     ],
     options: {
       chart: {
         foreColor,
-        id: "chart2",
-        type: "line" as const,
+        id: 'chart2',
+        type: 'line' as const,
         height: 110,
-        colors: ["#3eadcf"],
+        colors: ['#3eadcf'],
         toolbar: {
-          autoSelected: "pan" as const,
-          show: false,
-        },
+          autoSelected: 'pan' as const,
+          show: false
+        }
       },
-      colors: ["#3eadcf"],
-      background: "transparent",
+      colors: ['#3eadcf'],
+      background: 'transparent',
       stroke: {
         width: 5,
-        curve: "smooth" as const,
+        curve: 'smooth' as const
       },
       fill: {
-        opacity: 1,
+        opacity: 1
       },
       markers: {
-        size: 2,
+        size: 2
       },
       grid: {
         show: true,
-        borderColor,
+        borderColor
       },
       tooltip: {
         theme: theme.colorScheme,
@@ -69,68 +69,68 @@ export const BrushChart = ({ data }: BrushChartProps) => {
           formatter: undefined,
           title: {
             formatter: () => {
-              return "value:";
-            },
-          },
-        },
+              return 'value:';
+            }
+          }
+        }
       },
       xaxis: {
-        type: "datetime" as const,
+        type: 'datetime' as const
       },
       yaxis: {
         labels: {
           formatter: function (value: number) {
             return value.toFixed(2);
-          },
-        },
-      },
+          }
+        }
+      }
     },
     seriesLine: [
       {
-        data: data,
-      },
+        data: data
+      }
     ],
     optionsLine: {
       chart: {
         foreColor,
-        id: "chart1",
-        type: "area" as const,
+        id: 'chart1',
+        type: 'area' as const,
         brush: {
-          target: "chart2",
-          enabled: true,
+          target: 'chart2',
+          enabled: true
         },
         selection: {
           enabled: true,
           xaxis: {
             min: firstDay.getTime(),
-            max: lastDay.getTime(),
-          },
-        },
+            max: lastDay.getTime()
+          }
+        }
       },
       grid: {
         show: true,
-        borderColor,
+        borderColor
       },
-      colors: ["#008FFB"],
+      colors: ['#008FFB'],
       fill: {
-        type: "gradient",
-        gradient: chartGradient,
+        type: 'gradient',
+        gradient: chartGradient
       },
       xaxis: {
-        type: "datetime" as const,
+        type: 'datetime' as const,
         tooltip: {
-          enabled: false,
-        },
+          enabled: false
+        }
       },
       yaxis: {
         tickAmount: 2,
         labels: {
           formatter: function (value: number) {
             return value.toFixed(2);
-          },
-        },
-      },
-    },
+          }
+        }
+      }
+    }
   };
 
   return (
