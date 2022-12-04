@@ -1,10 +1,19 @@
-import { Text, Button, Flex, Select, NumberInput, Loader, Group } from '@mantine/core';
+import { Text, Button, Flex, Select, NumberInput, Loader, Group, Center, createStyles } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useToggle } from '@mantine/hooks';
 import { ContextModalProps } from '@mantine/modals';
 import { isFinite, trim } from 'lodash';
 import { useQuery } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
+
+const useStyles = createStyles(() => ({
+  stackOnMobile: {
+    flexDirection: 'row',
+    '@media (max-width: 520px)': {
+      flexDirection: 'column'
+    }
+  }
+}));
 
 export type AddAlertModalValues = {
   originAsset: string;
@@ -17,6 +26,7 @@ export type AddAlertModalInnerProps = {
 };
 
 export const AddAlertModal = ({ context, id, innerProps }: ContextModalProps<AddAlertModalInnerProps>) => {
+  const { classes } = useStyles();
   const [isLoading, toggleLoading] = useToggle([false, true] as const);
   const form = useForm<AddAlertModalValues>({
     initialValues: {
@@ -49,7 +59,7 @@ export const AddAlertModal = ({ context, id, innerProps }: ContextModalProps<Add
           context.closeModal(id);
           toggleLoading();
         })}>
-        <Flex pb={'xl'} direction="row" pt={'sm'}>
+        <Flex pb={'xl'} className={classes.stackOnMobile} pt={'sm'}>
           <Select
             placeholder="Asset name"
             searchable
@@ -61,9 +71,12 @@ export const AddAlertModal = ({ context, id, innerProps }: ContextModalProps<Add
             rightSection={assetsData.data === undefined || assetsData.isLoading ? <Loader size="xs" /> : undefined}
             {...form.getInputProps('originAsset')}
           />
-          <Text size="lg" mx={'md'} py={3}>
-            =
-          </Text>
+          <Center>
+            <Text size="lg" mx={'md'} py={3}>
+              =
+            </Text>
+          </Center>
+
           <NumberInput
             placeholder="Value"
             {...form.getInputProps('value')}
