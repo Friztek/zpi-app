@@ -1,47 +1,19 @@
-import { Card, Center, createStyles, Loader } from "@mantine/core";
-import { useQuery } from "react-query";
-import { useAPICommunication } from "../../contexts/APICommunicationContext";
-import { UserAssetCollapsedElement, UserAssetCollapsedElementProps } from "./UserAssetCollapsedElement";
-
-const useStyles = createStyles((theme) => ({
-  item: {
-    ...theme.fn.focusStyles(),
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderRadius: theme.radius.md,
-    border: `1px solid ${theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[2]}`,
-
-    padding: `${theme.spacing.xs}px ${theme.spacing.xs}px`,
-    [theme.fn.largerThan("sm")]: {
-      padding: `${theme.spacing.sm}px ${theme.spacing.xl}px`,
-    },
-
-    backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.white,
-    marginBottom: theme.spacing.sm,
-  },
-
-  itemDragging: {
-    boxShadow: theme.shadows.sm,
-  },
-
-  columnStackMobile: {
-    [theme.fn.smallerThan("sm")]: {
-      flexDirection: "column",
-    },
-  },
-}));
+import { Card, Center, Loader, SegmentedControl } from '@mantine/core';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
+import { useAPICommunication } from '../../contexts/APICommunicationContext';
+import { UserAssetCollapsedElement, UserAssetCollapsedElementProps } from './UserAssetCollapsedElement';
 
 export type UserAssetsListProps = {
   userPreferenceCurrencySymbol: string;
 };
 
 export function UserAssetList({ userPreferenceCurrencySymbol }: UserAssetsListProps) {
-  const { classes } = useStyles();
+  const [value, setValue] = useState('all');
 
   const context = useAPICommunication();
 
-  const userAssetQuery = useQuery("userAsset", async () => {
+  const userAssetQuery = useQuery('userAsset', async () => {
     return await context.userAssetsAPI.getAllUserAssets();
   });
 
@@ -61,7 +33,7 @@ export function UserAssetList({ userPreferenceCurrencySymbol }: UserAssetsListPr
       const newGroupObject = {
         description: item.description,
         originValue: item.originValue,
-        userCurrencyValue: item.userCurrencyValue,
+        userCurrencyValue: item.userCurrencyValue
       };
       found.totalOriginValue += item.originValue;
       found.totalUserCurrencyValue += item.userCurrencyValue;
@@ -79,20 +51,23 @@ export function UserAssetList({ userPreferenceCurrencySymbol }: UserAssetsListPr
           {
             description: item.description,
             originValue: item.originValue,
-            userCurrencyValue: item.userCurrencyValue,
-          },
-        ],
+            userCurrencyValue: item.userCurrencyValue
+          }
+        ]
       };
       groupedUserAssets.push(newObject);
     }
   });
 
-  const items = groupedUserAssets.map((item) => (
-    <UserAssetCollapsedElement
-      key={item.assetName}
-      {...item}
-    />
-  ));
+  groupedUserAssets.sort((a, b) => a.assetFriendlyName.localeCompare(b.assetFriendlyName));
+
+  groupedUserAssets.forEach((userAsset) => {
+    userAsset.groups.sort((a, b) => a.description.localeCompare(b.description));
+  });
+
+  const items = groupedUserAssets
+    .filter((item) => value === 'all' || item.category === value)
+    .map((item) => <UserAssetCollapsedElement key={item.assetName} {...item} />);
 
   if (userAssetQuery.data!.length === 0) {
     return (
@@ -102,5 +77,22 @@ export function UserAssetList({ userPreferenceCurrencySymbol }: UserAssetsListPr
     );
   }
 
-  return <div>{items}</div>;
+  return (
+    <div>
+      <SegmentedControl
+        value={value}
+        onChange={setValue}
+        data={[
+          { value: 'all', label: 'All' },
+          { value: 'crypto', label: 'Crypto' },
+          { value: 'currency', label: 'Currency' },
+          { value: 'metal', label: 'Metal' }
+        ]}
+        transitionDuration={500}
+        transitionTimingFunction="linear"
+        color="blue"
+      />
+      {items}
+    </div>
+  );
 }

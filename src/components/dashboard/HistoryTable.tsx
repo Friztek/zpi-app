@@ -1,60 +1,45 @@
-import { useEffect, useState } from "react";
-import {
-  createStyles,
-  Table,
-  ScrollArea,
-  Card,
-  Center,
-  Loader,
-  Text,
-  Flex,
-  Space,
-  Paper,
-  Group,
-  Button,
-  Stack,
-  Box,
-} from "@mantine/core";
-import { useAPICommunication } from "../../contexts/APICommunicationContext";
-import { useQuery, useQueryClient } from "react-query";
-import { DateRangePicker, DateRangePickerValue } from "@mantine/dates";
-import { dateToOffsetDate } from "../../utils/utils-format";
-import { AssetDto } from "../../client-typescript";
-import { sub } from "date-fns";
-import { IconCalendar, IconPlus } from "@tabler/icons";
-import { openContextModal } from "@mantine/modals";
-import { TransactionModalInnerProps } from "../modals/TransactionModal";
+import { useState } from 'react';
+import { createStyles, Table, ScrollArea, Center, Loader, Text, Flex, Paper, Button, Stack, Box } from '@mantine/core';
+import { useAPICommunication } from '../../contexts/APICommunicationContext';
+import { useQuery, useQueryClient } from 'react-query';
+import { DateRangePicker, DateRangePickerValue } from '@mantine/dates';
+import { dateToOffsetDate } from '../../utils/utils-format';
+import { AssetDto } from '../../client-typescript';
+import { sub } from 'date-fns';
+import { IconCalendar, IconPlus } from '@tabler/icons';
+import { openContextModal } from '@mantine/modals';
+import { TransactionModalInnerProps } from '../modals/TransactionModal';
 
 const useStyles = createStyles((theme) => ({
   header: {
-    position: "sticky",
+    position: 'sticky',
     top: 0,
-    backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
-    transition: "box-shadow 150ms ease",
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    transition: 'box-shadow 150ms ease',
 
-    "&::after": {
+    '&::after': {
       content: '""',
-      position: "absolute",
+      position: 'absolute',
       left: 0,
       right: 0,
       bottom: 0,
-      borderBottom: `1px solid ${theme.colorScheme === "dark" ? theme.colors.dark[3] : theme.colors.gray[2]}`,
-    },
+      borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[2]}`
+    }
   },
 
   card: {
-    backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white
   },
 
   scrolled: {
-    boxShadow: theme.shadows.sm,
+    boxShadow: theme.shadows.sm
   },
 
   stackOnMobile: {
-    [theme.fn.smallerThan("sm")]: {
-      flexDirection: "column",
-    },
-  },
+    [theme.fn.smallerThan('sm')]: {
+      flexDirection: 'column'
+    }
+  }
 }));
 
 type HistoryTableProps = {
@@ -73,7 +58,7 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
   const context = useAPICommunication();
   const queryClient = useQueryClient();
 
-  const transactionsData = useQuery(["transactionsDataHistory", dateRange], async () => {
+  const transactionsData = useQuery(['transactionsDataHistory', dateRange], async () => {
     const fromDate = dateToOffsetDate(dateRange[0] ?? undefined);
     const toDate = dateToOffsetDate(dateRange[1] ?? undefined);
 
@@ -82,9 +67,9 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
       const assetData = assets.find((e) => e.name === element.assetIdentifier);
       return {
         assetIdentifier: element.assetIdentifier.toUpperCase(),
-        name: assetData?.friendlyName ?? "",
+        name: assetData?.friendlyName ?? '',
         value: element.value,
-        date: element.timeStamp.toLocaleDateString(),
+        date: element.timeStamp.toLocaleDateString()
       };
     });
     return transactions;
@@ -104,26 +89,27 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
     <tr key={index}>
       <td>{row.assetIdentifier}</td>
       <td>{row.name}</td>
-      <td style={{ color: row.value > 0 ? "green" : row.value == 0 ? "" : "red" }}>{row.value}</td>
+      <td style={{ color: row.value > 0 ? 'green' : row.value == 0 ? '' : 'red' }}>{row.value}</td>
       <td>{row.date}</td>
     </tr>
   ));
 
   return (
-    <Paper withBorder radius="md" h={"100%"}>
-      <Stack spacing={"sm"}>
-        <Flex direction={"row"} className={classes.stackOnMobile} justify="space-between" px={"sm"} pt={"sm"}>
+    <Paper withBorder radius="md" h={605}>
+      <Stack spacing={'sm'}>
+        <Flex direction={'row'} className={classes.stackOnMobile} justify="space-between" px={'sm'} pt={'sm'}>
           <Text size="lg" weight={500}>
             Transactions history
           </Text>
           <Button
             size="sm"
+            variant="outline"
             leftIcon={<IconPlus size={14} />}
             compact
             onClick={() =>
               openContextModal({
-                modal: "transactionModal",
-                title: "Add new transaction",
+                modal: 'transactionModal',
+                title: 'Add new transaction',
                 innerProps: {
                   onSubmit: async (values) => {
                     await context.userAssetsAPI.patchUserAssets({
@@ -131,22 +117,21 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
                         {
                           assetName: values.assetName,
                           description: values.origin,
-                          type: "Update",
-                          value: values.value as unknown as number,
-                        },
-                      ],
+                          type: 'Update',
+                          value: values.value as unknown as number
+                        }
+                      ]
                     });
-                    queryClient.invalidateQueries("transactionsDataHistory");
-                    queryClient.invalidateQueries("walletTotalValue");
-                  },
-                } as TransactionModalInnerProps,
+                    queryClient.invalidateQueries('transactionsDataHistory');
+                    queryClient.invalidateQueries('walletTotalValue');
+                  }
+                } as TransactionModalInnerProps
               })
-            }
-          >
+            }>
             New transaction
           </Button>
         </Flex>
-        <Box px={"sm"}>
+        <Box px={'sm'}>
           <DateRangePicker
             aria-label="Pick date range"
             placeholder="Pick dates range"
@@ -163,14 +148,15 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
             }}
           />
         </Box>
-        <ScrollArea onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+
+        <ScrollArea sx={{ height: 500 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
           <Table>
             <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
               <tr>
-                <th style={{ width: "20%" }}>Asset Symbol</th>
-                <th style={{ width: "25%" }}>Name</th>
-                <th style={{ width: "30%" }}>Value</th>
-                <th style={{ width: "25%" }}>Date</th>
+                <th style={{ width: '20%' }}>Asset Symbol</th>
+                <th style={{ width: '25%' }}>Name</th>
+                <th style={{ width: '30%' }}>Value</th>
+                <th style={{ width: '25%' }}>Date</th>
               </tr>
             </thead>
             <tbody>{rows}</tbody>
