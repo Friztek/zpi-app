@@ -8,6 +8,7 @@ import { ModalsProvider } from "@mantine/modals";
 import { useLocalStorage } from "@mantine/hooks";
 import { TransactionModal } from "../components/modals/TransactionModal";
 import { PreferencesModal } from "../components/dashboard/PreferencesModal";
+import { useUrl } from "../hooks/useUrl";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, refetchOnMount: false } },
@@ -23,17 +24,17 @@ export default function App(props: AppProps) {
 
   const { Component, pageProps } = props;
 
+  const url = useUrl();
   return (
     <>
       <Head>
         <title>ZPI APP</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
-      {/* TODO add env */}
       <Auth0Provider
         domain="how-money.eu.auth0.com"
         clientId="qEgsNhsWSbKXXWNjNuaS2JrV1RRBHvFX"
-        redirectUri={"http://localhost:3000"}
+        redirectUri={url}
         audience="https://how-money.com"
         cacheLocation="localstorage"
       >
