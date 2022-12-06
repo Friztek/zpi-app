@@ -3,12 +3,14 @@ import { Layout } from '../components/layout/Layout';
 import { BrushChart } from '../components/dashboard/BrushChart';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 import { AssetsCarousel } from '../components/dashboard/AssetsCarousel';
-import { Center, Grid, Loader, Stack } from '@mantine/core';
+import { Grid, Stack } from '@mantine/core';
 import { WalletStats } from '../components/dashboard/WalletStats';
 import { HistoryTable } from '../components/dashboard/HistoryTable';
 import { useAPICommunication } from '../contexts/APICommunicationContext';
 import { useQuery } from 'react-query';
 import { orderBy } from 'lodash';
+import { LoaderDots } from '../components/common/LoaderDots';
+import { FetchingError } from '../components/common/FetchingError';
 
 const Dashboard = () => {
   const context = useAPICommunication();
@@ -22,15 +24,23 @@ const Dashboard = () => {
     return await context.assetsAPI.getAllAssets();
   });
 
-  const userPreferenceQuery = useQuery('userPreferenceDashboard', async () => {
+  const userPreferenceQuery = useQuery('userPreferences', async () => {
     return await context.userPreferenceAPI.getUserPreferences();
   });
 
+  if (walletHistoryData.isError || userPreferenceQuery.isError || assetsData.isError) {
+    return (
+      <Layout>
+        <FetchingError h={'80vh'} />
+      </Layout>
+    );
+  }
+
   if (walletHistoryData.data === undefined || userPreferenceQuery.data === undefined || assetsData.data === undefined) {
     return (
-      <Center h={120}>
-        <Loader size="xl" variant="dots" />
-      </Center>
+      <Layout>
+        <LoaderDots h={'80vh'} />
+      </Layout>
     );
   }
 
@@ -42,7 +52,7 @@ const Dashboard = () => {
         <Grid.Col lg={8} mah={'100%'}>
           <Stack justify={'space-between'} h={'100%'}>
             <BrushChart data={walletData} />
-            <AssetsCarousel assets={assetsData.data} />
+            <AssetsCarousel assets={assetsData.data} userPreferenceCurrency={userPreferenceQuery.data.preferenceCurrency} />
           </Stack>
         </Grid.Col>
         <Grid.Col lg={4} mah={'100%'} maw={'100%'}>

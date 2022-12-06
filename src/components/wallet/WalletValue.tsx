@@ -4,6 +4,8 @@ import { useQuery } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
 import { lastDayOfPreviousMonth } from '../../utils/date-utils';
 import { numberToMoneyString } from '../../utils/utils-format';
+import { FetchingError } from '../common/FetchingError';
+import { LoaderDots } from '../common/LoaderDots';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -32,6 +34,14 @@ export function WalletValue({ userPreferenceCurrency }: WalletValueProps) {
     return await context.walletApi.apiWalletGet({ from: lastDayOfMonth, to: lastDayOfMonth });
   });
 
+  if (walletTotalValueQuery.isError || walletLastMonthTotalValueQuery.isError) {
+    return (
+      <Paper style={{ height: 140 }} withBorder radius="md">
+        <FetchingError h={130} />
+      </Paper>
+    );
+  }
+
   if (
     walletTotalValueQuery.isLoading ||
     walletTotalValueQuery.data === undefined ||
@@ -39,20 +49,8 @@ export function WalletValue({ userPreferenceCurrency }: WalletValueProps) {
     walletLastMonthTotalValueQuery.data === undefined
   ) {
     return (
-      <Paper withBorder style={{ height: 100 }} radius="md">
-        <Center style={{ height: 100 }}>
-          <Loader size="xl" variant="dots" />
-        </Center>
-      </Paper>
-    );
-  }
-
-  if (walletTotalValueQuery.isLoading || walletLastMonthTotalValueQuery.isLoading) {
-    return (
-      <Paper style={{ height: 140 }} withBorder radius="md">
-        <Center style={{ height: 130 }}>
-          <Loader size="xl" variant="dots" />
-        </Center>
+      <Paper withBorder style={{ height: 140 }} radius="md">
+        <LoaderDots h={130} />
       </Paper>
     );
   }

@@ -1,19 +1,18 @@
-import { Button, Group, Paper, Text, createStyles, Switch, Loader, Center, Modal, Flex, Stack } from "@mantine/core";
-import { IconTools } from "@tabler/icons";
-import { useState } from "react";
-import { CurrencySwitch } from "../profile/CurrencySwitch";
-import { useAPICommunication } from "../../contexts/APICommunicationContext";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { UpdateUserPreferencesRequest, UserPreferencesDto } from "../../client-typescript";
-import { useToggle } from "@mantine/hooks";
+import { Button, createStyles, Switch, Modal, Flex, Stack } from '@mantine/core';
+import { useState } from 'react';
+import { CurrencySwitch } from '../profile/CurrencySwitch';
+import { useAPICommunication } from '../../contexts/APICommunicationContext';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { UpdateUserPreferencesRequest, UserPreferencesDto } from '../../client-typescript';
+import { useToggle } from '@mantine/hooks';
 
 const useStyles = createStyles((theme) => ({
   switch: {
-    marginTop: 10,
+    marginTop: 10
   },
   label: {
-    color: `${theme.colorScheme === "dark" ? theme.white : theme.colors.dark[6]} !important`,
-  },
+    color: `${theme.colorScheme === 'dark' ? theme.white : theme.colors.dark[6]} !important`
+  }
 }));
 
 export const PreferencesModal = () => {
@@ -25,7 +24,7 @@ export const PreferencesModal = () => {
   const [opened, setOpened] = useState<boolean>(false);
   const [isLoading, toogleLoading] = useToggle([false, true]);
 
-  const userPreferencesQuery = useQuery("userPreferences", async () => {
+  const userPreferencesQuery = useQuery('userPreferences', async () => {
     const data = await context.userPreferenceAPI.getUserPreferences();
     setUserPreferences(data);
     setOpened(data.isDefault);
@@ -40,8 +39,8 @@ export const PreferencesModal = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("userPreferences");
-      },
+        queryClient.invalidateQueries('userPreferences');
+      }
     }
   );
 
@@ -60,8 +59,7 @@ export const PreferencesModal = () => {
         saveForm(userPreferencesQuery.data!);
         setOpened(false);
       }}
-      title="Set preferences"
-    >
+      title="Set preferences">
       <Stack spacing={2}>
         <CurrencySwitch
           value={userPreferences.preferenceCurrency}
@@ -73,7 +71,7 @@ export const PreferencesModal = () => {
           label="Do you want to recieve alerts on email?"
           checked={userPreferences.alertsOnEmail}
           onChange={(event) => setUserPreferences((prev) => ({ ...prev!, alertsOnEmail: event.target.checked }))}
-          styles={{ label: { color: " !important" } }}
+          styles={{ label: { color: ' !important' } }}
         />
         <Switch
           classNames={classes}
@@ -85,7 +83,7 @@ export const PreferencesModal = () => {
         />
       </Stack>
 
-      <Flex justify={"space-between"} direction="row" mt="xl">
+      <Flex justify={'space-between'} direction="row" mt="xl">
         <Button variant="default" onClick={() => saveForm(userPreferencesQuery.data!)}>
           Keep defaults
         </Button>

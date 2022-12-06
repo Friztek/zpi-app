@@ -1,9 +1,7 @@
-import { Center, createStyles, Flex, Group, Loader, Text } from '@mantine/core';
+import { Center, createStyles, Flex, Group, Text } from '@mantine/core';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons';
 import { camelCase } from 'lodash';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
-import { useAPICommunication } from '../../contexts/APICommunicationContext';
 import { getPrecisionByCategory, numberToMoneyString } from '../../utils/utils-format';
 import { UserAssetActionMenu } from './UserAssetActionMenu';
 
@@ -68,23 +66,8 @@ export const UserAssetCollapsedElement = ({
   userPreferedCurrencySymbol,
   groups
 }: UserAssetCollapsedElementProps) => {
-  const { classes, theme } = useStyles();
-
-  const context = useAPICommunication();
-
-  const userAssetQuery = useQuery('userAsset', async () => {
-    return await context.userAssetsAPI.getAllUserAssets();
-  });
-
+  const { classes } = useStyles();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
-  if (userAssetQuery.isLoading) {
-    return (
-      <Center h={120}>
-        <Loader size="xl" variant="dots" />
-      </Center>
-    );
-  }
 
   const menuData = {
     name: assetName,
@@ -94,7 +77,7 @@ export const UserAssetCollapsedElement = ({
   };
 
   const collapsedElements = groups.map((item) => (
-    <div className={classes.item} key={item.description} style={{ backgroundColor: "#fafafa", marginLeft: 20 }}>
+    <div className={classes.item} key={item.description} style={{ background: 'none', marginLeft: 20 }}>
       <Flex direction="row" style={{ marginLeft: 10 }}>
         <Center>
           <Text size={'xl'} fw={400}>

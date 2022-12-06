@@ -5,6 +5,7 @@ import { CurrencySwitch } from './CurrencySwitch';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { UpdateUserPreferencesRequest, UserPreferencesDto } from '../../client-typescript';
+import { LoaderDots } from '../common/LoaderDots';
 
 const useStyles = createStyles((theme) => ({
   switch: {
@@ -23,7 +24,7 @@ export function UserPreferences() {
 
   const queryClient = useQueryClient();
 
-  const userPreferencesQuery = useQuery('userPreference', async () => {
+  const userPreferencesQuery = useQuery('userPreferencesProfile', async () => {
     const data = await context.userPreferenceAPI.getUserPreferences();
     setUserPreferences(data);
     return data;
@@ -35,7 +36,7 @@ export function UserPreferences() {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('userPreference');
+        queryClient.invalidateQueries('userPreferencesProfile');
       }
     }
   );
@@ -76,9 +77,7 @@ export function UserPreferences() {
         </ActionIcon>
       </Group>
       {userPreferences === undefined ? (
-        <Center h={120}>
-          <Loader size="xl" variant="dots" />
-        </Center>
+        <LoaderDots h={120} />
       ) : (
         <div>
           <CurrencySwitch

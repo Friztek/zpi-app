@@ -1,7 +1,9 @@
-import { Card, Center, Loader, SegmentedControl } from '@mantine/core';
+import { Card, Center, SegmentedControl } from '@mantine/core';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
+import { FetchingError } from '../common/FetchingError';
+import { LoaderDots } from '../common/LoaderDots';
 import { UserAssetCollapsedElement, UserAssetCollapsedElementProps } from './UserAssetCollapsedElement';
 
 export type UserAssetsListProps = {
@@ -17,12 +19,12 @@ export function UserAssetList({ userPreferenceCurrencySymbol }: UserAssetsListPr
     return await context.userAssetsAPI.getAllUserAssets();
   });
 
+  if (userAssetQuery.isError) {
+    return <FetchingError h={120} />;
+  }
+
   if (userAssetQuery.isLoading) {
-    return (
-      <Center h={120}>
-        <Loader size="xl" variant="dots" />
-      </Center>
-    );
+    return <LoaderDots h={120} />;
   }
 
   var groupedUserAssets: UserAssetCollapsedElementProps[] = [];

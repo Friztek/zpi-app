@@ -135,9 +135,9 @@ export const BrushChart = ({ data }: BrushChartProps) => {
   };
 
   return (
-    <>
+    <div>
       <ReactApexChart options={state.options} series={state.series} type="line" height={chartHeight()} />
       <ReactApexChart options={state.optionsLine} series={state.seriesLine} type="area" height={110} />
-    </>
+    </div>
   );
 };

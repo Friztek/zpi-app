@@ -27,7 +27,7 @@ export const Layout: FC<{
       styles={(theme) => ({
         main: {
           backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
-          maxHeight: '100vh'
+          // maxHeight: '100vh'
         }
       })}>
       {children}
