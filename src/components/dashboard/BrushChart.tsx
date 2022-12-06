@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import { chartGradient } from './utils';
 import { useViewportSize } from '@mantine/hooks';
 import { useMantineTheme } from '@mantine/core';
+import { sub } from 'date-fns';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false
@@ -24,11 +25,9 @@ export const BrushChart = ({ data }: BrushChartProps) => {
   const foreColor = theme.colorScheme === 'dark' ? '#FFFFFF' : '#000000';
   const borderColor = theme.colorScheme === 'dark' ? '#222324' : '#e8ebed';
 
-  const date = new Date();
-  const currentYear = date.getFullYear();
-  const currentMonth = date.getMonth();
-  const firstDay = new Date(currentYear, currentMonth, 1);
-  const lastDay = new Date(currentYear, currentMonth + 1, 0);
+  const dateToday = new Date();
+  const dateMonthAgo = sub(dateToday, { months: 1 });
+  
   const state = {
     series: [
       {
@@ -102,8 +101,8 @@ export const BrushChart = ({ data }: BrushChartProps) => {
         selection: {
           enabled: true,
           xaxis: {
-            min: firstDay.getTime(),
-            max: lastDay.getTime()
+            min: dateMonthAgo.getTime(),
+            max: dateToday.getTime()
           }
         }
       },

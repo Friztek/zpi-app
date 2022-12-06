@@ -5,6 +5,7 @@ import { FC } from "react";
 import { useQueryClient } from "react-query";
 import { useAPICommunication } from "../../contexts/APICommunicationContext";
 import { TransactionModalInnerProps } from "../modals/TransactionModal";
+import { showNotification } from "@mantine/notifications";
 
 type UserAssetMenu = {
   name: string;
@@ -43,6 +44,25 @@ export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => 
               },
             ],
           });
+          showNotification({
+            autoClose: 5000,
+            message: "Succesfully added value to asset",
+            styles: (theme) => ({
+              root: {
+                backgroundColor: theme.colors.blue[6],
+                borderColor: theme.colors.blue[6],
+
+                '&::before': { backgroundColor: theme.white },
+              },
+
+              title: { color: theme.white },
+              description: { color: theme.white },
+              closeButton: {
+                color: theme.white,
+                '&:hover': { backgroundColor: theme.colors.blue[7] },
+              },
+            }),
+          }),
           queryClient.invalidateQueries("userAsset");
         },
       } as TransactionModalInnerProps,
@@ -74,6 +94,25 @@ export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => 
               },
             ],
           });
+          showNotification({
+            autoClose: 5000,
+            message: "Succesfully substracted value from asset",
+            styles: (theme) => ({
+              root: {
+                backgroundColor: theme.colors.blue[6],
+                borderColor: theme.colors.blue[6],
+
+                '&::before': { backgroundColor: theme.white },
+              },
+
+              title: { color: theme.white },
+              description: { color: theme.white },
+              closeButton: {
+                color: theme.white,
+                '&:hover': { backgroundColor: theme.colors.blue[7] },
+              },
+            }),
+          }),
           queryClient.invalidateQueries("userAsset");
         },
       } as TransactionModalInnerProps,
@@ -99,6 +138,25 @@ export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => 
           assetName: asset.name,
           description: asset.origin,
         });
+        showNotification({
+          autoClose: 5000,
+          message: "Succesfully removed asset",
+          styles: (theme) => ({
+            root: {
+              backgroundColor: theme.colors.blue[6],
+              borderColor: theme.colors.blue[6],
+
+              '&::before': { backgroundColor: theme.white },
+            },
+
+            title: { color: theme.white },
+            description: { color: theme.white },
+            closeButton: {
+              color: theme.white,
+              '&:hover': { backgroundColor: theme.colors.blue[7] },
+            },
+          }),
+        }),
         queryClient.invalidateQueries("userAsset");
       },
       confirmProps: {

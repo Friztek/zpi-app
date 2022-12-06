@@ -7,7 +7,7 @@ import { AddAlertModalInnerProps } from './AddAlertModal';
 
 export const AddAlertButton = () => {
   const context = useAPICommunication();
-  const quueryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   return (
     <Button
@@ -23,7 +23,7 @@ export const AddAlertButton = () => {
               await context.allertsApi.addNewAllert({
                 addAlertDto: { currency: values.currency, originAssetName: values.originAsset, value: values.value as number }
               });
-              quueryClient.invalidateQueries('getAllAllerts');
+              queryClient.invalidateQueries('getAllAllerts');
             }
           } as AddAlertModalInnerProps
         })

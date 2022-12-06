@@ -9,6 +9,7 @@ import { sub } from 'date-fns';
 import { IconCalendar, IconPlus } from '@tabler/icons';
 import { openContextModal } from '@mantine/modals';
 import { TransactionModalInnerProps } from '../modals/TransactionModal';
+import { showNotification } from "@mantine/notifications";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -121,6 +122,25 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
                           value: values.value as unknown as number
                         }
                       ]
+                    });
+                    showNotification({
+                      autoClose: 5000,
+                      message: "Succesfully added new transaction",
+                      styles: (theme) => ({
+                        root: {
+                          backgroundColor: theme.colors.blue[6],
+                          borderColor: theme.colors.blue[6],
+          
+                          '&::before': { backgroundColor: theme.white },
+                        },
+          
+                        title: { color: theme.white },
+                        description: { color: theme.white },
+                        closeButton: {
+                          color: theme.white,
+                          '&:hover': { backgroundColor: theme.colors.blue[7] },
+                        },
+                      }),
                     });
                     queryClient.invalidateQueries('transactionsDataHistory');
                     queryClient.invalidateQueries('walletTotalValue');

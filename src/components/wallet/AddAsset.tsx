@@ -22,7 +22,9 @@ import { AssetDto, OperationType, PatchUserAssetsDto } from '../../client-typesc
 import { toNumber, uniqueId } from 'lodash';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
-import { getPrecisionByCategory } from '../../utils/utils-format';
+import { getMinValueByCategory, getPrecisionByCategory } from '../../utils/utils-format';
+import { useToggle } from '@mantine/hooks';
+import { showNotification } from '@mantine/notifications';
 
 const useStyles = createStyles((theme) => ({
   icon: {
@@ -40,11 +42,7 @@ export type AddTransactionModel = {
   assetName?: string;
   description?: string;
   precision: number;
-};
-
-export type PrecisionModel = {
-  id: number;
-  precision: number;
+  min: number;
 };
 
 const initialValues: AddTransactionModel = {
@@ -52,11 +50,14 @@ const initialValues: AddTransactionModel = {
   assetName: undefined,
   value: undefined,
   description: undefined,
-  precision: 2
+  precision: 2,
+  min: 0.01
 };
 
 export function AddAsset() {
   const { classes } = useStyles();
+
+  const [isLoading, toggleLoading] = useToggle([false, true] as const);
 
   const context = useAPICommunication();
   const queryClient = useQueryClient();
@@ -75,6 +76,14 @@ export function AddAsset() {
     return 2;
   };
 
+  const getMin = (assetName: string) => {
+    const foundAsset = assetQuery.data?.find((asset) => asset.name === assetName);
+    if (foundAsset) {
+      return getMinValueByCategory(foundAsset.category);
+    }
+    return 0.01;
+  };
+
   const mutation = useMutation(
     (patchUserAssetsDto: PatchUserAssetsDto[]) => {
       return context.userAssetsAPI.patchUserAssets({ patchUserAssetsDto });
@@ -87,10 +96,32 @@ export function AddAsset() {
     }
   );
 
+  const [errorMessage, setErrorMessage] = useState<string>('');
+
+  const checkForm = () => {
+    setErrorMessage('');
+    formFields.forEach((field) => {
+      if (field.assetName === undefined) {
+        console.log(field.assetName);
+        setErrorMessage('Asset name is required.');
+        return;
+      }
+      if (field.description === undefined) {
+        console.log(field.description);
+        setErrorMessage("Asset's origin is required.");
+        return;
+      }
+      if (field.value === undefined) {
+        setErrorMessage("Asset's value is required.");
+        return;
+      }
+    });
+  };
+
   const addNewInput = () => {
     setFormFields((values) => [
       ...values,
-      { id: toNumber(uniqueId()), assetName: undefined, description: undefined, value: undefined, precision: 2 }
+      { id: toNumber(uniqueId()), assetName: undefined, description: undefined, value: undefined, precision: 2, min: 0.01 }
     ]);
   };
 
@@ -136,9 +167,25 @@ export function AddAsset() {
                     direction="column"
                     align={'center'}
                     gap={0}>
-                    <Input style={{ width: '100%' }} radius={0} placeholder="Asset origin (ex. cash, bank)"></Input>
+                    <Input
+                      style={{ width: '100%' }}
+                      name="origin"
+                      value={input.description}
+                      onChange={(value) => {
+                        if (value === null) return;
+                        updateAssetValue(input.id, {
+                          value: input.value,
+                          description: value,
+                          precision: input.precision,
+                          min: input.min,
+                          assetName: input.assetName,
+                        });
+                      }}
+                      radius={0}
+                      placeholder="Asset origin (ex. cash, bank)"></Input>
                     <NumberInput
                       radius={0}
+                      min={input.min}
                       style={{
                         flex: 1,
                         width: '100%'
@@ -151,13 +198,15 @@ export function AddAsset() {
                       onChange={(value) => {
                         updateAssetValue(input.id, {
                           value: value,
-                          precision: input.precision
+                          precision: input.precision,
+                          min: input.min
                         });
                       }}
                       rightSection={
                         <Select
                           placeholder="Asset name"
                           radius={0}
+                          required={true}
                           data={assetQuery.data!.map((asset) => ({
                             value: asset.name,
                             label: `${asset.friendlyName}`
@@ -167,7 +216,10 @@ export function AddAsset() {
                             if (value === null) return;
                             updateAssetValue(input.id, {
                               assetName: value,
-                              precision: getPrecision(value)
+                              precision: getPrecision(value),
+                              min: getMin(value),
+                              value: input.value,
+                              description: input.description
                             });
                           }}
                           styles={{
@@ -197,21 +249,50 @@ export function AddAsset() {
               );
             })}
           </Stack>
+          <div>
+            <Text color="red">{errorMessage}</Text>
+          </div>
           <Flex align={'center'} justify="space-between" mt="lg">
             <ActionIcon variant="default" size={'lg'}>
               <IconPlus className={classes.icon} onClick={addNewInput} />
             </ActionIcon>
             <Button
               variant="filled"
+              loading={isLoading}
               onClick={() => {
-                mutation.mutate(
-                  formFields.map((a) => ({
-                    assetName: a.assetName!,
-                    type: OperationType.Update,
-                    value: a.value!,
-                    description: a.description!
-                  }))
-                );
+                checkForm();
+                console.log(errorMessage);
+                if (errorMessage === '') {
+                  toggleLoading(true);
+                  mutation.mutate(
+                    formFields.map((a) => ({
+                      assetName: a.assetName!,
+                      type: OperationType.Update,
+                      value: a.value!,
+                      description: a.description!
+                    }))
+                  );
+                  toggleLoading(false);
+                  showNotification({
+                    autoClose: 5000,
+                    message: 'Succesfully added new transaction',
+                    styles: (theme) => ({
+                      root: {
+                        backgroundColor: theme.colors.blue[6],
+                        borderColor: theme.colors.blue[6],
+
+                        '&::before': { backgroundColor: theme.white }
+                      },
+
+                      title: { color: theme.white },
+                      description: { color: theme.white },
+                      closeButton: {
+                        color: theme.white,
+                        '&:hover': { backgroundColor: theme.colors.blue[7] }
+                      }
+                    })
+                  });
+                }
               }}>
               Apply transaction
             </Button>
