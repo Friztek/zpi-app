@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { createStyles, Table, ScrollArea, Center, Loader, Text, Flex, Paper, Button, Stack, Box } from '@mantine/core';
+import { createStyles, Table, ScrollArea, Text, Flex, Paper, Button, Stack, Box } from '@mantine/core';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
 import { useQuery, useQueryClient } from 'react-query';
 import { DateRangePicker, DateRangePickerValue } from '@mantine/dates';
 import { dateToOffsetDate } from '../../utils/utils-format';
-import { AssetDto } from '../../client-typescript';
+import { AssetDto, FetchError } from '../../client-typescript';
 import { sub } from 'date-fns';
 import { IconCalendar, IconPlus } from '@tabler/icons';
 import { openContextModal } from '@mantine/modals';
 import { TransactionModalInnerProps } from '../modals/TransactionModal';
+import { LoaderDots } from '../common/LoaderDots';
+import { FetchingError } from '../common/FetchingError';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -27,14 +29,6 @@ const useStyles = createStyles((theme) => ({
     }
   },
 
-  card: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white
-  },
-
-  scrolled: {
-    boxShadow: theme.shadows.sm
-  },
-
   stackOnMobile: {
     [theme.fn.smallerThan('sm')]: {
       flexDirection: 'column'
@@ -47,8 +41,7 @@ type HistoryTableProps = {
 };
 
 export const HistoryTable = ({ assets }: HistoryTableProps) => {
-  const { classes, cx } = useStyles();
-  const [scrolled, setScrolled] = useState(false);
+  const { classes, cx, theme } = useStyles();
 
   const dateToday = new Date();
   const dateMonthAgo = sub(dateToday, { months: 1 });
@@ -75,11 +68,15 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
     return transactions;
   });
 
+  if (transactionsData.isError) {
+    return (
+      <FetchingError />
+    );
+  }
+
   if (transactionsData.data === undefined) {
     return (
-      <Center h={120}>
-        <Loader size="xl" variant="dots" />
-      </Center>
+      <LoaderDots />
     );
   }
 
@@ -95,8 +92,8 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
   ));
 
   return (
-    <Paper withBorder radius="md" h={605}>
-      <Stack spacing={'sm'}>
+    <Paper withBorder radius="md" h={'100%'} mah={'100%'} mih={400} style={{ overflow: theme.fn.largerThan('lg') ? 'hidden' : 'inherit' }}>
+      <Stack spacing={'sm'} h={'100%'}>
         <Flex direction={'row'} className={classes.stackOnMobile} justify="space-between" px={'sm'} pt={'sm'}>
           <Text size="lg" weight={500}>
             Transactions history
@@ -112,18 +109,24 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
                 title: 'Add new transaction',
                 innerProps: {
                   onSubmit: async (values) => {
-                    await context.userAssetsAPI.patchUserAssets({
-                      patchUserAssetsDto: [
-                        {
-                          assetName: values.assetName,
-                          description: values.origin,
-                          type: 'Update',
-                          value: values.value as unknown as number
-                        }
-                      ]
-                    });
-                    queryClient.invalidateQueries('transactionsDataHistory');
-                    queryClient.invalidateQueries('walletTotalValue');
+                    try {
+                      await context.userAssetsAPI.patchUserAssets({
+                        patchUserAssetsDto: [
+                          {
+                            assetName: values.assetName,
+                            description: values.origin,
+                            type: 'Update',
+                            value: values.value as unknown as number
+                          }
+                        ]
+                      });
+                      queryClient.invalidateQueries('transactionsDataHistory');
+                      queryClient.invalidateQueries('walletTotalValue');
+                    }
+                    catch (e) {
+                      const error = e as FetchError;
+                      console.log(error.cause.message);
+                    }
                   }
                 } as TransactionModalInnerProps
               })
@@ -149,18 +152,25 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
           />
         </Box>
 
-        <ScrollArea sx={{ height: 500 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-          <Table>
-            <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
-              <tr>
-                <th style={{ width: '20%' }}>Asset Symbol</th>
-                <th style={{ width: '25%' }}>Name</th>
-                <th style={{ width: '30%' }}>Value</th>
-                <th style={{ width: '25%' }}>Date</th>
-              </tr>
-            </thead>
-            <tbody>{rows}</tbody>
-          </Table>
+        <ScrollArea
+          styles={{
+            scrollbar: {
+              paddingTop: '10px'
+            }
+          }}>
+          <div style={{ overflow: 'auto' }}>
+            <Table>
+              <thead className={cx(classes.header)}>
+                <tr>
+                  <th style={{ width: '20%' }}>Asset Symbol</th>
+                  <th style={{ width: '25%' }}>Name</th>
+                  <th style={{ width: '30%' }}>Value</th>
+                  <th style={{ width: '25%' }}>Date</th>
+                </tr>
+              </thead>
+              <tbody>{rows}</tbody>
+            </Table>
+          </div>
         </ScrollArea>
       </Stack>
     </Paper>

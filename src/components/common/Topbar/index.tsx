@@ -1,25 +1,24 @@
-import { createStyles, Header, Group, Button, Box, Burger } from "@mantine/core";
-import { MantineLogo } from "@mantine/ds";
-import { useDisclosure } from "@mantine/hooks";
-import { useAuth0 } from "@auth0/auth0-react";
-import { ColorSchemeToggler } from "../ColorSchemeToggler";
-import { TopbarUserButton } from "../TopbarUserButton";
-import { TopbarLinks } from "./TopbarLinks";
-import { TopbarDrawer } from "./TopbarDrawer";
-import { useUrl } from "../../../hooks/useUrl";
+import { createStyles, Header, Group, Button, Box, Burger, Image, Text } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { useAuth0 } from '@auth0/auth0-react';
+import { ColorSchemeToggler } from '../ColorSchemeToggler';
+import { TopbarUserButton } from '../TopbarUserButton';
+import { TopbarLinks } from './TopbarLinks';
+import { TopbarDrawer } from './TopbarDrawer';
+import { useUrl } from '../../../hooks/useUrl';
 
 const useStyles = createStyles((theme) => ({
   hiddenMobile: {
-    [theme.fn.smallerThan("sm")]: {
-      display: "none",
-    },
+    [theme.fn.smallerThan('sm')]: {
+      display: 'none'
+    }
   },
 
   hiddenDesktop: {
-    [theme.fn.largerThan("sm")]: {
-      display: "none",
-    },
-  },
+    [theme.fn.largerThan('sm')]: {
+      display: 'none'
+    }
+  }
 }));
 
 interface HeaderSimpleProps {
@@ -36,11 +35,18 @@ export default function Topbar({ links }: HeaderSimpleProps) {
   return (
     <Box pb={120}>
       <Header height={60} px="md">
-        <Group position="apart" sx={{ height: "100%" }}>
+        <Group position="apart" sx={{ height: '100%' }}>
           {isAuthenticated && <Burger opened={drawerOpened} onClick={toggleDrawer} className={classes.hiddenDesktop} />}
-          <MantineLogo size={30} />
+          <Image
+            height={50}
+            width={200}
+            src="/howMoneyLogoWide.svg"
+            alt="HowMoney logo"
+            withPlaceholder
+            placeholder={<Text align="center">HowMoney logo</Text>}
+          />
 
-          <Group sx={{ height: "100%" }} spacing={0} className={classes.hiddenMobile}>
+          <Group sx={{ height: '100%' }} spacing={0} className={classes.hiddenMobile}>
             <TopbarLinks links={links} />
           </Group>
 
@@ -49,8 +55,8 @@ export default function Topbar({ links }: HeaderSimpleProps) {
               {isAuthenticated ? (
                 <TopbarUserButton
                   user={{
-                    image: user?.picture ?? "",
-                    name: user?.name ?? "",
+                    image: user?.picture ?? '',
+                    name: user?.name ?? ''
                   }}
                 />
               ) : (

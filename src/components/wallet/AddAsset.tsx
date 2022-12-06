@@ -11,10 +11,8 @@ import {
   Flex,
   Paper,
   Box,
-  Loader,
   NumberInput,
-  Input,
-  Center
+  Input
 } from '@mantine/core';
 import { IconMoneybag, IconPlus, IconTrash } from '@tabler/icons';
 import { useState } from 'react';
@@ -23,6 +21,7 @@ import { toNumber, uniqueId } from 'lodash';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
 import { getPrecisionByCategory } from '../../utils/utils-format';
+import { LoaderDots } from '../common/LoaderDots';
 
 const useStyles = createStyles((theme) => ({
   icon: {
@@ -119,9 +118,7 @@ export function AddAsset() {
       </Group>
 
       {assetQuery.isLoading ? (
-        <Center h={144}>
-          <Loader size="xl" variant="dots" />
-        </Center>
+        <LoaderDots h={144} />
       ) : (
         <div>
           <Space h="md" />
@@ -134,9 +131,21 @@ export function AddAsset() {
                       flex: 10
                     }}
                     direction="column"
-                    align={'center'}
-                    gap={0}>
-                    <Input style={{ width: '100%' }} radius={0} placeholder="Asset origin (ex. cash, bank)"></Input>
+                    align={'center'}>
+                    <Input
+                      style={{ width: '100%' }}
+                      styles={{
+                        input: { borderBottom: 'none' }
+                      }}
+                      value={input.description}
+                      radius={0}
+                      onChange={(e: any) => {
+                        updateAssetValue(input.id, {
+                          description: e.target.value,
+                          precision: input.precision
+                        });
+                      }}
+                      placeholder="Asset origin (ex. cash, bank)"></Input>
                     <NumberInput
                       radius={0}
                       style={{
