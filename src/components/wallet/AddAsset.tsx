@@ -134,9 +134,21 @@ export function AddAsset() {
                       flex: 10
                     }}
                     direction="column"
-                    align={'center'}
-                    gap={0}>
-                    <Input style={{ width: '100%' }} radius={0} placeholder="Asset origin (ex. cash, bank)"></Input>
+                    align={'center'}>
+                    <Input
+                      style={{ width: '100%' }}
+                      styles={{
+                        input: { borderBottom: 'none' }
+                      }}
+                      value={input.description}
+                      radius={0}
+                      onChange={(e) => {
+                        updateAssetValue(input.id, {
+                          description: e.target.value,
+                          precision: input.precision
+                        });
+                      }}
+                      placeholder="Asset origin (ex. cash, bank)"></Input>
                     <NumberInput
                       radius={0}
                       style={{
