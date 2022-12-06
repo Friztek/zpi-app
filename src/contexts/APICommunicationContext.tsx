@@ -17,7 +17,7 @@ const APICommunicationContext = createContext<APICommunication | null>(null);
 export const APICommunicationContextProvider: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const basePath = "http://host.docker.internal:5000";
+  const basePath = "https://host.docker.internal:5001";
   const { getAccessTokenSilently } = useAuth0();
 
   const configuration = new Configuration({
