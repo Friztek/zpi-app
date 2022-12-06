@@ -94,10 +94,10 @@ export const UserAssetCollapsedElement = ({
   };
 
   const collapsedElements = groups.map((item) => (
-    <div className={classes.item} key={item.description} style={{ background: 'none', marginLeft: 20 }}>
+    <div className={classes.item} key={item.description} style={{ backgroundColor: "#fafafa", marginLeft: 20 }}>
       <Flex direction="row" style={{ marginLeft: 10 }}>
         <Center>
-          <Text size={'md'} fw={400}>
+          <Text size={'xl'} fw={400}>
             {item.description}
           </Text>
         </Center>
