@@ -128,8 +128,9 @@ export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
   ));
 
   const valueDiffMessage = () => {
-    if (diff === 0) return 'Wallet value has not changed compared to previous month';
-    return diff! > 0
+    if (diff === null || diff === 0) return 'Wallet value has not changed compared to previous month';
+
+    return diff > 0
       ? `Total value of your wallet increased by ${diff}% (${numberToMoneyString(lastMonthWalletData.value)} ${userPreferenceCurrency}) 
           compared to previous month`
       : `Total value of your wallet decreased by ${diff}% (${numberToMoneyString(lastMonthWalletData.value)} ${userPreferenceCurrency}) 

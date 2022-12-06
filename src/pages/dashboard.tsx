@@ -39,22 +39,14 @@ const Dashboard = () => {
   return (
     <Layout>
       <Grid gutter={'md'} pt={'lg'} pl={'md'} maw={'100%'} mah={'100%'} h={'100%'} justify="space-between">
-        <Grid.Col lg={8}>
+        <Grid.Col lg={8} mah={'100%'}>
           <Stack justify={'space-between'} h={'100%'}>
-            <div>
-              <BrushChart data={walletData} />
-            </div>
-            <div
-              style={{
-                marginTop: 'auto',
-                marginBottom: 'auto'
-              }}>
-              <AssetsCarousel assets={assetsData.data} />
-            </div>
+            <BrushChart data={walletData} />
+            <AssetsCarousel assets={assetsData.data} />
           </Stack>
         </Grid.Col>
-        <Grid.Col lg={4}>
-          <Stack h="100%">
+        <Grid.Col lg={4} mah={'100%'} maw={'100%'}>
+          <Stack h="100%" mah={'100%'} maw={'100%'}>
             <WalletStats userPreferenceCurrency={userPreferenceQuery.data.preferenceCurrency.toUpperCase()} />
             <HistoryTable assets={assetsData.data} />
           </Stack>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { createRef, useEffect, useLayoutEffect, useState } from 'react';
 import { createStyles, Table, ScrollArea, Center, Loader, Text, Flex, Paper, Button, Stack, Box } from '@mantine/core';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
 import { useQuery, useQueryClient } from 'react-query';
@@ -9,6 +9,7 @@ import { sub } from 'date-fns';
 import { IconCalendar, IconPlus } from '@tabler/icons';
 import { openContextModal } from '@mantine/modals';
 import { TransactionModalInnerProps } from '../modals/TransactionModal';
+import { useMediaQuery } from '@mantine/hooks';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -47,11 +48,14 @@ type HistoryTableProps = {
 };
 
 export const HistoryTable = ({ assets }: HistoryTableProps) => {
-  const { classes, cx } = useStyles();
+  const { classes, cx, theme } = useStyles();
   const [scrolled, setScrolled] = useState(false);
 
   const dateToday = new Date();
   const dateMonthAgo = sub(dateToday, { months: 1 });
+
+  console.log(theme.breakpoints);
+  const matches = useMediaQuery(`(min-width: ${theme.breakpoints.lg}px)`);
 
   const [dateRange, setDateRange] = useState<DateRangePickerValue>([dateMonthAgo, dateToday]);
 
@@ -94,9 +98,10 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
     </tr>
   ));
 
+  console.log('matches', matches);
   return (
-    <Paper withBorder radius="md" h={605}>
-      <Stack spacing={'sm'}>
+    <Paper withBorder radius="md" h={'100%'} mah={'100%'} style={{ overflow: matches ? 'hidden' : 'inherit' }}>
+      <Stack spacing={'sm'} h={'100%'}>
         <Flex direction={'row'} className={classes.stackOnMobile} justify="space-between" px={'sm'} pt={'sm'}>
           <Text size="lg" weight={500}>
             Transactions history
@@ -149,18 +154,25 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
           />
         </Box>
 
-        <ScrollArea sx={{ height: 500 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-          <Table>
-            <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
-              <tr>
-                <th style={{ width: '20%' }}>Asset Symbol</th>
-                <th style={{ width: '25%' }}>Name</th>
-                <th style={{ width: '30%' }}>Value</th>
-                <th style={{ width: '25%' }}>Date</th>
-              </tr>
-            </thead>
-            <tbody>{rows}</tbody>
-          </Table>
+        <ScrollArea
+          styles={{
+            scrollbar: {
+              paddingTop: '10px'
+            }
+          }}>
+          <div style={{ overflow: 'auto' }}>
+            <Table>
+              <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
+                <tr>
+                  <th style={{ width: '20%' }}>Asset Symbol</th>
+                  <th style={{ width: '25%' }}>Name</th>
+                  <th style={{ width: '30%' }}>Value</th>
+                  <th style={{ width: '25%' }}>Date</th>
+                </tr>
+              </thead>
+              <tbody>{rows}</tbody>
+            </Table>
+          </div>
         </ScrollArea>
       </Stack>
     </Paper>
