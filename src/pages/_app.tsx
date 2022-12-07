@@ -10,6 +10,7 @@ import { TransactionModal } from "../components/modals/TransactionModal";
 import { PreferencesModal } from "../components/dashboard/PreferencesModal";
 import { useUrl } from "../hooks/useUrl";
 import { NotificationsProvider } from "@mantine/notifications";
+import { AddAlertModal } from "../components/alerts/AddAlertModal";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, refetchOnMount: false } }
@@ -48,7 +49,7 @@ export default function App(props: AppProps) {
              <NotificationsProvider>
               <APICommunicationContextProvider>
                 <QueryClientProvider client={queryClient}>
-                  <ModalsProvider modals={{ transactionModal: TransactionModal }}>
+                  <ModalsProvider modals={{ transactionModal: TransactionModal, alertModal: AddAlertModal }}>
                     <Component {...pageProps} />
                     <PreferencesModal />
                   </ModalsProvider>
