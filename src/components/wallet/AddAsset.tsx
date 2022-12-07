@@ -11,10 +11,8 @@ import {
   Flex,
   Paper,
   Box,
-  Loader,
   NumberInput,
-  Input,
-  Center
+  Input
 } from '@mantine/core';
 import { IconMoneybag, IconPlus, IconTrash } from '@tabler/icons';
 import { useState } from 'react';
@@ -25,6 +23,7 @@ import { useAPICommunication } from '../../contexts/APICommunicationContext';
 import { getMinValueByCategory, getPrecisionByCategory } from '../../utils/utils-format';
 import { useToggle } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { LoaderDots } from '../common/LoaderDots';
 
 const useStyles = createStyles((theme) => ({
   icon: {
@@ -150,9 +149,7 @@ export function AddAsset() {
       </Group>
 
       {assetQuery.isLoading ? (
-        <Center h={144}>
-          <Loader size="xl" variant="dots" />
-        </Center>
+        <LoaderDots h={144} />
       ) : (
         <div>
           <Space h="md" />
@@ -171,7 +168,7 @@ export function AddAsset() {
                       style={{ width: '100%' }}
                       name="origin"
                       value={input.description}
-                      onChange={(value) => {
+                      onChange={(value: any) => {
                         if (value === null) return;
                         updateAssetValue(input.id, {
                           value: input.value,

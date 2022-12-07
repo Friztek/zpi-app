@@ -19,7 +19,8 @@ export const BrushChart = ({ data }: BrushChartProps) => {
   const { height } = useViewportSize();
 
   const chartHeight = () => {
-    return Math.max(350, height / 1.65);
+    const offset = 450;
+    return Math.max(350, height - offset);
   };
 
   const foreColor = theme.colorScheme === 'dark' ? '#FFFFFF' : '#000000';
@@ -133,9 +134,9 @@ export const BrushChart = ({ data }: BrushChartProps) => {
   };
 
   return (
-    <>
+    <div>
       <ReactApexChart options={state.options} series={state.series} type="line" height={chartHeight()} />
       <ReactApexChart options={state.optionsLine} series={state.seriesLine} type="area" height={110} />
-    </>
+    </div>
   );
 };

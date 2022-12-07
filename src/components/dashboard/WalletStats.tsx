@@ -1,10 +1,12 @@
-import { createStyles, Progress, Box, Text, Group, Paper, SimpleGrid, Loader, ThemeIcon, Center } from '@mantine/core';
+import { createStyles, Progress, Box, Text, Group, Paper, SimpleGrid, ThemeIcon } from '@mantine/core';
 import { IconArrowDownRight, IconArrowUpRight, IconDeviceAnalytics, IconMinus } from '@tabler/icons';
 import { isFinite } from 'lodash';
 import { useQuery } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
 import { lastDayOfPreviousMonth } from '../../utils/date-utils';
 import { numberToMoneyString } from '../../utils/utils-format';
+import { FetchingError } from '../common/FetchingError';
+import { LoaderDots } from '../common/LoaderDots';
 
 const useStyles = createStyles((theme) => ({
   progressLabel: {
@@ -59,6 +61,14 @@ export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
     return await context.walletApi.apiWalletGet({ from: lastDayOfMonth, to: lastDayOfMonth });
   });
 
+  if (walletTotalValueQuery.isError || walletLastMonthTotalValueQuery.isError) {
+    return (
+      <Paper withBorder style={{ height: 100 }} radius="md">
+        <FetchingError h={100} />
+      </Paper>
+    );
+  }
+
   if (
     walletTotalValueQuery.isLoading ||
     walletTotalValueQuery.data === undefined ||
@@ -67,9 +77,7 @@ export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
   ) {
     return (
       <Paper withBorder style={{ height: 100 }} radius="md">
-        <Center style={{ height: 100 }}>
-          <Loader size="xl" variant="dots" />
-        </Center>
+        <LoaderDots h={100} />
       </Paper>
     );
   }
@@ -128,8 +136,9 @@ export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
   ));
 
   const valueDiffMessage = () => {
-    if (diff === 0) return 'Wallet value has not changed compared to previous month';
-    return diff! > 0
+    if (diff === null || diff === 0) return 'Wallet value has not changed compared to previous month';
+
+    return diff > 0
       ? `Total value of your wallet increased by ${diff}% (${numberToMoneyString(lastMonthWalletData.value)} ${userPreferenceCurrency}) 
           compared to previous month`
       : `Total value of your wallet decreased by ${diff}% (${numberToMoneyString(lastMonthWalletData.value)} ${userPreferenceCurrency}) 

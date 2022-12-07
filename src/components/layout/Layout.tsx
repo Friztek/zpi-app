@@ -1,20 +1,20 @@
-import { AppShell } from "@mantine/core";
-import { FC, ReactNode } from "react";
-import Topbar from "../common/Topbar";
+import { AppShell } from '@mantine/core';
+import { FC, ReactNode } from 'react';
+import Topbar from '../common/Topbar';
 
 const links = [
   {
-    link: "/dashboard",
-    label: "Dashboard",
+    link: '/dashboard',
+    label: 'Dashboard'
   },
   {
-    link: "/wallet",
-    label: "Wallet",
+    link: '/wallet',
+    label: 'Wallet'
   },
   {
-    link: "/alerts",
-    label: "Alerts",
-  },
+    link: '/alerts',
+    label: 'Alerts'
+  }
 ];
 
 export const Layout: FC<{
@@ -26,10 +26,10 @@ export const Layout: FC<{
       navbar={<Topbar links={links} />}
       styles={(theme) => ({
         main: {
-          backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
-        },
-      })}
-    >
+          backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
+          // maxHeight: '100vh'
+        }
+      })}>
       {children}
     </AppShell>
   );

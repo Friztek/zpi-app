@@ -1,5 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Title, Text, Container, Button, Overlay, createStyles } from "@mantine/core";
+import { useUrl } from "../../hooks/useUrl";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -92,7 +93,7 @@ const useStyles = createStyles((theme) => ({
 export function HeroTitle() {
   const { classes } = useStyles();
   const { loginWithRedirect } = useAuth0();
-
+  const url = useUrl();
   return (
     <div className={classes.wrapper}>
       <Overlay color="#000" opacity={0.65} zIndex={1} />
@@ -113,7 +114,12 @@ export function HeroTitle() {
         </Container>
 
         <div className={classes.controls}>
-          <Button onClick={() => loginWithRedirect({redirectUri: "http://localhost:3000/dashboard"})} className={classes.control} variant="white" size="lg">
+          <Button
+            onClick={() => loginWithRedirect({ redirectUri: `${url}dashboard` })}
+            className={classes.control}
+            variant="white"
+            size="lg"
+          >
             Sign in and get started
           </Button>
         </div>
