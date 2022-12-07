@@ -23,6 +23,7 @@ import { useForm } from '@mantine/form';
 import { randomId, useToggle } from '@mantine/hooks';
 import { getPrecisionByCategory } from '../../utils/utils-format';
 import { format } from 'node:path/win32';
+import { showNotification } from '@mantine/notifications';
 
 const useStyles = createStyles((theme) => ({
   icon: {
@@ -39,11 +40,6 @@ export type AddTransactionModel = {
   value: number | null;
   assetName: string | null;
   description: string | null;
-  precision: number;
-};
-
-export type PrecisionModel = {
-  id: number;
   precision: number;
 };
 
@@ -134,22 +130,36 @@ export function AddAsset() {
         await context.userAssetsAPI.patchUserAssets({
           patchUserAssetsDto: userAssetPatchData
         });
+        showNotification({
+          autoClose: 5000,
+          message: 'Succesfully updated new assets',
+          color: 'green'
+        });
         form.reset();
         try {
           queryClient.invalidateQueries('userAsset');
         } catch (e) {
-          const error = e as FetchError;
-          // notify
+          showNotification({
+            autoClose: 5000,
+            message: 'Failed to refetch assets',
+            color: 'red'
+          });
         }
         try {
           queryClient.invalidateQueries('walletTotalValue');
         } catch (e) {
-          const error = e as FetchError;
-          // notify
+          showNotification({
+            autoClose: 5000,
+            message: 'Failed to refetch wallet value',
+            color: 'red'
+          });
         }
       } catch (e) {
-        const error = e as FetchError;
-        // notify
+        showNotification({
+          autoClose: 5000,
+          message: 'Failed to create new assets',
+          color: 'red'
+        });
       }
     }
     toggleLoading();

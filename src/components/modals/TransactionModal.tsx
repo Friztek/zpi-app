@@ -1,11 +1,11 @@
-import { Button, Flex, Select, Stack, Autocomplete, NumberInput, Loader } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { useToggle } from "@mantine/hooks";
-import { ContextModalProps } from "@mantine/modals";
-import { isFinite, trim } from "lodash";
-import { useQuery } from "react-query";
-import { useAPICommunication } from "../../contexts/APICommunicationContext";
-import { getPrecisionByCategory } from "../../utils/utils-format";
+import { Button, Flex, Select, Stack, Autocomplete, NumberInput, Loader } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { useToggle } from '@mantine/hooks';
+import { ContextModalProps } from '@mantine/modals';
+import { isFinite, trim } from 'lodash';
+import { useQuery } from 'react-query';
+import { useAPICommunication } from '../../contexts/APICommunicationContext';
+import { getPrecisionByCategory } from '../../utils/utils-format';
 
 export type TransactionModalValues = {
   assetName: string;
@@ -23,19 +23,19 @@ export const TransactionModal = ({ context, id, innerProps }: ContextModalProps<
   const [isLoading, toggleLoading] = useToggle([false, true] as const);
   const form = useForm<TransactionModalValues>({
     initialValues: {
-      assetName: innerProps.assetName ?? "",
-      origin: innerProps.origin ?? "",
-      value: null,
+      assetName: innerProps.assetName ?? '',
+      origin: innerProps.origin ?? '',
+      value: null
     },
     validate: {
-      assetName: (value) => (trim(value).length > 0 ? null : "Required"),
-      origin: (value) => (trim(value).length > 0 ? null : "Required"),
-      value: (value: number | null) => (value == null ? "Required" : value <= 0 ? "Value has to ge breater than zero" : isFinite(value) ? null : "Required"),
-    },
+      assetName: (value) => (trim(value).length > 0 ? null : 'Required'),
+      origin: (value) => (trim(value).length > 0 ? null : 'Required'),
+      value: (value: number | null) => (value === null ? 'Required' : isFinite(value) && value > 0.00000001 ? null : 'Value must be greater than zero'),
+    }
   });
 
   const apiContext = useAPICommunication();
-  const assetsData = useQuery("assets", async () => {
+  const assetsData = useQuery('assets', async () => {
     return await apiContext.assetsAPI.getAllAssets();
   });
 
@@ -55,9 +55,8 @@ export const TransactionModal = ({ context, id, innerProps }: ContextModalProps<
           await innerProps.onSubmit(values);
           context.closeModal(id);
           toggleLoading();
-        })}
-      >
-        <Stack pb={"lg"} spacing={"xs"}>
+        })}>
+        <Stack pb={'lg'} spacing={'xs'}>
           <Select
             readOnly={innerProps.assetName !== undefined}
             withAsterisk
@@ -65,22 +64,28 @@ export const TransactionModal = ({ context, id, innerProps }: ContextModalProps<
             data={
               assetsData.data?.map((asset) => ({
                 value: asset.name,
-                label: asset.friendlyName,
+                label: asset.friendlyName
               })) ?? []
             }
             rightSection={assetsData.data === undefined || assetsData.isLoading ? <Loader size="xs" /> : undefined}
-            {...form.getInputProps("assetName")}
+            {...form.getInputProps('assetName')}
           />
           <Autocomplete
             readOnly={innerProps.origin !== undefined}
             data={[]}
             label="Origin"
             withAsterisk
-            {...form.getInputProps("origin")}
+            {...form.getInputProps('origin')}
           />
-          <NumberInput withAsterisk min={0} precision={getPrecision(form.values.assetName)} {...form.getInputProps("value")} label="Value" />
+          <NumberInput
+            withAsterisk
+            min={0}
+            precision={getPrecision(form.values.assetName)}
+            {...form.getInputProps('value')}
+            label="Value"
+          />
         </Stack>
-        <Flex direction={"row"} justify="space-between" gap={"lg"}>
+        <Flex direction={'row'} justify="space-between" gap={'lg'}>
           <Button variant="default" onClick={() => context.closeModal(id)} fullWidth>
             Close
           </Button>

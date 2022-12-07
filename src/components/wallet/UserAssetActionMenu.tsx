@@ -1,10 +1,11 @@
-import { ActionIcon, Menu, Text, Space } from "@mantine/core";
-import { openConfirmModal, openContextModal } from "@mantine/modals";
-import { IconDotsVertical, IconMinus, IconPlus, IconTrash } from "@tabler/icons";
-import { FC } from "react";
-import { useQueryClient } from "react-query";
-import { useAPICommunication } from "../../contexts/APICommunicationContext";
-import { TransactionModalInnerProps } from "../modals/TransactionModal";
+import { ActionIcon, Menu, Text, Space } from '@mantine/core';
+import { openConfirmModal, openContextModal } from '@mantine/modals';
+import { IconDotsVertical, IconMinus, IconPlus, IconTrash } from '@tabler/icons';
+import { FC } from 'react';
+import { useQueryClient } from 'react-query';
+import { useAPICommunication } from '../../contexts/APICommunicationContext';
+import { TransactionModalInnerProps } from '../modals/TransactionModal';
+import { showNotification } from '@mantine/notifications';
 
 type UserAssetMenu = {
   name: string;
@@ -19,13 +20,13 @@ export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => 
 
   const openAddModal = () =>
     openContextModal({
-      modal: "transactionModal",
+      modal: 'transactionModal',
       title: (
         <Text>
-          Add value to{" "}
-          <Text span fw={700} variant="gradient" gradient={{ from: "indigo", to: "cyan", deg: 45 }}>
-            {asset.friendlyName} {asset.origin ? " - " : ""} {asset.origin ? asset.origin : ""}
-          </Text>{" "}
+          Add value to{' '}
+          <Text span fw={700} variant="gradient" gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}>
+            {asset.friendlyName} {asset.origin ? ' - ' : ''} {asset.origin ? asset.origin : ''}
+          </Text>{' '}
           asset
         </Text>
       ),
@@ -33,30 +34,61 @@ export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => 
         assetName: asset.name,
         origin: asset.origin,
         onSubmit: async (values) => {
-          await context.userAssetsAPI.patchUserAssets({
-            patchUserAssetsDto: [
-              {
-                assetName: values.assetName,
-                description: values.origin,
-                type: "Update",
-                value: values.value as unknown as number,
-              },
-            ],
-          });
-          queryClient.invalidateQueries("userAsset");
-        },
-      } as TransactionModalInnerProps,
+          try {
+            await context.userAssetsAPI.patchUserAssets({
+              patchUserAssetsDto: [
+                {
+                  assetName: values.assetName,
+                  description: values.origin,
+                  type: 'Update',
+                  value: values.value as unknown as number
+                }
+              ]
+            });
+
+            showNotification({
+              autoClose: 5000,
+              message: 'Succesfully added value to asset',
+              color: 'green'
+            });
+            try {
+              queryClient.invalidateQueries('userAsset');
+            } catch (e) {
+              showNotification({
+                autoClose: 5000,
+                message: 'Failed to refetch assets',
+                color: 'red'
+              });
+            };
+            try {
+              queryClient.invalidateQueries('walletTotalValue');
+            } catch (e) {
+              showNotification({
+                autoClose: 5000,
+                message: 'Failed to refetch wallet value',
+                color: 'red'
+              });
+            }
+          } catch (e) {
+            showNotification({
+              autoClose: 5000,
+              message: 'Failed to add value to asset',
+              color: 'red'
+            });
+          }
+        }
+      } as TransactionModalInnerProps
     });
 
   const openSubstractModal = () =>
     openContextModal({
-      modal: "transactionModal",
+      modal: 'transactionModal',
       title: (
         <Text>
-          Substract value from{" "}
-          <Text span fw={700} variant="gradient" gradient={{ from: "indigo", to: "cyan", deg: 45 }}>
-            {asset.friendlyName} {asset.origin ? " - " : ""} {asset.origin ? asset.origin : ""}{" "}
-          </Text>{" "}
+          Substract value from{' '}
+          <Text span fw={700} variant="gradient" gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}>
+            {asset.friendlyName} {asset.origin ? ' - ' : ''} {asset.origin ? asset.origin : ''}{' '}
+          </Text>{' '}
           asset
         </Text>
       ),
@@ -64,46 +96,106 @@ export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => 
         assetName: asset.name,
         origin: asset.origin,
         onSubmit: async (values) => {
-          await context.userAssetsAPI.patchUserAssets({
-            patchUserAssetsDto: [
-              {
-                assetName: values.assetName,
-                description: values.origin,
-                type: "Update",
-                value: (0 - values.value!) as unknown as number,
-              },
-            ],
-          });
-          queryClient.invalidateQueries("userAsset");
-        },
-      } as TransactionModalInnerProps,
+          try {
+            await context.userAssetsAPI.patchUserAssets({
+              patchUserAssetsDto: [
+                {
+                  assetName: values.assetName,
+                  description: values.origin,
+                  type: 'Update',
+                  value: (0 - values.value!) as unknown as number
+                }
+              ]
+            });
+            showNotification({
+              autoClose: 5000,
+              message: 'Succesfully substracted value from asset',
+              color: 'green'
+            });
+            try {
+              queryClient.invalidateQueries('userAsset');
+            } catch (e) {
+              showNotification({
+                autoClose: 5000,
+                message: 'Failed to refetch assets',
+                color: 'red'
+              });
+            };
+            try {
+              queryClient.invalidateQueries('walletTotalValue');
+            } catch (e) {
+              showNotification({
+                autoClose: 5000,
+                message: 'Failed to refetch wallet value',
+                color: 'red'
+              });
+            }
+          } catch (e) {
+            showNotification({
+              autoClose: 5000,
+              message: 'Failed to substract value from asset',
+              color: 'red'
+            });
+          }
+        }
+      } as TransactionModalInnerProps
     });
 
   const openRemoveModal = () =>
     openConfirmModal({
-      title: "Remove asset",
+      title: 'Remove asset',
       children: (
         <>
-          Do you want to remove{" "}
+          Do you want to remove{' '}
           <Text span fw={700}>
-            {asset.friendlyName} {asset.origin ? " - " : ""} {asset.origin ? asset.origin : ""}
+            {asset.friendlyName} {asset.origin ? ' - ' : ''} {asset.origin ? asset.origin : ''}
           </Text>
-          {" asset?"}
-          <Space h={"sm"} />
+          {' asset?'}
+          <Space h={'sm'} />
         </>
       ),
       centered: false,
-      labels: { confirm: "Confirm", cancel: "Cancel" },
+      labels: { confirm: 'Confirm', cancel: 'Cancel' },
       onConfirm: async () => {
-        await context.userAssetsAPI.deleteUserAsset({
-          assetName: asset.name,
-          description: asset.origin,
-        });
-        queryClient.invalidateQueries("userAsset");
+        try {
+          await context.userAssetsAPI.deleteUserAsset({
+            assetName: asset.name,
+            description: asset.origin
+          });
+          showNotification({
+            autoClose: 5000,
+            message: 'Succesfully removed asset',
+            color: 'green'
+          });
+          try {
+            queryClient.invalidateQueries('userAsset');
+          } catch (e) {
+            showNotification({
+              autoClose: 5000,
+              message: 'Failed to refetch assets',
+              color: 'red'
+            });
+          };
+          try {
+            queryClient.invalidateQueries('walletTotalValue');
+          } catch (e) {
+            showNotification({
+              autoClose: 5000,
+              message: 'Failed to refetch wallet value',
+              color: 'red'
+            });
+          }
+        } catch (e) {
+          showNotification({
+            autoClose: 5000,
+            message: 'Failed to remove asset',
+            color: 'red'
+          });
+        }
       },
       confirmProps: {
-        color: "red",
-      },
+        color: 'red'
+      }
     });
 
   return (

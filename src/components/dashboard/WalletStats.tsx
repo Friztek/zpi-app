@@ -154,7 +154,7 @@ export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
             {numberToMoneyString(roundedTotalValue)} {userPreferenceCurrency}
           </Text>
           {diff && (
-            <Text color="teal" className={classes.diff} size="sm" weight={700}>
+            <Text color={diff === 0 ? 'white' : diff > 0 ? 'teal' : 'red'} className={classes.diff} size="sm" weight={700}>
               <span>{numberToMoneyString(diff)}%</span>
               <ThemeIcon
                 color="gray"

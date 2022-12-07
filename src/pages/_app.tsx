@@ -9,6 +9,7 @@ import { useLocalStorage } from "@mantine/hooks";
 import { TransactionModal } from "../components/modals/TransactionModal";
 import { PreferencesModal } from "../components/dashboard/PreferencesModal";
 import { useUrl } from "../hooks/useUrl";
+import { NotificationsProvider } from "@mantine/notifications";
 import { AddAlertModal } from "../components/alerts/AddAlertModal";
 
 const queryClient = new QueryClient({
@@ -45,14 +46,16 @@ export default function App(props: AppProps) {
             theme={{
               colorScheme: colorScheme
             }}>
-            <APICommunicationContextProvider>
-              <QueryClientProvider client={queryClient}>
-                <ModalsProvider modals={{ transactionModal: TransactionModal, alertModal: AddAlertModal }}>
-                  <Component {...pageProps} />
-                  <PreferencesModal />
-                </ModalsProvider>
-              </QueryClientProvider>
-            </APICommunicationContextProvider>
+             <NotificationsProvider>
+              <APICommunicationContextProvider>
+                <QueryClientProvider client={queryClient}>
+                  <ModalsProvider modals={{ transactionModal: TransactionModal, alertModal: AddAlertModal }}>
+                    <Component {...pageProps} />
+                    <PreferencesModal />
+                  </ModalsProvider>
+                </QueryClientProvider>
+              </APICommunicationContextProvider>
+            </NotificationsProvider>
           </MantineProvider>
         </ColorSchemeProvider>
       </Auth0Provider>
