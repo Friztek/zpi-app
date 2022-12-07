@@ -59,6 +59,15 @@ export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => 
                 message: 'Failed to refetch assets',
                 color: 'red'
               });
+            };
+            try {
+              queryClient.invalidateQueries('walletTotalValue');
+            } catch (e) {
+              showNotification({
+                autoClose: 5000,
+                message: 'Failed to refetch wallet value',
+                color: 'red'
+              });
             }
           } catch (e) {
             showNotification({
@@ -111,6 +120,15 @@ export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => 
                 message: 'Failed to refetch assets',
                 color: 'red'
               });
+            };
+            try {
+              queryClient.invalidateQueries('walletTotalValue');
+            } catch (e) {
+              showNotification({
+                autoClose: 5000,
+                message: 'Failed to refetch wallet value',
+                color: 'red'
+              });
             }
           } catch (e) {
             showNotification({
@@ -155,6 +173,15 @@ export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => 
             showNotification({
               autoClose: 5000,
               message: 'Failed to refetch assets',
+              color: 'red'
+            });
+          };
+          try {
+            queryClient.invalidateQueries('walletTotalValue');
+          } catch (e) {
+            showNotification({
+              autoClose: 5000,
+              message: 'Failed to refetch wallet value',
               color: 'red'
             });
           }
