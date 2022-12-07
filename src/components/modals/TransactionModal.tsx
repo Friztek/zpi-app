@@ -30,7 +30,7 @@ export const TransactionModal = ({ context, id, innerProps }: ContextModalProps<
     validate: {
       assetName: (value) => (trim(value).length > 0 ? null : "Required"),
       origin: (value) => (trim(value).length > 0 ? null : "Required"),
-      value: (value: number | null) => (isFinite(value) ? null : "Required"),
+      value: (value: number | null) => (value == null ? "Required" : value <= 0 ? "Value has to ge breater than zero" : isFinite(value) ? null : "Required"),
     },
   });
 

@@ -5,23 +5,24 @@ import {
   Space,
   Text,
   createStyles,
-  Stack,
   Select,
   ActionIcon,
   Flex,
   Paper,
-  Box,
   NumberInput,
-  Input
+  TextInput,
+  Loader
 } from '@mantine/core';
 import { IconMoneybag, IconPlus, IconTrash } from '@tabler/icons';
-import { useState } from 'react';
-import { AssetDto, OperationType, PatchUserAssetsDto } from '../../client-typescript';
-import { toNumber, uniqueId } from 'lodash';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { AssetDto, FetchError, PatchUserAssetsDto } from '../../client-typescript';
+import { trim } from 'lodash';
+import { useQuery, useQueryClient } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
-import { getPrecisionByCategory } from '../../utils/utils-format';
 import { LoaderDots } from '../common/LoaderDots';
+import { useForm } from '@mantine/form';
+import { randomId, useToggle } from '@mantine/hooks';
+import { getPrecisionByCategory } from '../../utils/utils-format';
+import { format } from 'node:path/win32';
 
 const useStyles = createStyles((theme) => ({
   icon: {
@@ -34,10 +35,10 @@ export type AddAssetProps = {
 };
 
 export type AddTransactionModel = {
-  id: number;
-  value?: number;
-  assetName?: string;
-  description?: string;
+  key: string;
+  value: number | null;
+  assetName: string | null;
+  description: string | null;
   precision: number;
 };
 
@@ -46,21 +47,33 @@ export type PrecisionModel = {
   precision: number;
 };
 
-const initialValues: AddTransactionModel = {
-  id: toNumber(uniqueId()),
-  assetName: undefined,
-  value: undefined,
-  description: undefined,
+const initialValue: AddTransactionModel = {
+  key: randomId(),
+  assetName: null,
+  value: null,
+  description: null,
   precision: 2
 };
 
 export function AddAsset() {
   const { classes } = useStyles();
-
+  const [isLoading, toggleLoading] = useToggle([false, true] as const);
   const context = useAPICommunication();
   const queryClient = useQueryClient();
 
-  const [formFields, setFormFields] = useState<AddTransactionModel[]>([initialValues]);
+  const form = useForm({
+    initialValues: {
+      userAssets: [initialValue]
+    },
+    validate: {
+      userAssets: {
+        assetName: (value) => (value !== null && trim(value).length > 0 ? null : 'Required'),
+        description: (value) => (value !== null && trim(value).length > 0 ? null : 'Required'),
+        value: (value) =>
+          value == null ? 'Required' : value <= 0 ? 'Value has to ge breater than zero' : isFinite(value) ? null : 'Required'
+      }
+    }
+  });
 
   const assetQuery = useQuery('asset', async () => {
     return await context.assetsAPI.getAllAssets();
@@ -74,38 +87,73 @@ export function AddAsset() {
     return 2;
   };
 
-  const mutation = useMutation(
-    (patchUserAssetsDto: PatchUserAssetsDto[]) => {
-      return context.userAssetsAPI.patchUserAssets({ patchUserAssetsDto });
-    },
-    {
-      onSuccess: () => {
-        setFormFields(() => [initialValues]);
-        queryClient.invalidateQueries('userAsset');
+  const fields = form.values.userAssets.map((item, index) => (
+    <Flex key={item.key} mt="xs" pb={'lg'} w={'100%'}>
+      <Paper style={{ flex: 8 }}>
+        <Select
+          placeholder="* Asset name"
+          data={
+            assetQuery.data?.map((asset) => ({
+              value: asset.name,
+              label: asset.friendlyName
+            })) ?? []
+          }
+          {...form.getInputProps(`userAssets.${index}.assetName`)}
+          rightSection={assetQuery.data === undefined || assetQuery.isLoading ? <Loader size="xs" /> : undefined}
+        />
+        <TextInput placeholder="* Asset origin (ex. cash, bank)" {...form.getInputProps(`userAssets.${index}.description`)} />
+        <NumberInput
+          placeholder={'* Amount'}
+          min={0}
+          precision={getPrecision(form.getInputProps(`userAssets.${index}.assetName`).value)}
+          {...form.getInputProps(`userAssets.${index}.value`)}
+        />
+      </Paper>
+
+      <div style={{ flex: 1, marginLeft: 10 }}>
+        {index !== 0 && (
+          <ActionIcon size="md" color="red" onClick={() => form.removeListItem('userAssets', index)}>
+            <IconTrash size={16} />
+          </ActionIcon>
+        )}
+      </div>
+    </Flex>
+  ));
+
+  const saveForm = async () => {
+    const validation = form.validate();
+    toggleLoading();
+    if (!validation.hasErrors) {
+      console.log('values', form.values);
+      const userAssetPatchData: PatchUserAssetsDto[] = form.values.userAssets.map((value) => ({
+        assetName: value.assetName ?? '',
+        description: value.description ?? '',
+        type: 'Update',
+        value: value.value as unknown as number
+      }));
+      try {
+        await context.userAssetsAPI.patchUserAssets({
+          patchUserAssetsDto: userAssetPatchData
+        });
+        form.reset();
+        try {
+          queryClient.invalidateQueries('userAsset');
+        } catch (e) {
+          const error = e as FetchError;
+          // notify
+        }
+        try {
+          queryClient.invalidateQueries('walletTotalValue');
+        } catch (e) {
+          const error = e as FetchError;
+          // notify
+        }
+      } catch (e) {
+        const error = e as FetchError;
+        // notify
       }
     }
-  );
-
-  const addNewInput = () => {
-    setFormFields((values) => [
-      ...values,
-      { id: toNumber(uniqueId()), assetName: undefined, description: undefined, value: undefined, precision: 2 }
-    ]);
-  };
-
-  const removeInput = (id: number) => {
-    setFormFields((values) => values.filter((val) => val.id !== id));
-  };
-
-  const updateAssetValue = (id: number, patch: Omit<AddTransactionModel, 'id'>) => {
-    setFormFields((values) =>
-      values.map((val) => {
-        if (val.id === id) {
-          Object.assign(val, patch);
-        }
-        return val;
-      })
-    );
+    toggleLoading();
   };
 
   return (
@@ -122,107 +170,25 @@ export function AddAsset() {
       ) : (
         <div>
           <Space h="md" />
-          <Stack spacing={'sm'}>
-            {formFields.map((input, index) => {
-              return (
-                <Flex direction="row" key={input.id} align={'stretch'}>
-                  <Flex
-                    style={{
-                      flex: 10
-                    }}
-                    direction="column"
-                    align={'center'}>
-                    <Input
-                      style={{ width: '100%' }}
-                      styles={{
-                        input: { borderBottom: 'none' }
-                      }}
-                      value={input.description}
-                      radius={0}
-                      onChange={(e: any) => {
-                        updateAssetValue(input.id, {
-                          description: e.target.value,
-                          precision: input.precision
-                        });
-                      }}
-                      placeholder="Asset origin (ex. cash, bank)"></Input>
-                    <NumberInput
-                      radius={0}
-                      style={{
-                        flex: 1,
-                        width: '100%'
-                      }}
-                      type="number"
-                      placeholder="1000"
-                      precision={input.precision}
-                      name="amount"
-                      value={input.value}
-                      onChange={(value) => {
-                        updateAssetValue(input.id, {
-                          value: value,
-                          precision: input.precision
-                        });
-                      }}
-                      rightSection={
-                        <Select
-                          placeholder="Asset name"
-                          radius={0}
-                          data={assetQuery.data!.map((asset) => ({
-                            value: asset.name,
-                            label: `${asset.friendlyName}`
-                          }))}
-                          value={input.assetName}
-                          onChange={(value) => {
-                            if (value === null) return;
-                            updateAssetValue(input.id, {
-                              assetName: value,
-                              precision: getPrecision(value)
-                            });
-                          }}
-                          styles={{
-                            input: {
-                              fontWeight: 500
-                            }
-                          }}
-                        />
-                      }
-                      rightSectionWidth={150}
-                    />
-                  </Flex>
-                  {index !== 0 ? (
-                    <Flex direction={'column'}>
-                      <Button
-                        variant="default"
-                        radius={0}
-                        style={{ border: 'none', background: 'none', height: '100%' }}
-                        onClick={() => removeInput(input.id)}>
-                        <IconTrash className={classes.icon} stroke="1.2" size={19} />
-                      </Button>
-                    </Flex>
-                  ) : (
-                    <Box w={56}></Box>
-                  )}
-                </Flex>
-              );
-            })}
-          </Stack>
+
+          {fields}
           <Flex align={'center'} justify="space-between" mt="lg">
             <ActionIcon variant="default" size={'lg'}>
-              <IconPlus className={classes.icon} onClick={addNewInput} />
+              <IconPlus
+                className={classes.icon}
+                onClick={() =>
+                  form.insertListItem('userAssets', {
+                    key: randomId(),
+                    assetName: undefined,
+                    value: undefined,
+                    description: undefined,
+                    precision: 2
+                  })
+                }
+              />
             </ActionIcon>
-            <Button
-              variant="filled"
-              onClick={() => {
-                mutation.mutate(
-                  formFields.map((a) => ({
-                    assetName: a.assetName!,
-                    type: OperationType.Update,
-                    value: a.value!,
-                    description: a.description!
-                  }))
-                );
-              }}>
-              Apply transaction
+            <Button type="submit" variant="filled" loading={isLoading} onClick={saveForm} disabled={Object.values(form.errors).length > 0}>
+              Submit
             </Button>
           </Flex>
         </div>

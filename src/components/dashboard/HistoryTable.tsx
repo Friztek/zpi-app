@@ -44,9 +44,9 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
   const { classes, cx, theme } = useStyles();
 
   const dateToday = new Date();
-  const dateMonthAgo = sub(dateToday, { months: 1 });
+  const dateWeekAgo = sub(dateToday, { days: 7 });
 
-  const [dateRange, setDateRange] = useState<DateRangePickerValue>([dateMonthAgo, dateToday]);
+  const [dateRange, setDateRange] = useState<DateRangePickerValue>([dateWeekAgo, dateToday]);
 
   const context = useAPICommunication();
   const queryClient = useQueryClient();
