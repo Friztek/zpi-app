@@ -9,6 +9,7 @@ import { sub } from 'date-fns';
 import { IconCalendar, IconPlus } from '@tabler/icons';
 import { openContextModal } from '@mantine/modals';
 import { TransactionModalInnerProps } from '../modals/TransactionModal';
+import { showNotification } from '@mantine/notifications';
 import { LoaderDots } from '../common/LoaderDots';
 import { FetchingError } from '../common/FetchingError';
 
@@ -69,15 +70,11 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
   });
 
   if (transactionsData.isError) {
-    return (
-      <FetchingError />
-    );
+    return <FetchingError />;
   }
 
   if (transactionsData.data === undefined) {
-    return (
-      <LoaderDots />
-    );
+    return <LoaderDots />;
   }
 
   const transactions = transactionsData.data;
@@ -120,12 +117,20 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
                           }
                         ]
                       });
+                      showNotification({
+                        autoClose: 5000,
+                        message: 'Succesfully added new transaction',
+                        color: 'green'
+                      });
                       queryClient.invalidateQueries('transactionsDataHistory');
                       queryClient.invalidateQueries('walletTotalValue');
-                    }
-                    catch (e) {
+                    } catch (e) {
                       const error = e as FetchError;
-                      console.log(error.cause.message);
+                      showNotification({
+                        autoClose: 5000,
+                        message: error.cause.message,
+                        color: 'red'
+                      });
                     }
                   }
                 } as TransactionModalInnerProps
