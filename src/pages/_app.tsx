@@ -9,7 +9,6 @@ import { useLocalStorage } from "@mantine/hooks";
 import { TransactionModal } from "../components/modals/TransactionModal";
 import { PreferencesModal } from "../components/dashboard/PreferencesModal";
 import { useUrl } from "../hooks/useUrl";
-import { AddAlertModal } from "../components/alerts/AddAlertModal";
 import { NotificationsProvider } from "@mantine/notifications";
 
 const queryClient = new QueryClient({

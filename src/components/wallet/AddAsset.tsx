@@ -179,7 +179,8 @@ export function AddAsset() {
                         });
                       }}
                       radius={0}
-                      placeholder="Asset origin (ex. cash, bank)"></Input>
+                      placeholder="Asset origin (ex. cash, bank)">
+                    </Input>
                     <NumberInput
                       radius={0}
                       min={input.min}
@@ -261,34 +262,30 @@ export function AddAsset() {
                 console.log(errorMessage);
                 if (errorMessage === '') {
                   toggleLoading(true);
-                  mutation.mutate(
-                    formFields.map((a) => ({
-                      assetName: a.assetName!,
-                      type: OperationType.Update,
-                      value: a.value!,
-                      description: a.description!
-                    }))
-                  );
+                  try {
+                    mutation.mutate(
+                      formFields.map((a) => ({
+                        assetName: a.assetName!,
+                        type: OperationType.Update,
+                        value: a.value!,
+                        description: a.description!
+                      }))
+                    );
+                    showNotification({
+                      autoClose: 5000,
+                      message: 'Succesfully added new transaction',
+                      color: "green"
+                    });
+
+                  }
+                  catch (e) {
+                    showNotification({
+                      autoClose: 5000,
+                      message: 'Failed to add new transaction',
+                      color: "red"
+                    });
+                  }
                   toggleLoading(false);
-                  showNotification({
-                    autoClose: 5000,
-                    message: 'Succesfully added new transaction',
-                    styles: (theme) => ({
-                      root: {
-                        backgroundColor: theme.colors.blue[6],
-                        borderColor: theme.colors.blue[6],
-
-                        '&::before': { backgroundColor: theme.white }
-                      },
-
-                      title: { color: theme.white },
-                      description: { color: theme.white },
-                      closeButton: {
-                        color: theme.white,
-                        '&:hover': { backgroundColor: theme.colors.blue[7] }
-                      }
-                    })
-                  });
                 }
               }}>
               Apply transaction
