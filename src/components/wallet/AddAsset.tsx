@@ -88,6 +88,7 @@ export function AddAsset() {
       <Paper style={{ flex: 8 }}>
         <Select
           placeholder="* Asset name"
+          searchable
           data={
             assetQuery.data?.map((asset) => ({
               value: asset.name,
