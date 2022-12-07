@@ -124,7 +124,6 @@ export function AddAsset() {
     const validation = form.validate();
     toggleLoading();
     if (!validation.hasErrors) {
-      console.log('values', form.values);
       const userAssetPatchData: PatchUserAssetsDto[] = form.values.userAssets.map((value) => ({
         assetName: value.assetName ?? '',
         description: value.description ?? '',
