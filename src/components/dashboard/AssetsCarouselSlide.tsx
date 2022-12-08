@@ -21,7 +21,7 @@ export const AssetsCarouselSlide = ({
 }: AssetsCarouselSlideProps) => {
   const dateToday = new Date();
   const dateYestarday = sub(dateToday, { days: 1 });
-  const dateMonthAgo = sub(dateToday, { months: 1 });
+  const dateMonthAgo = sub(dateToday, { days: 30 });
 
   const context = useAPICommunication();
 

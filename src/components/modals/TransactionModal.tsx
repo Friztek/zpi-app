@@ -31,7 +31,7 @@ export const TransactionModal = ({ context, id, innerProps }: ContextModalProps<
       assetName: (value) => (trim(value).length > 0 ? null : 'Required'),
       origin: (value) => (trim(value).length > 0 ? null : 'Required'),
       value: (value: number | null) =>
-        value === null ? 'Required' : isFinite(value) && value > 0.00000001 ? null : 'Value must be greater than zero'
+        value == null ? 'Required' : value <= 0 ? 'Value must be ge greater than zero' : isFinite(value) ? null : 'Required'
     }
   });
 
