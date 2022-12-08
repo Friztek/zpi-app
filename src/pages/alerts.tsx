@@ -1,7 +1,7 @@
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 import React, { useMemo } from 'react';
 import { Layout } from '../components/layout/Layout';
-import { Flex, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
+import { Flex, LoadingOverlay, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
 import { AlertCard } from '../components/alerts/AlertCard';
 import { EmptyAlertCard } from '../components/alerts/EmptyAlertCard';
 import { AlertStats } from '../components/alerts/AlertStats';
@@ -135,5 +135,5 @@ const Alerts = () => {
 };
 
 export default withAuthenticationRequired(Alerts, {
-  onRedirecting: () => <p>Redirecting to the login page...</p>
+  onRedirecting: () => <LoadingOverlay visible={true} overlayBlur={2} />
 });

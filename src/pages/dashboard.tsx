@@ -3,7 +3,7 @@ import { Layout } from '../components/layout/Layout';
 import { BrushChart } from '../components/dashboard/BrushChart';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 import { AssetsCarousel } from '../components/dashboard/AssetsCarousel';
-import { Flex, Grid, Stack } from '@mantine/core';
+import { Flex, Grid, LoadingOverlay, Stack } from '@mantine/core';
 import { WalletStats } from '../components/dashboard/WalletStats';
 import { HistoryTable } from '../components/dashboard/HistoryTable';
 import { useAPICommunication } from '../contexts/APICommunicationContext';
@@ -69,5 +69,5 @@ const Dashboard = () => {
 };
 
 export default withAuthenticationRequired(Dashboard, {
-  onRedirecting: () => <p>Redirecting to the login page...</p>
+  onRedirecting: () => <LoadingOverlay visible={true} overlayBlur={2} />
 });

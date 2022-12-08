@@ -11,7 +11,8 @@ import {
   Paper,
   NumberInput,
   TextInput,
-  Loader
+  Loader,
+  Stack
 } from '@mantine/core';
 import { IconMoneybag, IconPlus, IconTrash } from '@tabler/icons';
 import { AssetDto, PatchUserAssetsDto } from '../../client-typescript';
@@ -89,25 +90,27 @@ export function AddAsset() {
   const fields = form.values.userAssets.map((item, index) => (
     <Flex key={item.key} mt="xs" pb={'lg'} w={'100%'}>
       <Paper style={{ flex: 8 }}>
-        <Select
-          placeholder="* Asset name"
-          searchable
-          data={
-            assetQuery.data?.map((asset) => ({
-              value: asset.name,
-              label: asset.friendlyName
-            })) ?? []
-          }
-          {...form.getInputProps(`userAssets.${index}.assetName`)}
-          rightSection={assetQuery.data === undefined || assetQuery.isLoading ? <Loader size="xs" /> : undefined}
-        />
-        <TextInput placeholder="* Asset origin (ex. cash, bank)" {...form.getInputProps(`userAssets.${index}.description`)} />
-        <NumberInput
-          placeholder={'* Amount'}
-          min={0}
-          precision={getPrecision(form.getInputProps(`userAssets.${index}.assetName`).value)}
-          {...form.getInputProps(`userAssets.${index}.value`)}
-        />
+        <Stack spacing={4}>
+          <Select
+            placeholder="* Asset name"
+            searchable
+            data={
+              assetQuery.data?.map((asset) => ({
+                value: asset.name,
+                label: asset.friendlyName
+              })) ?? []
+            }
+            {...form.getInputProps(`userAssets.${index}.assetName`)}
+            rightSection={assetQuery.data === undefined || assetQuery.isLoading ? <Loader size="xs" /> : undefined}
+          />
+          <TextInput placeholder="* Asset origin (ex. cash, bank)" {...form.getInputProps(`userAssets.${index}.description`)} />
+          <NumberInput
+            placeholder={'* Amount'}
+            min={0}
+            precision={getPrecision(form.getInputProps(`userAssets.${index}.assetName`).value)}
+            {...form.getInputProps(`userAssets.${index}.value`)}
+          />
+        </Stack>
       </Paper>
 
       <div style={{ flex: 1, marginLeft: 10 }}>

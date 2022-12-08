@@ -4,7 +4,7 @@ import { Layout } from '../components/layout/Layout';
 import { AddAsset } from '../components/wallet/AddAsset';
 import { UserAssetList } from '../components/wallet/UserAssetList';
 import { WalletValue } from '../components/wallet/WalletValue';
-import { createStyles } from '@mantine/core';
+import { createStyles, LoadingOverlay } from '@mantine/core';
 import { useQuery } from 'react-query';
 import { useAPICommunication } from '../contexts/APICommunicationContext';
 import { LoaderDots } from '../components/common/LoaderDots';
@@ -95,5 +95,5 @@ const Wallet = () => {
 };
 
 export default withAuthenticationRequired(Wallet, {
-  onRedirecting: () => <p>Redirecting to the login page...</p>
+  onRedirecting: () => <LoadingOverlay visible={true} overlayBlur={2} />
 });

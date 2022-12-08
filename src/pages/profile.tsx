@@ -1,5 +1,5 @@
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
-import { createStyles, Space } from '@mantine/core';
+import { createStyles, LoadingOverlay, Space } from '@mantine/core';
 import React from 'react';
 import { Layout } from '../components/layout/Layout';
 import { SecurityData } from '../components/profile/SecurityData';
@@ -39,5 +39,5 @@ const Profile = () => {
 };
 
 export default withAuthenticationRequired(Profile, {
-  onRedirecting: () => <p>Redirecting to the login page...</p>
+  onRedirecting: () => <LoadingOverlay visible={true} overlayBlur={2} />
 });
