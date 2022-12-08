@@ -1,10 +1,15 @@
 import { Card, Text, Flex } from '@mantine/core';
-import { numberToMoneyString } from '../../utils/utils-format';
+import { dateToDayAndMonth, numberToMoneyString } from '../../utils/utils-format';
 import { LineChart } from './LineChart';
+
+export interface AssetChartData {
+  value: number;
+  timeStamp: Date;
+}
 
 export interface AssetChartBoxProps {
   name: string;
-  data: number[];
+  data: AssetChartData[];
   gradient: string;
   value: number;
   userPreferenceCurrency: string;
@@ -29,7 +34,7 @@ export const AssetChartBox = ({ name, data, gradient, value, userPreferenceCurre
           </Text>
         </Flex>
         <div style={{ flex: 6, marginRight: 40 }}>
-          <LineChart data={data} />
+          <LineChart data={data.map((item) => ({x: dateToDayAndMonth(item.timeStamp), y: item.value}))} />
         </div>
       </Flex>
     </Card>

@@ -22,3 +22,7 @@ export function numberToMoneyString(value: number, toFixed?: number | undefined)
 export function dateToOffsetDate(value: Date | undefined): string | undefined {
     return value === undefined ? undefined : format(value, "yyyy-MM-ddx");
 }
+
+export function dateToDayAndMonth(value: Date | undefined): string | undefined {
+    return value === undefined ? undefined : format(value, "dd.MM.yyyy");
+}

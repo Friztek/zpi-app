@@ -27,7 +27,7 @@ export const AddAlertButton = () => {
                 });
                 showNotification({
                   autoClose: 5000,
-                  message: 'Succesfully added new alert',
+                  message: 'Successfully added new alert',
                   color: 'green'
                 });
                 try {

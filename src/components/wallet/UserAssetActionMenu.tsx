@@ -59,7 +59,7 @@ export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => 
             });
             showNotification({
               autoClose: 5000,
-              message: 'Succesfully added value to asset',
+              message: 'Successfully added value to asset',
               color: 'green'
             });
             try {
@@ -129,7 +129,7 @@ export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => 
               });
               showNotification({
                 autoClose: 5000,
-                message: 'Succesfully substracted value from asset',
+                message: 'Successfully substracted value from asset',
                 color: 'green'
               });
               try {
@@ -187,7 +187,7 @@ export const UserAssetActionMenu: FC<{ asset: UserAssetMenu }> = ({ asset }) => 
           });
           showNotification({
             autoClose: 5000,
-            message: 'Succesfully removed asset',
+            message: 'Successfully removed asset',
             color: 'green'
           });
           try {

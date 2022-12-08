@@ -1,15 +1,20 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 
+export type LineChartData = {
+  x: string | undefined, 
+  y: number
+}
 const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false
 });
 
-export const LineChart = ({ data }: { data: number[] }) => {
+export const LineChart = ({ data }: { data: LineChartData[] }) => {
+  console.log(data)
   const state = {
     series: [
       {
-        data: data
+        data: data,
       }
     ],
     options: {
@@ -45,13 +50,16 @@ export const LineChart = ({ data }: { data: number[] }) => {
       tooltip: {
         theme: 'dark' as const,
         x: {
-          show: false
+          show: true,
         },
         y: {
           title: {
             formatter: () => {
-              return 'value [$]: ';
+              return 'value:';
             }
+          },
+          formatter: function (value: number) {
+            return value.toFixed(2).concat(' $');
           }
         }
       }

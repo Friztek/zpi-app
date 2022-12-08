@@ -92,7 +92,7 @@ export const WalletStats = ({ userPreferenceCurrency }: WalletStatsProps) => {
       color: '#136a8a'
     },
     {
-      label: 'Crypto Currency',
+      label: 'Cryptocurrency',
       count: calculateCount(cryptoTotalValue),
       part: calculatePart(cryptoTotalValue, totalValue),
       color: '#267871'

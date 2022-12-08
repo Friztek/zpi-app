@@ -68,14 +68,14 @@ export const PreferencesModal = () => {
         />
         <Switch
           classNames={classes}
-          label="Do you want to recieve alerts on email?"
+          label="Do you want to receive alerts on email?"
           checked={userPreferences.alertsOnEmail}
           onChange={(event) => setUserPreferences((prev) => ({ ...prev!, alertsOnEmail: event.target.checked }))}
           styles={{ label: { color: ' !important' } }}
         />
         <Switch
           classNames={classes}
-          label="Do you want to recieve weekly reports on email?"
+          label="Do you want to receive weekly reports on email?"
           checked={userPreferences.weeklyReports}
           onChange={(event) => {
             setUserPreferences((prev) => ({ ...prev!, weeklyReports: event.target.checked }));

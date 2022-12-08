@@ -14,19 +14,19 @@ const mockdata = [
   {
     title: "Extreme convenient",
     description:
-      "This application offers you the functionalities that you need to track your money. It saves your time searching current exchange rates and updating the valuesof each asset.",
+      "This application offers you the functionalities that you need to track your money. It saves your time by checking current exchange rates and updating the values of each asset type.",
     icon: IconBed,
   },
   {
     title: "Reports functionality",
     description:
-      "You can get weekly reports on your email to see how your wallet value changed. You can also see charts of your total wallet value changed in time and check the history of changes of your asset values.",
+      "You can get weekly reports on your email to see how your wallet's value has changed. You can also see chart of your total wallet value changed in time and check the history of changes of your asset values.",
     icon: IconChartBar,
   },
   {
     title: "Alerts functionality",
     description:
-      "You can set the alert for asset values and get them on your email or in mobile application.",
+      "You can set the alert for asset values and get them on your email or in mobile application. If you do not want to receive the alerts on email and to install the mobile app, you can simply check your alerts on the website.",
     icon: IconAlarm,
   },
 ];
@@ -111,8 +111,8 @@ export function Features() {
         align="center"
         mt="md"
       >
-        Your assets value are updated automatically based on current exchange
-        rates. You can see how it changed on generated chart.
+        Your assets values are updated automatically based on current exchange
+        rates. You can see how they changed on a generated chart.
       </Text>
 
       <SimpleGrid

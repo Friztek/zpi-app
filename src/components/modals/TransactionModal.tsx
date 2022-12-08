@@ -30,7 +30,8 @@ export const TransactionModal = ({ context, id, innerProps }: ContextModalProps<
     validate: {
       assetName: (value) => (trim(value).length > 0 ? null : 'Required'),
       origin: (value) => (trim(value).length > 0 ? null : 'Required'),
-      value: (value: number | null) => (value === null ? 'Required' : isFinite(value) && value > 0.00000001 ? null : 'Value must be greater than zero'),
+      value: (value: number | null) =>
+        value === null ? 'Required' : isFinite(value) && value > 0.00000001 ? null : 'Value must be greater than zero'
     }
   });
 
@@ -38,6 +39,10 @@ export const TransactionModal = ({ context, id, innerProps }: ContextModalProps<
   const assetsData = useQuery('assets', async () => {
     return await apiContext.assetsAPI.getAllAssets();
   });
+
+  assetsData?.data?.sort((item1, item2) =>
+    item1.friendlyName > item2.friendlyName ? 1 : item1.friendlyName === item2.friendlyName ? 0 : -1
+  );
 
   const getPrecision = (assetName: string) => {
     const foundAsset = assetsData.data?.find((asset) => asset.name === assetName);
