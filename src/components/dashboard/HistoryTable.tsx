@@ -3,7 +3,7 @@ import { createStyles, Table, ScrollArea, Text, Flex, Paper, Button, Stack, Box 
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
 import { useQuery, useQueryClient } from 'react-query';
 import { DateRangePicker, DateRangePickerValue } from '@mantine/dates';
-import { dateToOffsetDate } from '../../utils/utils-format';
+import { dateToOffsetDate, getPrecisionByCategory, numberToMoneyString } from '../../utils/utils-format';
 import { AssetDto, FetchError } from '../../client-typescript';
 import { sub } from 'date-fns';
 import { IconCalendar, IconPlus } from '@tabler/icons';
@@ -65,7 +65,8 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
         assetIdentifier: element.assetIdentifier.toUpperCase(),
         name: assetData?.friendlyName ?? '',
         value: element.value,
-        date: element.timeStamp.toLocaleDateString()
+        date: element.timeStamp.toLocaleDateString(),
+        precision: assetData?.category ? getPrecisionByCategory(assetData?.category) : 8,
       };
     });
     return transactions;
@@ -85,7 +86,7 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
     <tr key={index}>
       <td>{row.assetIdentifier}</td>
       <td>{row.name}</td>
-      <td style={{ color: row.value > 0 ? 'green' : row.value == 0 ? '' : 'red' }}>{row.value}</td>
+      <td style={{ color: row.value > 0 ? 'green' : row.value == 0 ? '' : 'red' }}>{numberToMoneyString(row.value, row.precision)}</td>
       <td>{row.date}</td>
     </tr>
   ));

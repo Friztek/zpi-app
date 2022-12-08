@@ -65,7 +65,7 @@ export function AddAsset() {
         assetName: (value) => (value !== null && trim(value).length > 0 ? null : 'Required'),
         description: (value) => (value !== null && trim(value).length > 0 ? null : 'Required'),
         value: (value) =>
-          value == null ? 'Required' : value <= 0 ? 'Value has to ge breater than zero' : isFinite(value) ? null : 'Required'
+          value == null ? 'Required' : value <= 0 ? 'Value must be ge greater than zero' : isFinite(value) ? null : 'Required'
       }
     }
   });
