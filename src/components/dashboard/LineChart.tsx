@@ -10,7 +10,6 @@ const ReactApexChart = dynamic(() => import('react-apexcharts'), {
 });
 
 export const LineChart = ({ data }: { data: LineChartData[] }) => {
-  console.log(data)
   const state = {
     series: [
       {

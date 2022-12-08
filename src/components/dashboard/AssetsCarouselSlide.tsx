@@ -1,5 +1,6 @@
 import { Carousel } from '@mantine/carousel';
 import { sub } from 'date-fns';
+import { orderBy, uniq, uniqBy } from 'lodash';
 import { useQuery } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
 import { dateToOffsetDate } from '../../utils/utils-format';
@@ -27,7 +28,20 @@ export const AssetsCarouselSlide = ({
   const assetValues = useQuery(['assetValues', assetName], async () => {
     const from = dateToOffsetDate(dateMonthAgo);
     const data = await context.assetValuesApi.searchAssetValuesHistory({ assetName: assetName, from: from });
-    const values = data.map((assetValueDto) => ({ value: assetValueDto.value, timeStamp: assetValueDto.timeStamp }));
+    const values = uniqBy(
+      orderBy(
+        data.map((assetValueDto) => ({
+          value: assetValueDto.value,
+          timeStamp: new Date(
+            assetValueDto.timeStamp.getUTCFullYear(),
+            assetValueDto.timeStamp.getUTCMonth(),
+            assetValueDto.timeStamp.getUTCDate()
+          )
+        })),
+        (a) => a.timeStamp
+      ),
+      (a) => a.timeStamp
+    );
     return values;
   });
 
@@ -52,7 +66,7 @@ export const AssetsCarouselSlide = ({
                 { value: 1, timeStamp: dateYestarday },
                 { value: 1, timeStamp: dateToday }
               ]
-            : assetValues.data
+            : (assetValues.data as any)
         }
         userPreferenceCurrency={userPreferenceCurrency}
         gradient={gradient}
