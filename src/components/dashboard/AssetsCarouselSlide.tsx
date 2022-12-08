@@ -19,6 +19,7 @@ export const AssetsCarouselSlide = ({
   gradient
 }: AssetsCarouselSlideProps) => {
   const dateToday = new Date();
+  const dateYestarday = sub(dateToday, { days: 1 })
   const dateMonthAgo = sub(dateToday, { months: 1 });
 
   const context = useAPICommunication();
@@ -26,7 +27,7 @@ export const AssetsCarouselSlide = ({
   const assetValues = useQuery(['assetValues', assetName], async () => {
     const from = dateToOffsetDate(dateMonthAgo);
     const data = await context.assetValuesApi.searchAssetValuesHistory({ assetName: assetName, from: from });
-    const values = data.map((assetValueDto) => assetValueDto.value);
+    const values = data.map((assetValueDto) => ({ value: assetValueDto.value, timeStamp: assetValueDto.timeStamp }));
     return values;
   });
 
@@ -37,9 +38,15 @@ export const AssetsCarouselSlide = ({
         value={
           assetValues.data === undefined || assetValues.data.length === 0
             ? 0
-            : assetValues.data[assetValues.data.length - 1] / userPreferenceCurrencyExchangeRate
+            : assetValues.data[assetValues.data.length - 1].value / userPreferenceCurrencyExchangeRate
         }
-        data={assetValues.data === undefined ? [] : assetValues.data}
+        data={
+          assetValues.data === undefined
+            ? []
+            : assetName === "usd"
+            ? [{ value: 1, timeStamp: dateYestarday }, {value: 1, timeStamp: dateToday}]
+            : assetValues.data
+        }
         userPreferenceCurrency={userPreferenceCurrency}
         gradient={gradient}
       />

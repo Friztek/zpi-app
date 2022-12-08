@@ -91,6 +91,7 @@ const Alerts = () => {
                 <AddAlertButton />
               </Flex>
               <Stack w={'100%'} pt={'md'} spacing={'xs'}>
+                {activeAlerts.length === 0 && <EmptyAlertCard text="No pending alerts" />}
                 {activeAlerts.map((alert) => (
                   <AlertCard
                     key={alert.id}

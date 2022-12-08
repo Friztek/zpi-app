@@ -1,5 +1,6 @@
 import { Text, Button, Card, Space, Flex, useMantineTheme } from '@mantine/core';
 import { openConfirmModal } from '@mantine/modals';
+import { showNotification } from '@mantine/notifications';
 import { IconX } from '@tabler/icons';
 import { useQueryClient } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
@@ -71,8 +72,29 @@ export const AlertCard = ({ assetShortcutFrom, assetShortcutTo, value, currentVa
                 centered: false,
                 labels: { confirm: 'Confirm', cancel: 'Cancel' },
                 onConfirm: async () => {
-                  await context.allertsApi.deleteAlert({ id });
-                  queryClient.invalidateQueries('getAllAllerts');
+                  try {
+                    await context.allertsApi.deleteAlert({ id });
+                    showNotification({
+                      autoClose: 5000,
+                      message: 'Successfully deleted alert',
+                      color: 'green'
+                    });
+                    try {
+                      queryClient.invalidateQueries('getAllAllerts');
+                    } catch (e) {
+                      showNotification({
+                        autoClose: 5000,
+                        message: 'Failed to refetch alerts',
+                        color: 'red'
+                      });
+                    }
+                  } catch (e) {
+                    showNotification({
+                      autoClose: 5000,
+                      message: 'Failed to delete alert',
+                      color: 'red'
+                    });
+                  }
                 },
                 confirmProps: {
                   color: 'red'

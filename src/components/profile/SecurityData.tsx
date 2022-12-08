@@ -32,9 +32,9 @@ export const SecurityData = () => {
   const changePassword = async () => {
     try {
       await context.userApi.resetUserPassword();
-      showNotification({ message: 'Succesfully sended request for password reset', color: 'green' });
+      showNotification({ message: 'Successfully sent request for password reset', color: 'green' });
     } catch {
-      showNotification({ message: 'Error occured during sended request for password reset', color: 'red' });
+      showNotification({ message: 'Error occured during sending the request for password reset', color: 'red' });
     }
   };
 
@@ -56,7 +56,7 @@ export const SecurityData = () => {
       <Paper withBorder p="md" shadow="md" radius="md" className={classes.paper}>
         <Group>
           <Text align="center">
-            In order to change your password click the button. You will recieve an email with further instructions.
+            In order to change your password click the button. You will receive an email with further instructions.
           </Text>
         </Group>
 

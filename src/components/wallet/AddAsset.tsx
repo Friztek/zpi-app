@@ -14,7 +14,7 @@ import {
   Loader
 } from '@mantine/core';
 import { IconMoneybag, IconPlus, IconTrash } from '@tabler/icons';
-import { AssetDto, FetchError, PatchUserAssetsDto } from '../../client-typescript';
+import { AssetDto, PatchUserAssetsDto } from '../../client-typescript';
 import { trim } from 'lodash';
 import { useQuery, useQueryClient } from 'react-query';
 import { useAPICommunication } from '../../contexts/APICommunicationContext';
@@ -73,6 +73,10 @@ export function AddAsset() {
   const assetQuery = useQuery('asset', async () => {
     return await context.assetsAPI.getAllAssets();
   });
+
+  assetQuery?.data?.sort((item1, item2) =>
+    item1.friendlyName > item2.friendlyName ? 1 : item1.friendlyName === item2.friendlyName ? 0 : -1
+  );
 
   const getPrecision = (assetName: string) => {
     const foundAsset = assetQuery.data?.find((asset) => asset.name === assetName);
@@ -133,7 +137,7 @@ export function AddAsset() {
         });
         showNotification({
           autoClose: 5000,
-          message: 'Succesfully updated new assets',
+          message: 'Successfully updated new assets',
           color: 'green'
         });
         form.reset();

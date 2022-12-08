@@ -108,8 +108,8 @@ export function HeroTitle() {
 
         <Container size={640}>
           <Text size="lg" className={classes.description} sx={{ marginBottom: 5 }}>
-            Track your wallet total value in prefered currency. All calculated by current exchange rates. Just add your
-            assets and see how your wallet value changes.
+            Track your wallet&apos;s total value in preferred currency. All calculated by current exchange rates. Just add your
+            assets and see how your wallet&apos;s value changes.
           </Text>
         </Container>
 
