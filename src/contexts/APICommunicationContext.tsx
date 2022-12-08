@@ -1,6 +1,16 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { createContext, FC, ReactNode, useContext } from 'react';
-import { AssetsApi, Configuration, UserAssetsApi, WalletApi, UserPreferencesApi, TransactionApi, AssetValuesApi, AlertApi } from '../client-typescript';
+import {
+  AssetsApi,
+  Configuration,
+  UserAssetsApi,
+  WalletApi,
+  UserPreferencesApi,
+  TransactionApi,
+  AssetValuesApi,
+  AlertApi,
+  UsersApi
+} from '../client-typescript';
 
 export type APICommunication = {
   assetsAPI: AssetsApi;
@@ -10,6 +20,7 @@ export type APICommunication = {
   transactionApi: TransactionApi;
   assetValuesApi: AssetValuesApi;
   allertsApi: AlertApi;
+  userApi: UsersApi;
 };
 
 const APICommunicationContext = createContext<APICommunication | null>(null);
@@ -17,7 +28,7 @@ const APICommunicationContext = createContext<APICommunication | null>(null);
 export const APICommunicationContextProvider: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const basePath = "https://howmoney.eastus.cloudapp.azure.com:5001";
+  const basePath = 'https://howmoney.eastus.cloudapp.azure.com:5001';
   const { getAccessTokenSilently } = useAuth0();
 
   const configuration = new Configuration({
@@ -33,7 +44,8 @@ export const APICommunicationContextProvider: FC<{
     walletApi: new WalletApi(configuration),
     transactionApi: new TransactionApi(configuration),
     assetValuesApi: new AssetValuesApi(configuration),
-    allertsApi: new AlertApi(configuration)
+    allertsApi: new AlertApi(configuration),
+    userApi: new UsersApi(configuration)
   };
 
   return <APICommunicationContext.Provider value={value}>{children}</APICommunicationContext.Provider>;
