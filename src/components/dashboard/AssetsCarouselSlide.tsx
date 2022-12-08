@@ -19,7 +19,7 @@ export const AssetsCarouselSlide = ({
   gradient
 }: AssetsCarouselSlideProps) => {
   const dateToday = new Date();
-  const dateYestarday = sub(dateToday, { days: 1 })
+  const dateYestarday = sub(dateToday, { days: 1 });
   const dateMonthAgo = sub(dateToday, { months: 1 });
 
   const context = useAPICommunication();
@@ -36,15 +36,22 @@ export const AssetsCarouselSlide = ({
       <AssetChartBox
         name={assetName.toUpperCase()}
         value={
-          assetValues.data === undefined || assetValues.data.length === 0
+          assetValues.data === undefined
+            ? 0
+            : assetName === 'usd'
+            ? 1 / userPreferenceCurrencyExchangeRate
+            : assetValues.data.length === 0
             ? 0
             : assetValues.data[assetValues.data.length - 1].value / userPreferenceCurrencyExchangeRate
         }
         data={
           assetValues.data === undefined
             ? []
-            : assetName === "usd"
-            ? [{ value: 1, timeStamp: dateYestarday }, {value: 1, timeStamp: dateToday}]
+            : assetName === 'usd'
+            ? [
+                { value: 1, timeStamp: dateYestarday },
+                { value: 1, timeStamp: dateToday }
+              ]
             : assetValues.data
         }
         userPreferenceCurrency={userPreferenceCurrency}
