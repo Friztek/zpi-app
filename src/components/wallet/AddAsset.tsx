@@ -22,7 +22,6 @@ import { LoaderDots } from '../common/LoaderDots';
 import { useForm } from '@mantine/form';
 import { randomId, useToggle } from '@mantine/hooks';
 import { getPrecisionByCategory } from '../../utils/utils-format';
-import { format } from 'node:path/win32';
 import { showNotification } from '@mantine/notifications';
 
 const useStyles = createStyles((theme) => ({
@@ -117,7 +116,8 @@ export function AddAsset() {
     </Flex>
   ));
 
-  const saveForm = async () => {
+  const saveForm = async (event: any) => {
+    event.preventDefault();
     const validation = form.validate();
     toggleLoading();
     if (!validation.hasErrors) {
@@ -137,6 +137,9 @@ export function AddAsset() {
           color: 'green'
         });
         form.reset();
+        form.setValues({
+          userAssets: [{ key: randomId(), assetName: null, value: null, description: null, precision: 2 }]
+        });
         try {
           queryClient.invalidateQueries('userAsset');
         } catch (e) {
@@ -180,27 +183,28 @@ export function AddAsset() {
       ) : (
         <div>
           <Space h="md" />
-
-          {fields}
-          <Flex align={'center'} justify="space-between" mt="lg">
-            <ActionIcon variant="default" size={'lg'}>
-              <IconPlus
-                className={classes.icon}
-                onClick={() =>
-                  form.insertListItem('userAssets', {
-                    key: randomId(),
-                    assetName: undefined,
-                    value: undefined,
-                    description: undefined,
-                    precision: 2
-                  })
-                }
-              />
-            </ActionIcon>
-            <Button type="submit" variant="filled" loading={isLoading} onClick={saveForm} disabled={Object.values(form.errors).length > 0}>
-              Submit
-            </Button>
-          </Flex>
+          <form onSubmit={saveForm}>
+            {fields}
+            <Flex align={'center'} justify="space-between" mt="lg">
+              <ActionIcon variant="default" size={'lg'}>
+                <IconPlus
+                  className={classes.icon}
+                  onClick={() =>
+                    form.insertListItem('userAssets', {
+                      key: randomId(),
+                      assetName: undefined,
+                      value: undefined,
+                      description: undefined,
+                      precision: 2
+                    })
+                  }
+                />
+              </ActionIcon>
+              <Button type="submit" variant="filled" loading={isLoading} disabled={Object.values(form.errors).length > 0}>
+                Submit
+              </Button>
+            </Flex>
+          </form>
         </div>
       )}
     </Paper>
