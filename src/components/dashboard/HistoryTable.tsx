@@ -134,6 +134,7 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
                       });
                       queryClient.invalidateQueries('transactionsDataHistory');
                       queryClient.invalidateQueries('walletTotalValue');
+                      queryClient.invalidateQueries('walletHistory');
                     } catch (e) {
                       const error = e as FetchError;
                       showNotification({
