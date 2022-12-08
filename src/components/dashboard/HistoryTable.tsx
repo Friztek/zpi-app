@@ -12,6 +12,7 @@ import { TransactionModalInnerProps } from '../modals/TransactionModal';
 import { showNotification } from '@mantine/notifications';
 import { LoaderDots } from '../common/LoaderDots';
 import { FetchingError } from '../common/FetchingError';
+import { useMediaQuery } from '@mantine/hooks';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -46,6 +47,7 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
 
   const dateToday = new Date();
   const dateMonthAgo = sub(dateToday, { months: 1 });
+  const biggerThanLg = useMediaQuery('(min-width: 1200px)');
 
   const [dateRange, setDateRange] = useState<DateRangePickerValue>([dateMonthAgo, dateToday]);
 
@@ -87,9 +89,16 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
       <td>{row.date}</td>
     </tr>
   ));
-
+  console.log(theme.fn.largerThan('lg'));
+  console.log(biggerThanLg);
   return (
-    <Paper withBorder radius="md" h={'100%'} mah={'100%'} mih={400} style={{ overflow: theme.fn.largerThan('lg') ? 'hidden' : 'inherit' }}>
+    <Paper
+      withBorder
+      radius="md"
+      h={'100%'}
+      mah={'100%'}
+      mih={biggerThanLg ? 400 : undefined}
+      style={{ overflow: biggerThanLg ? 'hidden' : undefined }}>
       <Stack spacing={'sm'} h={'100%'}>
         <Flex direction={'row'} className={classes.stackOnMobile} justify="space-between" px={'sm'} pt={'sm'}>
           <Text size="lg" weight={500}>
@@ -156,27 +165,40 @@ export const HistoryTable = ({ assets }: HistoryTableProps) => {
             }}
           />
         </Box>
-
-        <ScrollArea
-          styles={{
-            scrollbar: {
-              paddingTop: '10px'
-            }
-          }}>
-          <div style={{ overflow: 'auto' }}>
-            <Table>
-              <thead className={cx(classes.header)}>
-                <tr>
-                  <th style={{ width: '20%' }}>Asset Symbol</th>
-                  <th style={{ width: '25%' }}>Name</th>
-                  <th style={{ width: '30%' }}>Value</th>
-                  <th style={{ width: '25%' }}>Date</th>
-                </tr>
-              </thead>
-              <tbody>{rows}</tbody>
-            </Table>
-          </div>
-        </ScrollArea>
+        {biggerThanLg ? (
+          <ScrollArea
+            styles={{
+              scrollbar: {
+                paddingTop: '10px'
+              }
+            }}>
+            <div style={{ overflow: 'auto' }}>
+              <Table>
+                <thead className={cx(classes.header)}>
+                  <tr>
+                    <th style={{ width: '20%' }}>Asset Symbol</th>
+                    <th style={{ width: '25%' }}>Name</th>
+                    <th style={{ width: '30%' }}>Value</th>
+                    <th style={{ width: '25%' }}>Date</th>
+                  </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+              </Table>
+            </div>
+          </ScrollArea>
+        ) : (
+          <Table>
+            <thead className={cx(classes.header)}>
+              <tr>
+                <th style={{ width: '20%' }}>Asset Symbol</th>
+                <th style={{ width: '25%' }}>Name</th>
+                <th style={{ width: '30%' }}>Value</th>
+                <th style={{ width: '25%' }}>Date</th>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </Table>
+        )}
       </Stack>
     </Paper>
   );

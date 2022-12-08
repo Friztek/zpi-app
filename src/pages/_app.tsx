@@ -1,16 +1,16 @@
-import { AppProps } from "next/app";
-import Head from "next/head";
-import { ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
-import { Auth0Provider } from "@auth0/auth0-react";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { APICommunicationContextProvider } from "../contexts/APICommunicationContext";
-import { ModalsProvider } from "@mantine/modals";
-import { useLocalStorage } from "@mantine/hooks";
-import { TransactionModal } from "../components/modals/TransactionModal";
-import { PreferencesModal } from "../components/dashboard/PreferencesModal";
-import { useUrl } from "../hooks/useUrl";
-import { NotificationsProvider } from "@mantine/notifications";
-import { AddAlertModal } from "../components/alerts/AddAlertModal";
+import { AppProps } from 'next/app';
+import Head from 'next/head';
+import { ColorScheme, ColorSchemeProvider, Global, MantineProvider } from '@mantine/core';
+import { Auth0Provider } from '@auth0/auth0-react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { APICommunicationContextProvider } from '../contexts/APICommunicationContext';
+import { ModalsProvider } from '@mantine/modals';
+import { useLocalStorage } from '@mantine/hooks';
+import { TransactionModal } from '../components/modals/TransactionModal';
+import { PreferencesModal } from '../components/dashboard/PreferencesModal';
+import { useUrl } from '../hooks/useUrl';
+import { NotificationsProvider } from '@mantine/notifications';
+import { AddAlertModal } from '../components/alerts/AddAlertModal';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, refetchOnMount: false } }
@@ -41,12 +41,23 @@ export default function App(props: AppProps) {
         cacheLocation="localstorage">
         <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
           <MantineProvider
-            withGlobalStyles
             withNormalizeCSS
             theme={{
-              colorScheme: colorScheme
+              colorScheme: colorScheme,
+              globalStyles: (theme) => ({
+                '*, *::before, *::after': {
+                  boxSizing: 'border-box'
+                },
+
+                body: {
+                  ...theme.fn.fontStyles(),
+                  backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
+                  color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
+                  lineHeight: theme.lineHeight
+                }
+              })
             }}>
-             <NotificationsProvider>
+            <NotificationsProvider>
               <APICommunicationContextProvider>
                 <QueryClientProvider client={queryClient}>
                   <ModalsProvider modals={{ transactionModal: TransactionModal, alertModal: AddAlertModal }}>

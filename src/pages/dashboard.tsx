@@ -3,7 +3,7 @@ import { Layout } from '../components/layout/Layout';
 import { BrushChart } from '../components/dashboard/BrushChart';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 import { AssetsCarousel } from '../components/dashboard/AssetsCarousel';
-import { Grid, Stack } from '@mantine/core';
+import { Flex, Grid, Stack } from '@mantine/core';
 import { WalletStats } from '../components/dashboard/WalletStats';
 import { HistoryTable } from '../components/dashboard/HistoryTable';
 import { useAPICommunication } from '../contexts/APICommunicationContext';
@@ -47,22 +47,24 @@ const Dashboard = () => {
   const walletData = walletHistoryData.data.map((row) => [row.dateStamp.getTime(), row.value]);
 
   return (
-    <Layout>
-      <Grid gutter={'md'} pt={'lg'} pl={'md'} maw={'100%'} mah={'100%'} h={'100%'} justify="space-between">
-        <Grid.Col lg={8} mah={'100%'}>
-          <Stack justify={'space-between'} h={'100%'}>
-            <BrushChart data={walletData} />
-            <AssetsCarousel assets={assetsData.data} userPreferenceCurrency={userPreferenceQuery.data.preferenceCurrency} />
-          </Stack>
-        </Grid.Col>
-        <Grid.Col lg={4} mah={'100%'} maw={'100%'}>
-          <Stack h="100%" mah={'100%'} maw={'100%'}>
-            <WalletStats userPreferenceCurrency={userPreferenceQuery.data.preferenceCurrency.toUpperCase()} />
-            <HistoryTable assets={assetsData.data} />
-          </Stack>
-        </Grid.Col>
-      </Grid>
-    </Layout>
+    <div style={{ maxHeight: '100vh' }}>
+      <Layout>
+        <Grid gutter={'md'} pt={'lg'} pl={'md'} maw={'100%'} mah={'100%'} h={'100%'} justify="space-between">
+          <Grid.Col lg={8} mah={'100%'}>
+            <Stack justify={'space-between'} h={'100%'}>
+              <BrushChart data={walletData} />
+              <AssetsCarousel assets={assetsData.data} userPreferenceCurrency={userPreferenceQuery.data.preferenceCurrency} />
+            </Stack>
+          </Grid.Col>
+          <Grid.Col lg={4} mah={'100%'} maw={'100%'}>
+            <Stack h="100%" mah={'100%'} maw={'100%'}>
+              <WalletStats userPreferenceCurrency={userPreferenceQuery.data.preferenceCurrency.toUpperCase()} />
+              <HistoryTable assets={assetsData.data} />
+            </Stack>
+          </Grid.Col>
+        </Grid>
+      </Layout>
+    </div>
   );
 };
 
