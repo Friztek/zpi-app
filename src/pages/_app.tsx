@@ -30,7 +30,7 @@ export default function App(props: AppProps) {
   return (
     <>
       <Head>
-        <title>ZPI APP</title>
+        <title>How money</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <Auth0Provider

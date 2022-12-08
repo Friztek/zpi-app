@@ -8,7 +8,7 @@ const links = [
     label: 'Dashboard'
   },
   {
-    link: '/wallet',
+    link: '/my-assets',
     label: 'Wallet'
   },
   {
